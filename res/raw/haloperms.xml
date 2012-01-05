@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Sprite>
+<animationList>
+    <animation name="stopped" id="12432">
+    	<xStartPos>10</xStartPos>
+    	<yStartPos>242</yStartPos>
+    	<frameCount>10</frameCount>
+    	<recFPS>1</recFPS>
+	</animation>
+	<animation name="running" id="1243">
+    	<xStartPos>10</xStartPos>
+    	<yStartPos>426</yStartPos>
+    	<frameCount>7</frameCount>
+    	<recFPS>7</recFPS>
+	</animation>
+</animationList>
+</Sprite>

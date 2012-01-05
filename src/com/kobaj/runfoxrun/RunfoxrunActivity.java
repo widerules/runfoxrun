@@ -1,5 +1,7 @@
 //thanks to http://mobile.dzone.com/articles/beginning-android-game
 // http://www.androidsnippets.com/stop-screen-from-dimming-by-enforcing-wake-lock
+// http://sourceforge.net/projects/simple/
+// http://stackoverflow.com/questions/1264709/convert-inputstream-to-byte-in-java
 
 package com.kobaj.runfoxrun;
 
