@@ -172,4 +172,12 @@ public class Sprite
 	{
 		playing = true;
 	}
+	
+	public void onCleanup()
+	{
+		img.recycle();
+		img = null;
+		
+		animationList.clear();
+	}
 }
