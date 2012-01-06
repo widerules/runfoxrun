@@ -1,5 +1,7 @@
 package com.kobaj.runfoxrun;
 
+import java.util.ArrayList;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -11,7 +13,9 @@ import android.graphics.Paint.Style;
 //surface class that updates and draws everything.
 public class SurfacePanel extends DrawablePanel
 {	
-	FPSManager fps;
+	private FPSManager fps;
+	
+	public InputManager im;
 	
 	//will later be moved to its own class
 	//TODO move this to its own class.
@@ -23,10 +27,10 @@ public class SurfacePanel extends DrawablePanel
 	//construct our objects
 	public SurfacePanel(Context context)
 	{
-		
 		super(context);
 		
-		fps = new FPSManager();		
+		fps = new FPSManager();
+		im = new InputManager();
 		little = new Sprite();
 		BigAnimate = new XMLHandler().readSerialFile(getResources(), R.raw.haloperms, Sprite.class);
 	}
@@ -43,9 +47,21 @@ public class SurfacePanel extends DrawablePanel
 	
 	private int x = 1;
 	
+	private ArrayList<Float> xs = new ArrayList<Float>();
+	private ArrayList<Float> ys = new ArrayList<Float>();
+	
 	public void onUpdate(long gameTime)
 	{
 		fps.onUpdate(gameTime);
+		//everything below this line
+		
+		for(int i = 0; i < im.fingerCount; i++)
+		{
+			if(im.getPressed(i))
+				xs.add(im.getX(i));
+			if(im.getPressed(i))
+				ys.add(im.getY(i));
+		}
 		
 		little.onUpdate(fps.getDelta());
 		x += 1;
@@ -71,8 +87,8 @@ public class SurfacePanel extends DrawablePanel
 		//fps output
 		canvas.drawText(String.valueOf(fps.getFPS()), 10, 10, textPaint);
 		
-		
-		canvas.drawBitmap(img, 20, 20, null);
+		for(int i = 0; i < xs.size(); i++)
+			canvas.drawBitmap(img, xs.get(i), ys.get(i), null);
 		
 		little.onDraw(canvas);
 		BigAnimate.onDraw(canvas);
