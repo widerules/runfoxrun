@@ -22,6 +22,7 @@ public class Animation
 	@Attribute
 	private int id;
 	
+	@SuppressWarnings("unused")
 	private Animation(@Attribute(name = "id") int id, @Attribute(name = "name") String name)
 	{
 		this.id = id;
