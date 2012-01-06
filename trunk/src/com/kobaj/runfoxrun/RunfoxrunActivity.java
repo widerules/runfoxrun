@@ -3,11 +3,13 @@
 // http://sourceforge.net/projects/simple/
 // http://stackoverflow.com/questions/1264709/convert-inputstream-to-byte-in-java
 // http://www.zdnet.com/blog/burnette/how-to-use-multi-touch-in-android-2-part-3-understanding-touch-events/1775?tag=content;siu-container
+// http://www.droidnova.com/creating-sound-effects-in-android-part-1,570.html
 
 package com.kobaj.runfoxrun;
 
 import android.app.Activity;
 import android.content.Context;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.view.MotionEvent;
@@ -26,7 +28,10 @@ public class RunfoxrunActivity extends Activity {
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         wl = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK, "DoNotDimScreen");
         
-        game = new SurfacePanel(this);
+        setVolumeControlStream(AudioManager.STREAM_MUSIC);
+        
+        game = new SurfacePanel(this);       
+        //last
         setContentView(game);
     }
     

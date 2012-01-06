@@ -14,8 +14,8 @@ import android.graphics.Paint.Style;
 public class SurfacePanel extends DrawablePanel
 {	
 	private FPSManager fps;
-	
 	public InputManager im;
+	private SoundManager sm;
 	
 	//will later be moved to its own class
 	//TODO move this to its own class.
@@ -31,6 +31,9 @@ public class SurfacePanel extends DrawablePanel
 		
 		fps = new FPSManager();
 		im = new InputManager();
+		
+		sm = new SoundManager(context);
+		
 		little = new Sprite();
 		BigAnimate = new XMLHandler().readSerialFile(getResources(), R.raw.haloperms, Sprite.class);
 	}
@@ -38,6 +41,10 @@ public class SurfacePanel extends DrawablePanel
 	//load in our resources
 	public void onInitalize()
 	{
+		sm.addSound(0, R.raw.collision);
+		
+		sm.playSound(0, 0.50f, -1);
+		
 		img = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher);
 		
 		little.onInitalize(getResources(), R.drawable.untitled, 30, 40, 26, 50);
@@ -53,14 +60,17 @@ public class SurfacePanel extends DrawablePanel
 	public void onUpdate(long gameTime)
 	{
 		fps.onUpdate(gameTime);
+		im.onUpdate();
 		//everything below this line
 		
 		for(int i = 0; i < im.fingerCount; i++)
 		{
 			if(im.getPressed(i))
+			{
 				xs.add(im.getX(i));
-			if(im.getPressed(i))
 				ys.add(im.getY(i));
+				sm.playSound(0);
+			}
 		}
 		
 		little.onUpdate(fps.getDelta());

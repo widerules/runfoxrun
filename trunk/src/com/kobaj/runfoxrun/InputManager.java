@@ -15,6 +15,7 @@ public class InputManager
 	private float[] deltax;
 	private float[] deltay;
 	
+	private boolean[] oldpressed;
 	private boolean[] pressed;
 	
 	public InputManager()
@@ -28,6 +29,7 @@ public class InputManager
 		deltax = new float[fingerCount];
 		deltay = new float[fingerCount];
 		
+		oldpressed = new boolean[fingerCount];
 		pressed = new boolean[fingerCount];
 	}
 
@@ -42,7 +44,6 @@ public class InputManager
     	action = action & MotionEvent.ACTION_MASK;
         if(action < 7 && action > 4)
             action = action - 5;  
-            
 		
 		 if( action == MotionEvent.ACTION_DOWN )
          {
@@ -52,9 +53,9 @@ public class InputManager
                 	 
                 	 x[id] = event.getX(i);
                 	 y[id] = event.getY(i);
-                	
                  }                       
-
+                 
+                 oldpressed[ptrId] = false;
                  pressed[ptrId] = true;
          }
          if( action == MotionEvent.ACTION_MOVE )
@@ -71,23 +72,31 @@ public class InputManager
                 	 
                 	 deltax[id] = x[id] - oldx[id];
          			 deltay[id] = y[id] - oldy[id];
-                 }                                                                                       
+                 }
          }
-         if( action == MotionEvent.ACTION_UP )
+         if( action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL)
          {
+             oldpressed[ptrId] = true;
                  pressed[ptrId] = false;
                  
                  if( event.getPointerCount() == 1 )
                          for( int i = 0; i < fingerCount; i++ )
                                  pressed[i] = false;
          }
-         if( action == MotionEvent.ACTION_CANCEL )
+         /*if( action == MotionEvent.ACTION_CANCEL )
          {
+             oldpressed[ptrId] = pressed[ptrId];
                  pressed[ptrId] = false;
                  if( event.getPointerCount() == 1 )
                  for( int i = 0; i < fingerCount; i++ )
                          pressed[i] = false;
-         }
+         }*/
+	}
+	
+	public void onUpdate()
+	{
+		/*for(int i = 0; i < fingerCount; i++)
+			oldpressed[i] = pressed[i];*/
 	}
 
 	public float getX(int index)
@@ -120,8 +129,31 @@ public class InputManager
 		return deltay[index];
 	}
 
-	public boolean getPressed(int index)
+	public boolean getTouched(int index)
 	{
 		return pressed[index];
+	}
+	
+	public boolean getPressed(int index)
+	{
+		if(pressed[index] && !oldpressed[index])
+		{
+			oldpressed[index] = true;
+			
+			return true;	
+		}
+		
+		return false;
+	}
+	
+	public boolean getReleased(int index)
+	{
+		if(!pressed[index] && oldpressed[index])
+		{
+			oldpressed[index] = false;
+			return true;
+		}
+		
+		return false;
 	}
 }
