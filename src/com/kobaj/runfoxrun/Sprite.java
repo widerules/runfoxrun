@@ -8,10 +8,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.Rect;
-import android.graphics.Paint.Style;
 
 public class Sprite
 {
@@ -25,6 +22,9 @@ public class Sprite
 	private Rect sRectangle;
 	private Rect dest;
 	
+	@ElementList
+	private ArrayList<physRect> physRectList;
+	
 	// animation
 	// NOT zero based index. 1 based.
 	private int currentFrame;
@@ -37,10 +37,25 @@ public class Sprite
 	
 	private boolean initalized = false;
 	
+	public ArrayList<physRect> getPhysRect()
+	{	
+		return physRectList;
+	}
+	
+	public int getxPos()
+	{
+		return xPos;
+	}
+	
 	public void setxPos(int x)
 	{
 		xPos = x;
 		updatesRect();
+	}
+	
+	public int getyPos()
+	{
+		return yPos;
 	}
 	
 	public void setyPos(int y)
@@ -55,6 +70,11 @@ public class Sprite
 		dest.bottom = yPos + height;
 		dest.left = xPos;
 		dest.right = xPos + width;
+		
+		for(int i = 0; i < physRectList.size(); i++)
+		{
+			physRectList.get(i).updatesRect(yPos, xPos + width, yPos + height, xPos);
+		}
 	}
 	
 	private void updateoRect()
@@ -88,6 +108,12 @@ public class Sprite
 		
 		dest = new Rect(xPos, yPos, xPos + width, yPos + height);
 		sRectangle = new Rect(((currentFrame - 1) * width) + currentSetAnimation.getxStartPos(), currentSetAnimation.getyStartPos(), ((currentFrame - 1) * width) + currentSetAnimation.getxStartPos() + width, currentSetAnimation.getyStartPos() + height);
+		
+		if(physRectList == null || physRectList.isEmpty())
+		{
+			physRectList = new ArrayList<physRect>();
+			physRectList.add(new physRect(new Rect(dest.top, dest.right, dest.bottom, dest.left), false));
+		}
 		
 		initalized = true;
 	}
@@ -129,15 +155,6 @@ public class Sprite
 	{
 		if (initalized)
 			canvas.drawBitmap(img, sRectangle, dest, null);
-		
-		Paint textPaint = new Paint();
-		textPaint.setColor(Color.WHITE);
-		textPaint.setStrokeWidth(2);
-		textPaint.setStyle(Style.FILL);
-		textPaint.setAntiAlias(true);
-		
-		//fps output
-		canvas.drawText(String.valueOf(frameTimer), 100, 10, textPaint);
 	}
 	
 	public void setAnimation(CharStates state)
@@ -173,6 +190,7 @@ public class Sprite
 		playing = true;
 	}
 	
+	//teeeeechnically not needed.
 	public void onCleanup()
 	{
 		img.recycle();

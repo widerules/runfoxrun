@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Sprite>
-<animationList>
+ <physRectList>
+      <physRect bottom="49" left="0" right="33" top="0">
+         <hurts>true</hurts>
+      </physRect>
+ </physRectList>
+ <animationList>
     <animation name="stopped" id="12432">
     	<xStartPos>10</xStartPos>
     	<yStartPos>242</yStartPos>
@@ -13,5 +18,5 @@
     	<frameCount>7</frameCount>
     	<recFPS>7</recFPS>
 	</animation>
-</animationList>
+ </animationList>
 </Sprite>
