@@ -14,62 +14,83 @@ import android.os.Environment;
 import android.util.Log;
 
 public class XMLHandler
-{
-	private final static String TAG = Sprite.class.getCanonicalName();
-	
-	// TODO actually implement this.
-	// DO NOT USE YET
-	public void writeSave(Animation animate)
+{	
+	public static <T> boolean writeSerialFile(T writeable, String fileName)
 	{
-		// write
-		Serializer serial = new Persister();
-		
-		File sdCard = Environment.getExternalStorageDirectory();
-		File dir = new File(sdCard.getAbsolutePath() + "/rfr");
-		if (dir.mkdirs())
+		if (hasStorage(true))
 		{
 			
-		}
-		else
-		{
+			// write
+			Serializer serial = new Persister();
 			
+			File sdCard = Environment.getExternalStorageDirectory();
+			File dir = new File(sdCard.getAbsolutePath() + "/rfr");
+			dir.mkdirs();
+			
+			File sdcardFile = new File(dir, fileName + ".xml");
+			try
+			{
+				if (sdcardFile.exists())
+					sdcardFile.delete();
+				
+				sdcardFile.createNewFile();
+			}
+			catch (IOException e)
+			{
+				Log.e("JAKOBERR", e.toString());
+			}
+			
+			try
+			{
+				serial.write(writeable, sdcardFile);
+				return true;
+			}
+			catch (Exception e)
+			{
+				// There is the possibility of error for a number of reasons.
+				// Handle
+				// this appropriately in your code
+				Log.e("JAKOBERR", e.toString());
+			}
 		}
 		
-		File sdcardFile = new File(dir, "levelout.xml");
-		try
-		{
-			if (sdcardFile.exists())
-				sdcardFile.delete();
-			
-			sdcardFile.createNewFile();
-		}
-		catch (IOException e)
-		{
-			// TODO Auto-generated catch block
-			Log.i("JAKOBERR", e.toString());
-		}
-		
-		try
-		{
-			serial.write(animate, sdcardFile);
-		}
-		catch (Exception e)
-		{
-			// There is the possibility of error for a number of reasons. Handle
-			// this appropriately in your code
-			Log.i("JAKOBERR", e.toString());
-		}
-		Log.i(TAG, "XML Written to File: " + sdcardFile.getAbsolutePath());
+		return false;
 	}
 	
-	public <T> T readSerialFile(Resources resources, int identity, Class<? extends T> type)
+	private static boolean hasStorage(boolean requireWriteAccess)
+	{
+		String state = Environment.getExternalStorageState();
+		
+		if (Environment.MEDIA_MOUNTED.equals(state))
+		{
+			return true;
+		}
+		else if (!requireWriteAccess && Environment.MEDIA_MOUNTED_READ_ONLY.equals(state))
+		{
+			return true;
+		}
+		return false;
+	}
+	
+	// TODO implement.
+	public static <T> T readSerialFile(String fileName, Class<? extends T> type)
+	{
+		if (hasStorage(false))
+		{
+			
+		}
+		
+		return null;
+	}
+	
+	public static <T> T readSerialFile(Resources resources, int identity, Class<? extends T> type)
 	{
 		T finalReturn = null;
 		Serializer serial = new Persister();
 		
 		try
 		{
-			byte[] temp = new XMLHandler().ioStremtoByteArray(resources.openRawResource(identity));
+			byte[] temp = ioStremtoByteArray(resources.openRawResource(identity));
 			String temp2 = new String(temp, "UTF-8");
 			finalReturn = serial.read(type, temp2);
 		}
@@ -85,7 +106,7 @@ public class XMLHandler
 		return finalReturn;
 	}
 	
-	public byte[] ioStremtoByteArray(InputStream is)
+	public static byte[] ioStremtoByteArray(InputStream is)
 	{
 		ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 		
@@ -114,5 +135,5 @@ public class XMLHandler
 		}
 		
 		return buffer.toByteArray();
-	}	
+	}
 }

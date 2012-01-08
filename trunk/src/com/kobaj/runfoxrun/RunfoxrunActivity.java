@@ -4,6 +4,7 @@
 // http://stackoverflow.com/questions/1264709/convert-inputstream-to-byte-in-java
 // http://www.zdnet.com/blog/burnette/how-to-use-multi-touch-in-android-2-part-3-understanding-touch-events/1775?tag=content;siu-container
 // http://www.droidnova.com/creating-sound-effects-in-android-part-1,570.html
+// http://blog.elsdoerfer.name/2010/04/15/android-check-if-sd-card-storage-is-available/
 
 package com.kobaj.runfoxrun;
 
@@ -30,7 +31,8 @@ public class RunfoxrunActivity extends Activity {
         
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
         
-        game = new SurfacePanel(this);       
+        game = new SurfacePanel(this);
+        
         //last
         setContentView(game);
     }
@@ -40,7 +42,7 @@ public class RunfoxrunActivity extends Activity {
             super.onPause();
             wl.release();
             
-            //TODO implement pause
+            game.onScreenPause();
     }
 
     @Override
@@ -48,7 +50,7 @@ public class RunfoxrunActivity extends Activity {
             super.onResume();
             wl.acquire();
             
-            //TODO implement resume
+            game.onScreenResume();
     }
     
     @Override
