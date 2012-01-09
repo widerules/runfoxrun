@@ -54,9 +54,9 @@ public class physRect
 	}
 
 	//top, right, bottom, left
-	public void updatesRect(int yPos, int i, int j, int xPos)
+	public void updatesRect(float yPos, float f, float g, float xPos)
 	{
 		//left, top, right, bottom;
-		collRect.set(xPos, yPos, i, j);
+		collRect.set((int)xPos, (int)yPos, (int)f, (int)g);
 	}
 }

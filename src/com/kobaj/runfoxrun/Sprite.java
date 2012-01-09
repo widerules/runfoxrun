@@ -17,8 +17,8 @@ public class Sprite
 	private int width;
 	private int height;
 	
-	private int xPos = 0;
-	private int yPos = 0;
+	private float xPos = 0;
+	private float yPos = 0;
 	private Rect sRectangle;
 	private Rect dest;
 	
@@ -37,28 +37,38 @@ public class Sprite
 	
 	private boolean initalized = false;
 	
+	public int getWidth()
+	{
+		return width;
+	}
+	
+	public int getHeight()
+	{
+		return height;
+	}
+	
 	public ArrayList<physRect> getPhysRect()
 	{	
 		return physRectList;
 	}
 	
-	public int getxPos()
+	public float getxPos()
 	{
 		return xPos;
 	}
 	
-	public void setxPos(int x)
+	public void setxPos(float x)
 	{
 		xPos = x;
 		updatesRect();
 	}
 	
-	public int getyPos()
+	public float getyPos()
 	{
 		return yPos;
 	}
 	
-	public void setyPos(int y)
+	public void setyPos(float y)
 	{
 		yPos = y;
 		updatesRect();
@@ -66,10 +76,10 @@ public class Sprite
 	
 	private void updatesRect()
 	{
-		dest.top = yPos;
-		dest.bottom = yPos + height;
-		dest.left = xPos;
-		dest.right = xPos + width;
+		dest.top = (int)yPos;
+		dest.bottom = (int)(yPos + height);
+		dest.left = (int)xPos;
+		dest.right = (int)(xPos + width);
 		
 		for(int i = 0; i < physRectList.size(); i++)
 		{
@@ -98,6 +108,12 @@ public class Sprite
 		// load das image
 		img = BitmapFactory.decodeResource(resources, identity);
 		
+		if(this.width == -1)
+		{
+			this.width = img.getWidth();
+			this.height = img.getHeight();
+		}
+		
 		if (animationList == null || animationList.isEmpty())
 		{
 			animationList = new ArrayList<Animation>();
@@ -106,8 +122,8 @@ public class Sprite
 		
 		setAnimation(CharStates.Stopped);
 		
-		dest = new Rect(xPos, yPos, xPos + width, yPos + height);
-		sRectangle = new Rect(((currentFrame - 1) * width) + currentSetAnimation.getxStartPos(), currentSetAnimation.getyStartPos(), ((currentFrame - 1) * width) + currentSetAnimation.getxStartPos() + width, currentSetAnimation.getyStartPos() + height);
+		dest = new Rect(xPos, yPos, xPos + this.width, yPos + this.height);
+		sRectangle = new Rect(((currentFrame - 1) * this.width) + currentSetAnimation.getxStartPos(), currentSetAnimation.getyStartPos(), ((currentFrame - 1) * this.width) + currentSetAnimation.getxStartPos() + this.width, currentSetAnimation.getyStartPos() + this.height);
 		
 		if(physRectList == null || physRectList.isEmpty())
 		{
@@ -120,22 +136,22 @@ public class Sprite
 	
 	public void onInitalize(Resources resources, int identity, int xPos, int yPos)
 	{
-		onInitalize(resources, identity, xPos, yPos, 40, 40);
+		onInitalize(resources, identity, xPos, yPos, -1, -1);
 	}
 	
 	public void onInitalize(Resources resources, int identity)
 	{
-		onInitalize(resources, identity, 0, 0, 40, 40);
+		onInitalize(resources, identity, 0, 0, -1, -1);
 	}
 	
-	public void onUpdate(int deltaTime)
+	public void onUpdate(float f)
 	{
 		// tumbling ifs!
 		if (initalized && playing && currentSetAnimation.getRecFPS() != 0)
 		{
 			if (frameTimer < currentSetAnimation.getRecMS())
 			{
-				frameTimer += deltaTime;
+				frameTimer += f;
 			}
 			else
 			{
@@ -155,6 +171,8 @@ public class Sprite
 	{
 		if (initalized)
 			canvas.drawBitmap(img, sRectangle, dest, null);
+		
+		return;
 	}
 	
 	public void setAnimation(CharStates state)
