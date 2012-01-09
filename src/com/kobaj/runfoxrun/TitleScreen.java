@@ -1,64 +1,55 @@
 package com.kobaj.runfoxrun;
 
 import android.content.res.Resources;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Paint.FontMetrics;
-import android.graphics.Paint.Style;
-import android.graphics.Rect;
 
-public class TitleScreen
-{
-	private Bitmap imgBackdrop;
-	
+public class TitleScreen extends ListScreens
+{	
 	private custString newGame;
-	private custString contGame;
+	private custString quit;
 	private custString continousGame;
 	private custString highScores;
 	
 	public void onInitialize(Resources resources, int identity)
 	{
+		count = 4;
+		
 		imgBackdrop = BitmapFactory.decodeResource(resources, identity);
 		
 		newGame = new custString("New Game", 100, 100);
+		newGame.setColor(Color.GRAY, Color.BLACK);
 		newGame.setSize(35);
 		
-		contGame = new custString("Continue Game", 100, 130);
-		contGame.setColor(Color.GRAY, Color.BLACK);
+		continousGame = new custString("Endless Game", 100, 200);
+		continousGame.setColor(Color.WHITE, Color.BLACK);
 		
-		continousGame = new custString("Continous Game", 100, 160);
-		continousGame.setColor(Color.GRAY, Color.BLACK);
-		
-		highScores = new custString("High Scores", 100, 190);
+		highScores = new custString("High Scores", 100, 300);
 		highScores.setColor(Color.GRAY, Color.BLACK);
+		
+		quit = new custString("Quit Game", 400, 400);
+		quit.setColor(Color.RED, Color.BLACK);
+		
+		stringList = new custString[count];
+		stringList[0] = newGame;
+		stringList[1] = continousGame;
+		stringList[2] = highScores;
+		stringList[3] = quit;
+		
+		initialized = true;
 	}
 	
 	public GameStates onTouch(int x, int y)
 	{
-		GameStates state = GameStates.TitleScreen;
-		
 		if(newGame.fingertap(x, y))
-			state = GameStates.SinglePlay;
-		else if (contGame.fingertap(x, y))
-			state = GameStates.ContSinglePlay;
+			return GameStates.SinglePlay;
 		else if (continousGame.fingertap(x, y))
-			state = GameStates.Continous;
+			return GameStates.Continous;
 		else if (highScores.fingertap(x, y))
-			state = GameStates.HighScore;
+			return GameStates.HighScore;
+		else if(quit.fingertap(x, y))
+			return GameStates.Quit;
 		
-		return state;
-	}
-	
-	public void onDraw(Canvas canvas)
-	{
-		canvas.drawBitmap(imgBackdrop, 0, 0, null);
-		
-		newGame.onDraw(canvas);
-		contGame.onDraw(canvas);
-		continousGame.onDraw(canvas);
-		highScores.onDraw(canvas);
+		return GameStates.TitleScreen;
 	}
 }

@@ -2,5 +2,5 @@ package com.kobaj.runfoxrun;
 
 public enum GameStates
 {
-	Loading, TitleScreen, Credits, SinglePlay, ContSinglePlay, Continous, HighScore, Pause
+	Loading, TitleScreen, Credits, SinglePlay, Resume, Continous, HighScore, Pause, Quit
 }

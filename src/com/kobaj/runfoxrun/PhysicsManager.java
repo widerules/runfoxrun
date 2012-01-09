@@ -14,6 +14,7 @@ public class PhysicsManager
 	private Sprite physObj;
 	private HashSet<Sprite> interactables;
 	
+	private final float jumpFloat = -2.0f / 10.0f;
 	private final float userAcc = 15f / 100000;
 	private float userVel = 0;
 	
@@ -25,6 +26,8 @@ public class PhysicsManager
 	
 	public void jump()
 	{
+		//TODO make this better.
+		
 		if(canJump) //better way of doing this would be "if touching object, then can jump"
 		{
 			inTheAir = true;
@@ -32,6 +35,7 @@ public class PhysicsManager
 		}
 	}
 	
+	//DELETE ME
 	public int getPhyObjCount()
 	{
 		return interactables.size();
@@ -45,7 +49,7 @@ public class PhysicsManager
 		interactables = new HashSet<Sprite>();
 	}
 	
-	private void removePhys(Sprite input)
+	public void removePhys(Sprite input)
 	{
 		interactables.remove(input);
 	}
@@ -62,12 +66,14 @@ public class PhysicsManager
 	
 	public void onUpdate(float delta)
 	{
-		//make our user go doooown.
+
 		if(inTheAir)
 		{
-			userVel = -2.0f / 10.0f;
+			userVel = jumpFloat;
 			inTheAir = false;
 		}
+		
+		//make our user go doooown.
 		userVel += (float)(userAcc * delta);
 		physObj.setyPos((physObj.getyPos() + (userVel * delta)));
 		
@@ -77,11 +83,12 @@ public class PhysicsManager
 		for (Iterator<Sprite> i = interactables.iterator(); i.hasNext();) 
 		{
 		    Sprite element = i.next();
-		    if (element.getxPos() < element.getWidth() * -1) 
+		    //moved this logic outside of physics.
+		    /*if (element.getxPos() < element.getWidth() * -1) 
 		    {
 		        i.remove();
 		    }
-		    else
+		    else*/
 		    {
 		    	if(element.getxPos() < width)
 		    	{
@@ -113,16 +120,31 @@ public class PhysicsManager
 		}
 	}
 	
+	public void purge()
+	{
+		for (Iterator<Sprite> i = interactables.iterator(); i.hasNext();) 
+		{
+			i.next();
+			i.remove();
+		}
+	}
+	
 	private void handleCollisions(int amount, boolean death)
 	{
 		if(death)
 		{
 			//TODO handle death
 		}
-		else if(amount > 0)
+		else if(Math.abs(amount) >= physObj.getHeight())
+		{
+			//collision with the side of a building
+			//TODO Death
+		}
+		else if(Math.abs(amount) > 0) //bit relaxed
 		{
 			canJump = true;
 			userVel = 0;
+			
 			physObj.setyPos((physObj.getyPos() - amount + 1));
 		}
 	}
@@ -148,8 +170,11 @@ public class PhysicsManager
 		Rect collision = new Rect();
 		
 		if(collision.setIntersect(obj1, obj2))
-		{
-			return Math.abs(collision.height());
+		{	
+			if(collision.top > obj1.top)
+				return -collision.height();
+			
+			return collision.height();//Math.abs(collision.height());
 		}
 		
 		return 0;

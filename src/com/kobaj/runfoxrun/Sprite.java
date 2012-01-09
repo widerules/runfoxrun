@@ -14,8 +14,8 @@ public class Sprite
 {
 	private Bitmap img;
 	
-	private int width;
-	private int height;
+	private int width = -1;
+	private int height = -1;
 	
 	private float xPos = 0;
 	private float yPos = 0;
@@ -144,14 +144,14 @@ public class Sprite
 		onInitalize(resources, identity, 0, 0, -1, -1);
 	}
 	
-	public void onUpdate(float f)
+	public void onUpdate(float delta)
 	{
 		// tumbling ifs!
 		if (initalized && playing && currentSetAnimation.getRecFPS() != 0)
 		{
 			if (frameTimer < currentSetAnimation.getRecMS())
 			{
-				frameTimer += f;
+				frameTimer += delta;
 			}
 			else
 			{

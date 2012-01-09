@@ -10,12 +10,16 @@ public class physRect
 	@Element
 	private boolean hurts;
 	
+	@SuppressWarnings("unused")
 	@Attribute
 	private int top = 0;
+	@SuppressWarnings("unused")
 	@Attribute
 	private int right = 0;
+	@SuppressWarnings("unused")
 	@Attribute
 	private int bottom = 0;
+	@SuppressWarnings("unused")
 	@Attribute
 	private int left = 0;
 	

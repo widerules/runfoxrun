@@ -17,7 +17,7 @@ public class CustomThread implements Runnable
 		this.surfaceHolder = surfaceHolder;
 		this.panel = panel;
 		
-		this.panel.onInitalize();
+		this.panel.onInitialize();
 	}
 	
 	public void start()	
