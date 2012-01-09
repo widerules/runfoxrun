@@ -14,15 +14,27 @@ public class PhysicsManager
 	private Sprite physObj;
 	private HashSet<Sprite> interactables;
 	
-	private final float userAcc = 9.8f / 100000;
+	private final float userAcc = 15f / 100000;
 	private float userVel = 0;
 	
-	private int scrollvalue;
+	private float scrollvalue;
 	
-	//DELETE ME
-	public float getVle()
+	//specialized
+	private boolean inTheAir = false;
+	private boolean canJump = true;
+	
+	public void jump()
 	{
-		return userVel;
+		if(canJump) //better way of doing this would be "if touching object, then can jump"
+		{
+			inTheAir = true;
+			canJump = false;
+		}
+	}
+	
+	public int getPhyObjCount()
+	{
+		return interactables.size();
 	}
 	
 	public PhysicsManager(int width, int height)
@@ -43,16 +55,21 @@ public class PhysicsManager
 		interactables.add(input);
 	}
 	
-	public void setScrollRate(int value)
+	public void setScrollRate(float value)
 	{
 		scrollvalue = value;
 	}
 	
-	public void onUpdate(int delta)
+	public void onUpdate(float delta)
 	{
 		//make our user go doooown.
+		if(inTheAir)
+		{
+			userVel = -2.0f / 10.0f;
+			inTheAir = false;
+		}
 		userVel += (float)(userAcc * delta);
-		physObj.setyPos((int)(physObj.getyPos() + (userVel * delta)));
+		physObj.setyPos((physObj.getyPos() + (userVel * delta)));
 		
 		//try to iterate only once
 		float amount = scrollvalue * delta / 100; //arbitrary
@@ -60,7 +77,7 @@ public class PhysicsManager
 		for (Iterator<Sprite> i = interactables.iterator(); i.hasNext();) 
 		{
 		    Sprite element = i.next();
-		    if (element.getxPos() < -400 /*half the screen ish*/) 
+		    if (element.getxPos() < element.getWidth() * -1) 
 		    {
 		        i.remove();
 		    }
@@ -72,7 +89,7 @@ public class PhysicsManager
 		    			checkForCollisions(element);
 		    	}
 		    	
-		    	element.setxPos((int)(element.getxPos() + amount));	
+		    	element.setxPos((element.getxPos() + amount));	
 		    }
 		}
 		
@@ -104,8 +121,9 @@ public class PhysicsManager
 		}
 		else if(amount > 0)
 		{
+			canJump = true;
 			userVel = 0;
-			physObj.setyPos((int)(physObj.getyPos() - amount + 1));
+			physObj.setyPos((physObj.getyPos() - amount + 1));
 		}
 	}
 	

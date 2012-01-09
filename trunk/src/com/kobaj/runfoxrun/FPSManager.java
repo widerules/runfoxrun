@@ -37,8 +37,8 @@ public class FPSManager
 		return fps;
 	}
 	
-	public int getDelta()
+	public float getDelta()
 	{
-		return (int) Math.max(Math.min(delta, 10000), 0);
+		return Math.max(Math.min(delta, 10000), 0);
 	}
 }

@@ -5,6 +5,7 @@
 // http://www.zdnet.com/blog/burnette/how-to-use-multi-touch-in-android-2-part-3-understanding-touch-events/1775?tag=content;siu-container
 // http://www.droidnova.com/creating-sound-effects-in-android-part-1,570.html
 // http://blog.elsdoerfer.name/2010/04/15/android-check-if-sd-card-storage-is-available/
+// http://stackoverflow.com/questions/6926644/android-color-to-int-conversion
 
 package com.kobaj.runfoxrun;
 
