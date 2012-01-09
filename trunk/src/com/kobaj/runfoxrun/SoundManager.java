@@ -42,6 +42,12 @@ public class SoundManager
 		mSoundPool.play((Integer) mSoundPoolMap.get(index), streamVolume, streamVolume, 1, loop, 1f);	
 	}
 	
+	public void purge()
+	{
+		for(int i = 0; i < mSoundPoolMap.size(); i++)
+			removeSound(i);
+	}
+	
 	public void playSound(int index, float volume)
 	{
 		playSound(index, volume, 0);
