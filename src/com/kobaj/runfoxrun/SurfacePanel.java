@@ -28,6 +28,7 @@ public class SurfacePanel extends DrawablePanel
 	private TitleScreen ts;
 	private ContinousScreen cous;
 	private PauseScreen ps;
+	private SinglePlayScreen sp;
 	
 	//semi arbitrary
 	
@@ -51,7 +52,7 @@ public class SurfacePanel extends DrawablePanel
 		sm = new SoundManager(context);
 		
 		pm = new PhysicsManager(width, height);
-		pm.setScrollRate(-10);
+		pm.setScrollRate(-15);
 		
 		currentState = GameStates.TitleScreen;
 		oldState = GameStates.TitleScreen;
@@ -60,8 +61,9 @@ public class SurfacePanel extends DrawablePanel
 		cous = new ContinousScreen();
 		ps = new PauseScreen();
 		ps.onInitialize(getResources(), R.drawable.titlescreen);
+		sp = new SinglePlayScreen(width, height);
 		
-		pauseText = new custString("PAUSE", 3, 27);
+		pauseText = new custString("PAUSE", 5, 27);
 		
 		//semi arbitrary
 		textPaint.setColor(Color.WHITE);
@@ -101,8 +103,10 @@ public class SurfacePanel extends DrawablePanel
 		else if(currentState == GameStates.SinglePlay)
 		{
 			//uncomment later
-			//BigAnimate.onUpdate(fps.getDelta());
-			//pm.onUpdate(fps.getDelta());
+			BigAnimate.onUpdate(fps.getDelta());
+			pm.onUpdate(fps.getDelta());
+			sp.onUpdate();
+			checkForUserPause();
 		}
 		else if(currentState == GameStates.Continous)
 		{
@@ -113,6 +117,8 @@ public class SurfacePanel extends DrawablePanel
 		}
 		else if(currentState == GameStates.Pause)
 			onPauseScreen();
+		else if(currentState == GameStates.Loading)
+			onLoadingScreen(fps.getDelta());
 	}
 
 	public void onDraw(Canvas canvas)
@@ -123,8 +129,9 @@ public class SurfacePanel extends DrawablePanel
 			ts.onDraw(canvas);
 		else if (currentState == GameStates.SinglePlay)
 		{
-			//BigAnimate.onDraw(canvas);
-			//onDrawSinglePlay(canvas);
+			BigAnimate.onDraw(canvas);
+			sp.onDraw(canvas);
+			pauseText.onDraw(canvas);
 		}
 		else if(currentState == GameStates.Continous)
 		{
@@ -134,9 +141,31 @@ public class SurfacePanel extends DrawablePanel
 		}
 		else if(currentState == GameStates.Pause)
 			ps.onDraw(canvas);
+		else if(currentState == GameStates.Loading)
+			onDrawLoadingScreen(canvas);
 		
 		//fps output
 		canvas.drawText("FPS " + String.valueOf(fps.getFPS()), 600, 30, textPaint);
+	}
+	
+	int rotation = 0;
+	private void onLoadingScreen(float delta)
+	{
+		rotation += delta / 100.0f;
+	}
+	
+	private void onDrawLoadingScreen(Canvas canvas)
+	{
+		canvas.save();
+		canvas.rotate(rotation, width / 2, height / 2);
+		canvas.drawText("Loading...", width / 2, height / 2, textPaint);
+		canvas.restore();
+		
+		if(sp.getInitialized())
+		{
+			oldState = GameStates.Loading;
+			currentState = GameStates.SinglePlay;
+		}		
 	}
 	
 	private void checkForUserPause()
@@ -208,7 +237,11 @@ public class SurfacePanel extends DrawablePanel
 		}
 		else if(newState == GameStates.SinglePlay)
 		{
-			//currentState = GameStates.SinglePlay;
+			purgeManagers();
+			sp = new SinglePlayScreen(width, height);
+			sp.onInitialize(getResources(), im, pm, R.raw.level, BigAnimate);
+			oldState = GameStates.SinglePlay;
+			currentState = GameStates.Loading;
 		}
 		else if(newState == GameStates.Continous)
 		{
