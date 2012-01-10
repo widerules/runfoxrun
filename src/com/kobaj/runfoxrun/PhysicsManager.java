@@ -14,6 +14,8 @@ public class PhysicsManager
 	private Sprite physObj;
 	private HashSet<Sprite> interactables;
 	
+	private HashSet<Sprite> backgroundables;
+	
 	private final float jumpFloat = -3.0f / 10.0f;
 	private final float userAcc = 30f / 100000.0f;
 	private float userVel = 0;
@@ -68,6 +70,7 @@ public class PhysicsManager
 		this.height = height;
 		
 		interactables = new HashSet<Sprite>();
+		backgroundables = new HashSet<Sprite>();
 	}
 	
 	public void removePhys(Sprite input)
@@ -78,6 +81,16 @@ public class PhysicsManager
 	public void addPhys(Sprite input)
 	{
 		interactables.add(input);
+	}
+	
+	public void removeBackgroundPhys(Sprite input)
+	{
+		backgroundables.remove(input);
+	}
+	
+	public void addBackgroundPhys(Sprite input)
+	{
+		backgroundables.add(input);
 	}
 	
 	public void setScrollRate(float value)
@@ -127,6 +140,13 @@ public class PhysicsManager
 		    	
 		    	element.setxPos((element.getxPos() + amount));	
 		    }
+		}
+		
+		//backgrounds
+		for(Iterator<Sprite> i = backgroundables.iterator(); i.hasNext();)
+		{
+			Sprite element = i.next();
+			element.setxPos((element.getxPos() + amount / 10.0f));
 		}
 		
 		if(physObj.getyPos() > height)
@@ -204,6 +224,12 @@ public class PhysicsManager
 	public void purge()
 	{
 		for (Iterator<Sprite> i = interactables.iterator(); i.hasNext();) 
+		{
+			i.next();
+			i.remove();
+		}
+		
+		for(Iterator<Sprite> i = backgroundables.iterator(); i.hasNext();)
 		{
 			i.next();
 			i.remove();

@@ -63,7 +63,7 @@ public class SurfacePanel extends DrawablePanel
 		ps.onInitialize(getResources(), R.drawable.titlescreen);
 		sp = new SinglePlayScreen(width, height);
 		
-		pauseText = new custString("PAUSE", 10, 30);
+		pauseText = new custString("PAUSE", 7, 30);
 		pauseText.setSize(32);
 		
 		//semi arbitrary
@@ -131,7 +131,7 @@ public class SurfacePanel extends DrawablePanel
 			ts.onDraw(canvas);
 		else if (currentState == GameStates.SinglePlay)
 		{
-			BigAnimate.onDraw(canvas);
+			//BigAnimate.onDraw(canvas); now handled inside single play
 			sp.onDraw(canvas);
 			pauseText.onDraw(canvas);
 		}
@@ -147,7 +147,7 @@ public class SurfacePanel extends DrawablePanel
 			onDrawLoadingScreen(canvas);
 		
 		//fps output
-		canvas.drawText("FPS " + String.valueOf(fps.getFPS()), 600, 30, textPaint);
+		canvas.drawText("FPS " + String.valueOf(fps.getFPS()), width - textPaint.measureText("FPS " + String.valueOf(fps.getFPS())), height, textPaint);
 	}
 	
 	int rotation = 0;
@@ -160,7 +160,7 @@ public class SurfacePanel extends DrawablePanel
 	{
 		canvas.save();
 		canvas.rotate(rotation, width / 2, height / 2);
-		canvas.drawText("Loading...", width / 2 - textPaint.measureText("Loading") / 2, height / 2 - textPaint.getTextSize() / 2, textPaint);
+		canvas.drawText("Loading...", width / 2 - textPaint.measureText("Loading") / 2, height / 2 - textPaint.getTextSize() * 2, textPaint);
 		canvas.restore();
 		
 		if(sp.getInitialized())
