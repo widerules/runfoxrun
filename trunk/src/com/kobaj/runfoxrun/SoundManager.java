@@ -1,6 +1,8 @@
 package com.kobaj.runfoxrun;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 
 import android.content.Context;
 import android.media.AudioManager;
@@ -13,12 +15,38 @@ public class SoundManager
 	private AudioManager mAudioManager;
 	private Context mContext;
 	
+	private ArrayList<SoundFade> fadeList;
+	
 	public SoundManager(Context theContext)
 	{
+		fadeList = new ArrayList<SoundFade>();
+		
 		mContext = theContext;
 		mSoundPool = new SoundPool(4, AudioManager.STREAM_MUSIC, 0);
 		mSoundPoolMap = new HashMap<Integer, Integer>();
 		mAudioManager = (AudioManager)mContext.getSystemService(Context.AUDIO_SERVICE);
+	}
+	
+	public void onUpdate(float delta)
+	{
+		for(Iterator<SoundFade> it = fadeList.iterator(); it.hasNext();)
+		{
+			SoundFade temp = it.next();
+			
+			temp.onUpdate(delta);
+			
+			float volume = temp.getVolume();
+			
+			mSoundPool.setVolume(temp.getIndex(), volume, volume);
+			
+			if(!temp.getValid())
+				it.remove();
+		}
+	}
+	
+	public void addFade(SoundFade newFade)
+	{
+		fadeList.add(newFade);
 	}
 	
 	public void addSound(int index, int SoundID)
@@ -29,7 +57,7 @@ public class SoundManager
 	public void removeSound(int index)
 	{
 		mSoundPool.unload((Integer) mSoundPoolMap.get(index));
-		mSoundPoolMap.remove(index);	
+		mSoundPoolMap.remove(index);
 	}
 	
 	public void playSound(int index, float volume, int loop)

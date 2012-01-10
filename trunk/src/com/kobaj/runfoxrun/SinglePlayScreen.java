@@ -12,6 +12,7 @@ public class SinglePlayScreen implements Runnable
 	private Thread thread;
 	
 	private int width;
+	@SuppressWarnings("unused")
 	private int height;
 	
 	private ArrayList<Sprite> hitList;
@@ -28,7 +29,7 @@ public class SinglePlayScreen implements Runnable
 	private boolean initialized = false;
 	
 	//for testing purposes, m
-	//delet me later
+	//delete me later
 	public static void writelevel()
 	{
 		Level lev = new Level("test map");
@@ -45,7 +46,7 @@ public class SinglePlayScreen implements Runnable
 	
 	private void setPlayerPos()
 	{
-		player.setxPos(level.getPlayerStartX());
+		//player.setxPos(level.getPlayerStartX());
 		player.setyPos(level.getPlayerStartY());
 	}
 	
@@ -77,19 +78,7 @@ public class SinglePlayScreen implements Runnable
 	public void onUpdate()
 	{
 		if (initialized)
-		{
-			//handle removing old stuffs
-			/*for (Iterator<Sprite> it = hitList.iterator(); it.hasNext();)
-			{
-				Sprite temp = it.next();
-				
-				if (temp.getxPos() + temp.getWidth() < 0)
-				{
-					pm.removePhys(temp);
-					it.remove();
-				}
-			}*/
-			
+		{	
 			//handle input
 			for (int i = 0; i < im.fingerCount; i++)
 			{
