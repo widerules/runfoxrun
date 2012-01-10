@@ -35,8 +35,13 @@ public class Sprite
 	private ArrayList<Animation> animationList;
 	private Animation currentSetAnimation;
 	
-	private boolean initalized = false;
-
+	private boolean initialized = false;
+	
+	public boolean getInitialized()
+	{
+		return initialized;
+	}
+	
 	public int getWidth()
 	{
 		return width;
@@ -131,7 +136,7 @@ public class Sprite
 			physRectList.add(new physRect(new Rect(dest.top, dest.right, dest.bottom, dest.left), false));
 		}
 		
-		initalized = true;
+		initialized = true;
 	}
 	
 	public void onInitalize(Resources resources, int identity, int xPos, int yPos)
@@ -147,7 +152,7 @@ public class Sprite
 	public void onUpdate(float delta)
 	{
 		// tumbling ifs!
-		if (initalized && playing && currentSetAnimation.getRecFPS() != 0)
+		if (initialized && playing && currentSetAnimation.getRecFPS() != 0)
 		{
 			if (frameTimer < currentSetAnimation.getRecMS())
 			{
@@ -169,7 +174,7 @@ public class Sprite
 	
 	public void onDraw(Canvas canvas)
 	{
-		if (initalized)
+		if (initialized)
 			canvas.drawBitmap(img, sRectangle, dest, null);
 		
 		return;
@@ -189,7 +194,7 @@ public class Sprite
 					currentFrame = 1;
 					
 					//probably a poor way of handeling this
-					if(initalized)
+					if(initialized)
 						updateoRect();
 				}
 			}

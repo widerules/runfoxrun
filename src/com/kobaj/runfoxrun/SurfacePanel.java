@@ -58,12 +58,13 @@ public class SurfacePanel extends DrawablePanel
 		oldState = GameStates.TitleScreen;
 		
 		ts = new TitleScreen();
-		cous = new ContinousScreen();
+		cous = new ContinousScreen(width, height);
 		ps = new PauseScreen();
 		ps.onInitialize(getResources(), R.drawable.titlescreen);
 		sp = new SinglePlayScreen(width, height);
 		
-		pauseText = new custString("PAUSE", 5, 27);
+		pauseText = new custString("PAUSE", 10, 30);
+		pauseText.setSize(32);
 		
 		//semi arbitrary
 		textPaint.setColor(Color.WHITE);
@@ -97,6 +98,7 @@ public class SurfacePanel extends DrawablePanel
 	{
 		fps.onUpdate(gameTime);
 		im.onUpdate();
+		sm.onUpdate(fps.getDelta());
 		
 		if(currentState == GameStates.TitleScreen)
 			onTitleScreen();
@@ -151,14 +153,14 @@ public class SurfacePanel extends DrawablePanel
 	int rotation = 0;
 	private void onLoadingScreen(float delta)
 	{
-		rotation += delta / 100.0f;
+		rotation += delta / 10.0f;
 	}
 	
 	private void onDrawLoadingScreen(Canvas canvas)
 	{
 		canvas.save();
 		canvas.rotate(rotation, width / 2, height / 2);
-		canvas.drawText("Loading...", width / 2, height / 2, textPaint);
+		canvas.drawText("Loading...", width / 2 - textPaint.measureText("Loading") / 2, height / 2 - textPaint.getTextSize() / 2, textPaint);
 		canvas.restore();
 		
 		if(sp.getInitialized())
@@ -246,8 +248,8 @@ public class SurfacePanel extends DrawablePanel
 		else if(newState == GameStates.Continous)
 		{
 			purgeManagers();
-			cous = new ContinousScreen();
-			cous.onInitialize(getResources(), im, pm);
+			cous = new ContinousScreen(width, height);
+			cous.onInitialize(getResources(), im, pm, BigAnimate);
 			oldState = GameStates.TitleScreen;
 			currentState = GameStates.Continous;
 		}

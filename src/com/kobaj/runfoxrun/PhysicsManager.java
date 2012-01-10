@@ -14,8 +14,8 @@ public class PhysicsManager
 	private Sprite physObj;
 	private HashSet<Sprite> interactables;
 	
-	private final float jumpFloat = -2.0f / 10.0f;
-	private final float userAcc = 15f / 100000;
+	private final float jumpFloat = -3.0f / 10.0f;
+	private final float userAcc = 30f / 100000.0f;
 	private float userVel = 0;
 	
 	private float scrollValue;
@@ -26,20 +26,15 @@ public class PhysicsManager
 	private boolean reverse = false;
 	
 	//specialized
-	private boolean inTheAir = false;
-	private boolean canJump = true;
+	private boolean touching = false;
 	
 	public void jump()
 	{
-		//TODO make this better.
-		
-		if(canJump) //better way of doing this would be "if touching object, then can jump"
+		if(touching) 
 		{
-			inTheAir = true;
-			canJump = false;
+			userVel = jumpFloat;
 		}
 	}
-	
 	
 	//DELETE ME
 	public int getPhyObjCount()
@@ -90,13 +85,14 @@ public class PhysicsManager
 		scrollValue = value;
 	}
 	
-	public void onUpdate(float delta)
+	public float getScrollRate()
 	{
-		if(inTheAir)
-		{
-			userVel = jumpFloat;
-			inTheAir = false;
-		}
+		return scrollValue;
+	}
+	
+	public void onUpdate(float delta)
+	{	
+		touching = false;
 		
 		if(!reverse)
 		{
@@ -122,12 +118,6 @@ public class PhysicsManager
 		for (Iterator<Sprite> i = interactables.iterator(); i.hasNext();) 
 		{
 		    Sprite element = i.next();
-		    //moved this logic outside of physics.
-		    /*if (element.getxPos() < element.getWidth() * -1) 
-		    {
-		        i.remove();
-		    }
-		    else*/
 		    {
 		    	if(element.getxPos() + element.getWidth() > 0 && element.getxPos() < width)
 		    	{
@@ -139,66 +129,31 @@ public class PhysicsManager
 		    }
 		}
 		
-		//just for now, might be removed later
-		//possibly deleteme
 		if(physObj.getyPos() > height)
 		{
-			//TODO death?
+			//TODO 
 			death = true;
+			//levelReset();
 		}
-	}
-	
-	public void setPlayer(Sprite input)
-	{
-		//only ever once. Final doesn't work.
-		if(!set)
-		{
-			physObj = input;
-			set = true;
-		}
-	}
-	
-	public void purge()
-	{
-		for (Iterator<Sprite> i = interactables.iterator(); i.hasNext();) 
-		{
-			i.next();
-			i.remove();
-		}
-		
-		scrollProgress = 0;
-		
-		reset();
-	}
-	
-	private void reset()
-	{
-		scrollDelta = 0;
-		death = false;
-		userVel = 0;	
-	}
-	
-	public void levelReset()
-	{
-		reset();
-		reverse = true;
 	}
 	
 	private void handleCollisions(int amount, boolean death)
 	{
 		if(death)
 		{
-			//death = true;
-			levelReset();
+			//TODO 
+			this.death = true;
+			//levelReset();
 		}
 		else if(Math.abs(amount) >= physObj.getHeight())
 		{
-			//death = true;
-			levelReset();
+			//TODO 
+			this.death = true;
+			//levelReset();
 		}
 		else if(Math.abs(amount) > 0) //bit relaxed
 		{
-			canJump = true;
+			touching = true;
 			userVel = 0;
 			
 			physObj.setyPos((physObj.getyPos() - amount + 1));
@@ -235,4 +190,41 @@ public class PhysicsManager
 		
 		return 0;
 	}
+	
+	public void setPlayer(Sprite input)
+	{
+		//only ever once. Final doesn't work.
+		if(!set)
+		{
+			physObj = input;
+			set = true;
+		}
+	}
+	
+	public void purge()
+	{
+		for (Iterator<Sprite> i = interactables.iterator(); i.hasNext();) 
+		{
+			i.next();
+			i.remove();
+		}
+		
+		scrollProgress = 0;
+		
+		reset();
+	}
+	
+	public void reset()
+	{
+		scrollDelta = 0;
+		userVel = 0;	
+		death = false;
+	}
+	
+	public void levelReset()
+	{
+		reset();
+		reverse = true;
+	}
+	
 }

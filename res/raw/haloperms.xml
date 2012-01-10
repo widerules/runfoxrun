@@ -2,7 +2,7 @@
 <Sprite>
  <physRectList>
       <physRect bottom="49" left="0" right="33" top="0">
-         <hurts>true</hurts>
+         <hurts>false</hurts>
       </physRect>
  </physRectList>
  <animationList>
