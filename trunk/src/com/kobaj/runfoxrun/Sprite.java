@@ -36,7 +36,7 @@ public class Sprite
 	private Animation currentSetAnimation;
 	
 	private boolean initalized = false;
-	
+
 	public int getWidth()
 	{
 		return width;

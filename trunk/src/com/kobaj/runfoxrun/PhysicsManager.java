@@ -18,7 +18,12 @@ public class PhysicsManager
 	private final float userAcc = 15f / 100000;
 	private float userVel = 0;
 	
-	private float scrollvalue;
+	private float scrollValue;
+	private float scrollDelta = 0;
+	private float scrollProgress = 0;
+	
+	private boolean death = false;
+	private boolean reverse = false;
 	
 	//specialized
 	private boolean inTheAir = false;
@@ -35,10 +40,31 @@ public class PhysicsManager
 		}
 	}
 	
+	
 	//DELETE ME
 	public int getPhyObjCount()
 	{
 		return interactables.size();
+	}
+	
+	public boolean getDeath()
+	{
+		return death;
+	}
+	
+	public float getScrollDelta()
+	{
+		return scrollDelta;
+	}
+	
+	public float getScrollProgress()
+	{
+		return scrollProgress;
+	}
+	
+	public void setScrollProgress(float amount)
+	{
+		scrollProgress = amount;
 	}
 	
 	public PhysicsManager(int width, int height)
@@ -61,25 +87,38 @@ public class PhysicsManager
 	
 	public void setScrollRate(float value)
 	{
-		scrollvalue = value;
+		scrollValue = value;
 	}
 	
 	public void onUpdate(float delta)
 	{
-
 		if(inTheAir)
 		{
 			userVel = jumpFloat;
 			inTheAir = false;
 		}
 		
-		//make our user go doooown.
-		userVel += (float)(userAcc * delta);
-		physObj.setyPos((physObj.getyPos() + (userVel * delta)));
+		if(!reverse)
+		{
+			//make our user go doooown.
+			userVel += (float)(userAcc * delta);
+			physObj.setyPos((physObj.getyPos() + (userVel * delta)));
+		}
+		else
+			physObj.setyPos(-100);
+
+		float amount = scrollValue * delta / 100; //arbitrary
+		
+		if(reverse)
+			amount = -amount * 10;	
+			
+		scrollDelta = -amount;
+		scrollProgress += scrollDelta;
+		
+		if(scrollProgress <= 0)
+			reverse = false;
 		
 		//try to iterate only once
-		float amount = scrollvalue * delta / 100; //arbitrary
-		
 		for (Iterator<Sprite> i = interactables.iterator(); i.hasNext();) 
 		{
 		    Sprite element = i.next();
@@ -90,7 +129,7 @@ public class PhysicsManager
 		    }
 		    else*/
 		    {
-		    	if(element.getxPos() < width)
+		    	if(element.getxPos() + element.getWidth() > 0 && element.getxPos() < width)
 		    	{
 		    		if(set)
 		    			checkForCollisions(element);
@@ -105,8 +144,7 @@ public class PhysicsManager
 		if(physObj.getyPos() > height)
 		{
 			//TODO death?
-			physObj.setyPos(10);
-			userVel = 0;
+			death = true;
 		}
 	}
 	
@@ -127,18 +165,36 @@ public class PhysicsManager
 			i.next();
 			i.remove();
 		}
+		
+		scrollProgress = 0;
+		
+		reset();
+	}
+	
+	private void reset()
+	{
+		scrollDelta = 0;
+		death = false;
+		userVel = 0;	
+	}
+	
+	public void levelReset()
+	{
+		reset();
+		reverse = true;
 	}
 	
 	private void handleCollisions(int amount, boolean death)
 	{
 		if(death)
 		{
-			//TODO handle death
+			//death = true;
+			levelReset();
 		}
 		else if(Math.abs(amount) >= physObj.getHeight())
 		{
-			//collision with the side of a building
-			//TODO Death
+			//death = true;
+			levelReset();
 		}
 		else if(Math.abs(amount) > 0) //bit relaxed
 		{

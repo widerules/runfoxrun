@@ -16,9 +16,9 @@ public class ContinousScreen
 	private PhysicsManager pm;
 	
 	Random rand = new Random();
-	int nextval = 0;;
+	int nextval = 0;
 	
-	private boolean initilized = false;
+	private boolean initialized = false;
 	
 	public void onInitialize(Resources resources, InputManager im, PhysicsManager pm)
 	{
@@ -43,12 +43,12 @@ public class ContinousScreen
 			this.pm.addPhys(hitList.get(i));
 		}
 		
-		initilized = true;	
+		initialized = true;	
 	}
 	
 	public void onUpdate(float delta)
 	{
-		if (initilized)
+		if (initialized)
 		{
 			// everything below this line
 			
@@ -99,7 +99,7 @@ public class ContinousScreen
 	
 	public void onDraw(Canvas canvas)
 	{
-		if (initilized)
+		if (initialized)
 		{
 			for(int i = 0; i < hitList.size(); i++)
 			{

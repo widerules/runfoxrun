@@ -18,7 +18,7 @@ public class TitleScreen extends ListScreens
 		imgBackdrop = BitmapFactory.decodeResource(resources, identity);
 		
 		newGame = new custString("New Game", 100, 100);
-		newGame.setColor(Color.GRAY, Color.BLACK);
+		newGame.setColor(Color.WHITE, Color.BLACK);
 		newGame.setSize(35);
 		
 		continousGame = new custString("Endless Game", 100, 200);
