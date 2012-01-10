@@ -10,6 +10,9 @@ import android.content.res.Resources;
 
 public class Level
 {
+	private Sprite background1;	
+	private Sprite background2;
+	
 	@Element
 	private int playerStartx = 0;
 	@Element
@@ -22,11 +25,17 @@ public class Level
 	private ArrayList<LevelObject> levelObjectList;
 	
 	private ArrayList<Sprite> levelSpriteList;
+	private int levelLength;
 
 	//delete me
 	public void populatelevelObjects(ArrayList<LevelObject> list)
 	{
 		levelObjectList = list;
+	}
+	
+	public int getLevelLength()
+	{
+		return levelLength;
 	}
 	
 	public int getPlayerStartX()
@@ -59,6 +68,11 @@ public class Level
 	
 	public void onInitialize(Resources resources)
 	{
+		background1 = new Sprite();
+		background1.onInitalize(resources, R.drawable.background1);
+		background2 = new Sprite();
+		background2.onInitalize(resources, R.drawable.background1);
+				
 		levelSpriteList = new ArrayList<Sprite>();
 		
 		for(int i = 0; i < levelObjectList.size(); i++)
@@ -92,5 +106,30 @@ public class Level
 				levelSpriteList.add(temp);
 			}
 		}
+		
+		levelLength = (int) (levelSpriteList.get(levelSpriteList.size() - 1).getxPos() + levelSpriteList.get(levelSpriteList.size() - 1).getWidth());
+	}
+
+	
+	//stupid stupid stupid stupid
+	
+	public Sprite getBackground1()
+	{
+		return background1;
+	}
+
+	public void setBackground1(Sprite background1)
+	{
+		this.background1 = background1;
+	}
+
+	public Sprite getBackground2()
+	{
+		return background2;
+	}
+
+	public void setBackground2(Sprite background2)
+	{
+		this.background2 = background2;
 	}
 }

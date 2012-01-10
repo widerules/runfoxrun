@@ -4,7 +4,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 
 public class SinglePlayScreen implements Runnable
 {
@@ -12,7 +16,6 @@ public class SinglePlayScreen implements Runnable
 	private Thread thread;
 	
 	private int width;
-	@SuppressWarnings("unused")
 	private int height;
 	
 	private ArrayList<Sprite> hitList;
@@ -27,6 +30,10 @@ public class SinglePlayScreen implements Runnable
 	private Sprite player;
 	
 	private boolean initialized = false;
+	
+	//top level
+	private Bitmap progressBarIcon;
+	private Paint linePaint;
 	
 	//for testing purposes, m
 	//delete me later
@@ -72,6 +79,12 @@ public class SinglePlayScreen implements Runnable
 		
 		this.levelInt = level;
 		
+		progressBarIcon = BitmapFactory.decodeResource(resources, R.drawable.icon);
+		
+		linePaint = new Paint();
+		linePaint.setColor(Color.WHITE);
+		linePaint.setStrokeWidth(1);
+		linePaint.setShadowLayer(1, 0, 0, Color.BLACK);
 		start();
 	}
 
@@ -100,6 +113,11 @@ public class SinglePlayScreen implements Runnable
 	{
 		if (initialized)
 		{
+			//background
+			this.level.getBackground1().onDraw(canvas);
+			this.level.getBackground2().onDraw(canvas);
+			
+			//interaction layer
 			for(int i = 0; i < hitList.size(); i++)
 			{	
 				if(hitList.get(i).getxPos() + hitList.get(i).getWidth() > 0) 
@@ -107,6 +125,16 @@ public class SinglePlayScreen implements Runnable
 				if(hitList.get(i).getxPos() > width + 20)
 					break;
 			}
+			
+			//character
+			player.onDraw(canvas);
+			
+			//overlay (I should really not be doing math/logic here >.<
+			int pad = (int)(width / 4.0f);
+			canvas.drawLine(pad, 20, width - pad, 20, linePaint);
+			canvas.drawLine(pad, 15, pad, 27, linePaint);
+			canvas.drawLine(width - pad, 15, width - pad, 27, linePaint);
+			canvas.drawBitmap(progressBarIcon, linInterp(0, level.getLevelLength() , pm.getScrollProgress(), pad, width - pad), 0, null);
 		}
 	}
 	
@@ -130,7 +158,20 @@ public class SinglePlayScreen implements Runnable
 		
 		setPlayerPos();
 		
+		this.level.getBackground2().setxPos(this.level.getBackground2().getWidth());		
+		pm.addBackgroundPhys(this.level.getBackground1());
+		pm.addBackgroundPhys(this.level.getBackground2());
+		
 		initialized = true;
+	}
+	
+	//really should make my own Math class...
+	private float linInterp(float minX, float maxX, float value, float minY, float maxY)
+	{
+		if(minX == maxX)
+			return minY;
+		
+		return  minY*(value - maxX)/(minX - maxX) + maxY*(value - minX)/(maxX - minX);
 	}
 	
 	private void grabHitList()
