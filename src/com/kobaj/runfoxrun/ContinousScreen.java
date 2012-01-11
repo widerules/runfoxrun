@@ -10,6 +10,7 @@ import android.graphics.Canvas;
 public class ContinousScreen
 {
 	private ArrayList<Sprite> hitList;
+	private Sprite background1;
 	
 	private Resources mResources;
 	
@@ -58,6 +59,10 @@ public class ContinousScreen
 		initialSpeed = pm.getScrollRate();
 		player.setyPos(startHeight);
 		
+		background1 = new Sprite();
+		background1.onInitialize(LoadedResources.getBackground1(resources)); //should be different
+		pm.addBackgroundPhys(background1);
+		
 		initialized = true;
 	}
 	
@@ -66,6 +71,18 @@ public class ContinousScreen
 		if (initialized)
 		{	
 			// everything below this line
+			
+			//background logics
+			Sprite back = background1;
+			if(back.getxPos() + back.getWidth() <= 0)
+			{
+				back.setxPos(0);
+			}
+			if(back.getxPos() >= width)
+			{
+				back.setxPos(0);
+			}
+			
 			
 			// get rid of old blocks
 			for (Iterator<Sprite> it = hitList.iterator(); it.hasNext();)
@@ -116,15 +133,15 @@ public class ContinousScreen
 				
 				if (rand == 0)
 				{
-					temp.onInitalize(mResources, R.drawable.green, x, y);
+					temp.onInitialize(LoadedResources.getGreen(mResources), x, y);
 				}
 				else if (rand == 1)
 				{
-					temp.onInitalize(mResources, R.drawable.red, x, y);
+					temp.onInitialize(LoadedResources.getRed(mResources), x, y);
 				}
 				else if (rand == 2)
 				{
-					temp.onInitalize(mResources, R.drawable.blue, x, y);
+					temp.onInitialize(LoadedResources.getBlue(mResources), x, y);
 				}
 				
 				hitList.add(temp);
@@ -146,6 +163,20 @@ public class ContinousScreen
 	{
 		if (initialized)
 		{
+			//background
+			int backheight = height - background1.getHeight();
+			background1.onDraw(canvas, (int) -background1.getxPos(), backheight);
+			float backPos = (background1.getxPos() + background1.getWidth());
+			if(backPos <= width)
+			{
+				background1.onDraw(canvas, -(int)backPos, backheight);
+			}
+			if(background1.getxPos() >= 0)
+			{
+				background1.onDraw(canvas, (int) -(-background1.getWidth() + background1.getxPos()), backheight);
+			}
+			
+			//objects
 			for (int i = 0; i < hitList.size(); i++)
 			{
 				if (hitList.get(i).getxPos() + hitList.get(i).getWidth() > 0)
@@ -161,7 +192,7 @@ public class ContinousScreen
 		
 		for (int i = 0; i < hitList.size(); i++)
 		{
-			hitList.get(i).onInitalize(mResources, R.drawable.green, i * 180, height - 10); // TODO
+			hitList.get(i).onInitialize(mResources, R.drawable.green, i * 180, height - 10); // TODO
 																							// fix
 																							// this
 																							// shit.
@@ -193,14 +224,9 @@ public class ContinousScreen
 		{
 			if(!hitList.get(i).getInitialized())
 			{
-				hitList.get(i).onInitalize(mResources, R.drawable.green, (e * 180) + width + 1, height - 10); // TODO shit.
+				hitList.get(i).onInitialize(mResources, R.drawable.green, (e * 180) + width + 1, height - 10); // TODO shit.
 				this.pm.addPhys(hitList.get(i));
 			
-				if(e < 0)
-				{
-					e = 1000;	
-				}
-				
 				e--;
 			}
 			else

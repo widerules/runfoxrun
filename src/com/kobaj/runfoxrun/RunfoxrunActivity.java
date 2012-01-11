@@ -7,6 +7,7 @@
 // http://blog.elsdoerfer.name/2010/04/15/android-check-if-sd-card-storage-is-available/
 // http://stackoverflow.com/questions/6926644/android-color-to-int-conversion
 // http://www.codeproject.com/KB/recipes/simple_interpolation.aspx
+// http://www.droidbase.de/?p=103
 
 package com.kobaj.runfoxrun;
 

@@ -5,7 +5,6 @@ import java.util.Iterator;
 
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -79,12 +78,13 @@ public class SinglePlayScreen implements Runnable
 		
 		this.levelInt = level;
 		
-		progressBarIcon = BitmapFactory.decodeResource(resources, R.drawable.icon);
+		progressBarIcon = LoadedResources.getIcon(resources);
 		
 		linePaint = new Paint();
 		linePaint.setColor(Color.WHITE);
 		linePaint.setStrokeWidth(1);
 		linePaint.setShadowLayer(1, 0, 0, Color.BLACK);
+		
 		start();
 	}
 
@@ -101,10 +101,21 @@ public class SinglePlayScreen implements Runnable
 				}
 			}
 			
+			//background logics
+			Sprite back = this.level.getBackground1();
+			if(back.getxPos() + back.getWidth() <= 0)
+			{
+				back.setxPos(0);
+			}
+			if(back.getxPos() >= width)
+			{
+				back.setxPos(0);
+			}
+			
 			//handle death;
 			if(pm.getDeath())
 			{
-				pm.levelReset();
+				//pm.levelReset();
 			}
 		}
 	}
@@ -114,8 +125,18 @@ public class SinglePlayScreen implements Runnable
 		if (initialized)
 		{
 			//background
-			this.level.getBackground1().onDraw(canvas);
-			this.level.getBackground2().onDraw(canvas);
+			int backheight = height - this.level.getBackground1().getHeight();
+			Sprite back = this.level.getBackground1();
+			back.onDraw(canvas, (int) -back.getxPos(), backheight);
+			float backPos = (back.getxPos() + back.getWidth());
+			if(backPos <= width)
+			{
+				back.onDraw(canvas, -(int)backPos, backheight);
+			}
+			if(back.getxPos() >= 0)
+			{
+				back.onDraw(canvas, (int) -(-back.getWidth() + back.getxPos()), backheight);
+			}
 			
 			//interaction layer
 			for(int i = 0; i < hitList.size(); i++)
@@ -157,10 +178,8 @@ public class SinglePlayScreen implements Runnable
 		grabHitList();
 		
 		setPlayerPos();
-		
-		this.level.getBackground2().setxPos(this.level.getBackground2().getWidth());		
+			
 		pm.addBackgroundPhys(this.level.getBackground1());
-		pm.addBackgroundPhys(this.level.getBackground2());
 		
 		initialized = true;
 	}
