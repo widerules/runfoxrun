@@ -37,6 +37,18 @@ public class Sprite
 	
 	private boolean initialized = false;
 	
+	private CollectableStates collectable;
+	
+	public CollectableStates getCollectable()
+	{
+		return collectable;
+	}
+	
+	public void setCollectable(CollectableStates collect)
+	{
+		this.collectable = collect;
+	}
+	
 	public boolean getInitialized()
 	{
 		return initialized;

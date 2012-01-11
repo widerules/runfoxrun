@@ -191,7 +191,10 @@ public class PhysicsManager
 				
 				int amount = collisionDetec(elementPhysRect.getCollRect(), physObjPhysRect.getCollRect());
 				
-				handleCollisions(amount, elementPhysRect.getHurts());
+				if(elementPhysRect.getCollectable() == CollectableStates.collectable)
+					elementPhysRect.setCollectable(CollectableStates.collected);
+				else
+					handleCollisions(amount, elementPhysRect.getHurts());
 			}
 		}
 	}

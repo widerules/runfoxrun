@@ -25,6 +25,9 @@ public class Level
 	
 	private ArrayList<Sprite> levelSpriteList;
 	private int levelLength;
+	
+	private int height;
+	private int width;
 
 	//delete me
 	public void populatelevelObjects(ArrayList<LevelObject> list)
@@ -57,8 +60,11 @@ public class Level
 		return levelName;
 	}
 	
-	public Level(@Attribute (name = "levelName") String levelName)
+	public Level(@Attribute (name = "levelName") String levelName, int height, int width)
 	{
+		this.height = height;
+		this.width = width;
+		
 		this.levelName = levelName;
 		
 		if(levelObjectList == null)
@@ -72,13 +78,13 @@ public class Level
 				
 		levelSpriteList = new ArrayList<Sprite>();
 		
-		/*Bitmap red = BitmapFactory.decodeResource(resources, R.drawable.red);
-		Bitmap green = BitmapFactory.decodeResource(resources, R.drawable.green);
-		Bitmap blue = BitmapFactory.decodeResource(resources, R.drawable.blue);
-		*/
-		
 		for(int i = 0; i < levelObjectList.size(); i++)
 		{	
+			if(!levelObjectList.get(i).getOrientation())
+			{
+				levelObjectList.get(i).setyLoc(height - levelObjectList.get(i).getyLoc());
+			}
+			
 			//hard coded
 			//its a little dumb, but thats how it goes
 			if(levelObjectList.get(i).getName().equalsIgnoreCase("green"))

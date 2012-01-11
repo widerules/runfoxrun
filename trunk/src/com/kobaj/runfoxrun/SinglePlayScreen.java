@@ -26,6 +26,8 @@ public class SinglePlayScreen implements Runnable
 	private PhysicsManager pm;
 	private Resources resources;
 	
+	private int collectionScore;
+	
 	private Sprite player;
 	
 	private boolean initialized = false;
@@ -79,6 +81,8 @@ public class SinglePlayScreen implements Runnable
 		this.levelInt = level;
 		
 		progressBarIcon = LoadedResources.getIcon(resources);
+		
+		collectionScore = 0;
 		
 		linePaint = new Paint();
 		linePaint.setColor(Color.WHITE);
@@ -139,8 +143,16 @@ public class SinglePlayScreen implements Runnable
 			}
 			
 			//interaction layer
+			//should be a iterator
 			for(int i = 0; i < hitList.size(); i++)
 			{	
+				if(hitList.get(i).getCollectable() == CollectableStates.collected)
+				{
+					hitList.remove(i);
+					removePhys(hitList.get(i));
+					collectionScore++;
+				}
+				
 				if(hitList.get(i).getxPos() + hitList.get(i).getWidth() > 0) 
 					hitList.get(i).onDraw(canvas);
 				if(hitList.get(i).getxPos() > width + 20)
