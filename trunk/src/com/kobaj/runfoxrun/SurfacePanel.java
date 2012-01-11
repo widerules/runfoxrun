@@ -5,7 +5,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
-import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
 
@@ -86,11 +85,13 @@ public class SurfacePanel extends DrawablePanel
 		
 		pm.setPlayer(BigAnimate);
 		
+		LoadedResources.load(getResources());
+		
 		//arbitrary
 		
 		sm.addSound(0, R.raw.collision);
 		
-		BigAnimate.onInitalize(getResources(), R.drawable.haloperms, (int)(width / 3.0f), 190, 33, 49);
+		BigAnimate.onInitialize(getResources(), R.drawable.haloperms, (int)(width / 3.0f), 190, 33, 49);
 		BigAnimate.setAnimation(CharStates.Running);
 	}
 	

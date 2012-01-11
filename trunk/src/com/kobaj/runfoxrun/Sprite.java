@@ -100,7 +100,7 @@ public class Sprite
 		sRectangle.right = sRectangle.left + width;	
 	}
 	
-	public void onInitalize(Resources resources, int identity, int xPos, int yPos, int width, int height)
+	public void onInitialize(Bitmap img, int xPos, int yPos, int width, int height)
 	{
 		this.xPos = xPos;
 		this.yPos = yPos;
@@ -111,7 +111,7 @@ public class Sprite
 		frameTimer = 0;
 		
 		// load das image
-		img = BitmapFactory.decodeResource(resources, identity);
+		this.img = img; 
 		
 		if(this.width == -1)
 		{
@@ -139,14 +139,30 @@ public class Sprite
 		initialized = true;
 	}
 	
-	public void onInitalize(Resources resources, int identity, int xPos, int yPos)
+	public void onInitialize(Bitmap img, int xPos, int yPos)
 	{
-		onInitalize(resources, identity, xPos, yPos, -1, -1);
+		onInitialize(img, xPos, yPos, -1, -1);
 	}
 	
-	public void onInitalize(Resources resources, int identity)
+	public void onInitialize(Bitmap img)
 	{
-		onInitalize(resources, identity, 0, 0, -1, -1);
+		onInitialize(img, 0, 0, -1, -1);
+	}
+	
+	public void onInitialize(Resources resources, int identity, int xPos, int yPos, int width, int height)
+	{
+		Bitmap temp = BitmapFactory.decodeResource(resources, identity);
+		onInitialize(temp, xPos, yPos, width, height);
+	}
+	
+	public void onInitialize(Resources resources, int identity, int xPos, int yPos)
+	{
+		onInitialize(resources, identity, xPos, yPos, -1, -1);
+	}
+	
+	public void onInitialize(Resources resources, int identity)
+	{
+		onInitialize(resources, identity, 0, 0, -1, -1);
 	}
 	
 	public void onUpdate(float delta)
@@ -176,8 +192,15 @@ public class Sprite
 	{
 		if (initialized)
 			canvas.drawBitmap(img, sRectangle, dest, null);
-		
-		return;
+	}
+	
+	public void onDraw(Canvas canvas, int scrollingPositionX, int scrollingPositionY)
+	{
+		Rect rect1 = new Rect(scrollingPositionX, scrollingPositionY, scrollingPositionX + canvas.getWidth(), scrollingPositionY + canvas.getHeight());
+		Rect rect2 = new Rect(0, 0, canvas.getWidth(), canvas.getHeight());
+
+		if(initialized)
+			canvas.drawBitmap(img, rect1, rect2, null);
 	}
 	
 	public void setAnimation(CharStates state)

@@ -11,7 +11,6 @@ import android.content.res.Resources;
 public class Level
 {
 	private Sprite background1;	
-	private Sprite background2;
 	
 	@Element
 	private int playerStartx = 0;
@@ -69,14 +68,17 @@ public class Level
 	public void onInitialize(Resources resources)
 	{
 		background1 = new Sprite();
-		background1.onInitalize(resources, R.drawable.background1);
-		background2 = new Sprite();
-		background2.onInitalize(resources, R.drawable.background1);
+		background1.onInitialize(LoadedResources.getBackground1(resources));
 				
 		levelSpriteList = new ArrayList<Sprite>();
 		
+		/*Bitmap red = BitmapFactory.decodeResource(resources, R.drawable.red);
+		Bitmap green = BitmapFactory.decodeResource(resources, R.drawable.green);
+		Bitmap blue = BitmapFactory.decodeResource(resources, R.drawable.blue);
+		*/
+		
 		for(int i = 0; i < levelObjectList.size(); i++)
-		{
+		{	
 			//hard coded
 			//its a little dumb, but thats how it goes
 			if(levelObjectList.get(i).getName().equalsIgnoreCase("green"))
@@ -84,7 +86,7 @@ public class Level
 				Sprite temp = new Sprite(); 
 				//will be changed to
 				// XMLHandler.readSerialFile(getResources(), R.raw.green, Sprite.class);
-				temp.onInitalize(resources, R.drawable.green, levelObjectList.get(i).getxLoc(), levelObjectList.get(i).getyLoc());
+				temp.onInitialize(LoadedResources.getGreen(resources), levelObjectList.get(i).getxLoc(), levelObjectList.get(i).getyLoc());
 				levelSpriteList.add(temp);
 			}
 			
@@ -93,7 +95,7 @@ public class Level
 				Sprite temp = new Sprite(); 
 				//will be changed to
 				// XMLHandler.readSerialFile(getResources(), R.raw.red, Sprite.class);
-				temp.onInitalize(resources, R.drawable.red, levelObjectList.get(i).getxLoc(), levelObjectList.get(i).getyLoc());
+				temp.onInitialize(LoadedResources.getRed(resources), levelObjectList.get(i).getxLoc(), levelObjectList.get(i).getyLoc());
 				levelSpriteList.add(temp);
 			}
 			
@@ -102,7 +104,7 @@ public class Level
 				Sprite temp = new Sprite(); 
 				//will be changed to
 				// XMLHandler.readSerialFile(getResources(), R.raw.blue, Sprite.class);
-				temp.onInitalize(resources, R.drawable.blue, levelObjectList.get(i).getxLoc(), levelObjectList.get(i).getyLoc());
+				temp.onInitialize(LoadedResources.getBlue(resources), levelObjectList.get(i).getxLoc(), levelObjectList.get(i).getyLoc());
 				levelSpriteList.add(temp);
 			}
 		}
@@ -121,15 +123,5 @@ public class Level
 	public void setBackground1(Sprite background1)
 	{
 		this.background1 = background1;
-	}
-
-	public Sprite getBackground2()
-	{
-		return background2;
-	}
-
-	public void setBackground2(Sprite background2)
-	{
-		this.background2 = background2;
 	}
 }
