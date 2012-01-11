@@ -4,6 +4,12 @@ import org.simpleframework.xml.Attribute;
 
 public class LevelObject
 {
+	@Element
+	private boolean collectable;
+	
+	@Element
+	private boolean top;
+	
 	@Attribute
 	private String name;
 	
@@ -35,5 +41,15 @@ public class LevelObject
 	public int getyLoc()
 	{
 		return yLoc;
+	}
+	
+	public boolean getOrientation()
+	{
+		return top;
+	}
+	
+	public boolean getCollectable()
+	{
+		return collectable;	
 	}
 }
