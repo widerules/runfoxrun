@@ -2,5 +2,5 @@ package com.kobaj.runfoxrun;
 
 public enum CharStates
 {
-	Stopped, Running, Jumping, Falling
+	Running, Jump, Fallingup, LevelOut, GoingDown, Collapse, Collapsed, Sitting
 }

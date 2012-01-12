@@ -19,6 +19,7 @@ public class PhysicsManager
 	private final float jumpFloat = -3.0f / 10.0f;
 	private final float userAcc = 30f / 100000.0f;
 	private float userVel = 0;
+	private float userVelOld = 0;
 	
 	private float scrollValue;
 	private float scrollDelta = 0;
@@ -35,6 +36,7 @@ public class PhysicsManager
 		if(touching) 
 		{
 			userVel = jumpFloat;
+			physObj.setAnimation(CharStates.Jump);
 		}
 	}
 	
@@ -105,6 +107,8 @@ public class PhysicsManager
 	
 	public void onUpdate(float delta)
 	{	
+		userVelOld = userVel;
+		
 		touching = false;
 		
 		if(!reverse)
@@ -126,6 +130,8 @@ public class PhysicsManager
 		
 		if(scrollProgress <= 0)
 			reverse = false;
+		
+		
 		
 		//try to iterate only once
 		for (Iterator<Sprite> i = interactables.iterator(); i.hasNext();) 
@@ -155,17 +161,38 @@ public class PhysicsManager
 			death = true;
 			//levelReset();
 		}
+		
+		if(userVel > 0 && userVelOld <= 0)
+		{
+			physObj.setAnimation(CharStates.LevelOut);
+		}
+		
+		if(userVel == 0 && userVelOld > 0)
+		{
+			physObj.setAnimation(CharStates.GoingDown);
+		}
+	}
+	
+	//really should make my own Math class...
+	private float linInterp(float minX, float maxX, float value, float minY, float maxY)
+	{
+		if(minX == maxX)
+			return minY;
+		
+		return  minY*(value - maxX)/(minX - maxX) + maxY*(value - minX)/(maxX - minX);
 	}
 	
 	private void handleCollisions(int amount, boolean death)
 	{
+		int checkamount = (int)linInterp(0.001f, 0.3f, Math.abs(userVel), 10, physObj.getHeight());
+		
 		if(death)
 		{
 			//TODO 
 			this.death = true;
 			//levelReset();
 		}
-		else if(Math.abs(amount) >= physObj.getHeight())
+		else if(Math.abs(amount) >= checkamount)//physObj.getHeight())
 		{
 			//TODO 
 			this.death = true;
@@ -191,8 +218,8 @@ public class PhysicsManager
 				
 				int amount = collisionDetec(elementPhysRect.getCollRect(), physObjPhysRect.getCollRect());
 				
-				if(elementPhysRect.getCollectable() == CollectableStates.collectable)
-					elementPhysRect.setCollectable(CollectableStates.collected);
+				if(element.getCollectable() == CollectableStates.collectable)
+					element.setCollectable(CollectableStates.collected);
 				else
 					handleCollisions(amount, elementPhysRect.getHurts());
 			}

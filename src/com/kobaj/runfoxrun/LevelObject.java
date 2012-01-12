@@ -1,6 +1,7 @@
 package com.kobaj.runfoxrun;
 
 import org.simpleframework.xml.Attribute;
+import org.simpleframework.xml.Element;
 
 public class LevelObject
 {
@@ -41,6 +42,11 @@ public class LevelObject
 	public int getyLoc()
 	{
 		return yLoc;
+	}
+	
+	public void setyLoc(int y)
+	{
+		yLoc = y;
 	}
 	
 	public boolean getOrientation()

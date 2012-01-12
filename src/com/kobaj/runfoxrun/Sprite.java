@@ -137,7 +137,7 @@ public class Sprite
 			animationList.add(new Animation(0, "stopped", 0, 0, 1, 0));
 		}
 		
-		setAnimation(CharStates.Stopped);
+		setAnimation(CharStates.Sitting);
 		
 		dest = new Rect(xPos, yPos, xPos + this.width, yPos + this.height);
 		sRectangle = new Rect(((currentFrame - 1) * this.width) + currentSetAnimation.getxStartPos(), currentSetAnimation.getyStartPos(), ((currentFrame - 1) * this.width) + currentSetAnimation.getxStartPos() + this.width, currentSetAnimation.getyStartPos() + this.height);
@@ -193,7 +193,19 @@ public class Sprite
 				currentFrame += 1;
 				
 				if (currentFrame > currentSetAnimation.getFrameCount())
+				{
+					if(currentSetAnimation.getName().equalsIgnoreCase(CharStates.Jump.name()))
+					{
+						this.setAnimation(CharStates.Fallingup);
+					}
+					else if(currentSetAnimation.getName().equalsIgnoreCase(CharStates.GoingDown.name()))
+					{
+						this.setAnimation(CharStates.Running);
+					}
+					
+					
 					currentFrame = 1;
+				}
 				
 				updateoRect();
 			}

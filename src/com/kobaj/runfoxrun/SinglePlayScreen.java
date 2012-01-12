@@ -38,9 +38,9 @@ public class SinglePlayScreen implements Runnable
 	
 	//for testing purposes, m
 	//delete me later
-	public static void writelevel()
+	/*public static void writelevel()
 	{
-		Level lev = new Level("test map");
+		Level lev = new Level("test map", width, height);
 		
 		ArrayList<LevelObject> templist = new ArrayList<LevelObject>();
 		templist.add(new LevelObject("green", 0, 470));
@@ -50,7 +50,7 @@ public class SinglePlayScreen implements Runnable
 		lev.populatelevelObjects(templist);
 		
 		XMLHandler.writeSerialFile(lev, "level");
-	}
+	}*/
 	
 	private void setPlayerPos()
 	{
@@ -119,7 +119,7 @@ public class SinglePlayScreen implements Runnable
 			//handle death;
 			if(pm.getDeath())
 			{
-				//pm.levelReset();
+				pm.levelReset();
 			}
 		}
 	}
@@ -149,7 +149,7 @@ public class SinglePlayScreen implements Runnable
 				if(hitList.get(i).getCollectable() == CollectableStates.collected)
 				{
 					hitList.remove(i);
-					removePhys(hitList.get(i));
+					pm.removePhys(hitList.get(i));
 					collectionScore++;
 				}
 				
@@ -183,7 +183,7 @@ public class SinglePlayScreen implements Runnable
 	{
 		// load in the level
 		this.level = XMLHandler.readSerialFile(resources, levelInt, Level.class);
-		this.level.onInitialize(resources);
+		this.level.onInitialize(resources, width, height);
 		
 		// grab the hit list;
 		hitList = new ArrayList<Sprite>();
