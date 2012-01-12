@@ -38,7 +38,7 @@ public class physRect
 		this.bottom = bottom;*/
 		this.hurts = hurts;
 		
-		collRect = new Rect(top, right, bottom, left);
+		collRect = new Rect(left, top, right, bottom);
 	}
 	
 	public physRect(Rect rect, boolean hurts)

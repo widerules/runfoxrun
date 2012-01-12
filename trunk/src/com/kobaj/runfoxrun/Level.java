@@ -60,19 +60,19 @@ public class Level
 		return levelName;
 	}
 	
-	public Level(@Attribute (name = "levelName") String levelName, int height, int width)
-	{
-		this.height = height;
-		this.width = width;
-		
+	public Level(@Attribute (name = "levelName") String levelName)
+	{	
 		this.levelName = levelName;
 		
 		if(levelObjectList == null)
 			levelObjectList = new ArrayList<LevelObject>();
 	}
 	
-	public void onInitialize(Resources resources)
+	public void onInitialize(Resources resources, int width, int height)
 	{
+		this.height = height;
+		this.width = width;
+		
 		background1 = new Sprite();
 		background1.onInitialize(LoadedResources.getBackground1(resources));
 				

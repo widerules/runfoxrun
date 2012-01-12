@@ -22,7 +22,7 @@ public class SurfacePanel extends DrawablePanel
 	private SoundManager sm;
 	private PhysicsManager pm;
 	
-	private Sprite BigAnimate;
+	private Sprite mainFox;
 	
 	private TitleScreen ts;
 	private ContinousScreen cous;
@@ -51,7 +51,7 @@ public class SurfacePanel extends DrawablePanel
 		sm = new SoundManager(context);
 		
 		pm = new PhysicsManager(width, height);
-		pm.setScrollRate(-15);
+		pm.setScrollRate(-20);
 		
 		currentState = GameStates.TitleScreen;
 		oldState = GameStates.TitleScreen;
@@ -65,15 +65,14 @@ public class SurfacePanel extends DrawablePanel
 		pauseText = new custString("PAUSE", 7, 30);
 		pauseText.setSize(32);
 		
+		mainFox = XMLHandler.readSerialFile(getResources(), R.raw.foxmain, Sprite.class);
+		
 		//semi arbitrary
 		textPaint.setColor(Color.WHITE);
 		textPaint.setStrokeWidth(8);
 		textPaint.setStyle(Style.FILL);
 		textPaint.setAntiAlias(true);
 		textPaint.setTextSize(24);
-		
-		//arbitrary goes below here.
-		BigAnimate = XMLHandler.readSerialFile(getResources(), R.raw.haloperms, Sprite.class);
 	}
 	
 	//load in our resources
@@ -81,18 +80,17 @@ public class SurfacePanel extends DrawablePanel
 	{	
 		ts.onInitialize(getResources(), R.drawable.titlescreen);
 		
-		//semi arbitrary
+		pm.setPlayer(mainFox);
+		mainFox.onInitialize(getResources(), R.drawable.foxmain, (int)(width / 3.0f), -100, 82, 54);
+		mainFox.setAnimation(CharStates.Running);
 		
-		pm.setPlayer(BigAnimate);
+		//semi arbitrary
 		
 		LoadedResources.load(getResources());
 		
 		//arbitrary
 		
 		sm.addSound(0, R.raw.collision);
-		
-		BigAnimate.onInitialize(getResources(), R.drawable.haloperms, (int)(width / 3.0f), 190, 33, 49);
-		BigAnimate.setAnimation(CharStates.Running);
 	}
 	
 	public void onUpdate(long gameTime)
@@ -105,15 +103,14 @@ public class SurfacePanel extends DrawablePanel
 			onTitleScreen();
 		else if(currentState == GameStates.SinglePlay)
 		{
-			//uncomment later
-			BigAnimate.onUpdate(fps.getDelta());
+			mainFox.onUpdate(fps.getDelta());
 			pm.onUpdate(fps.getDelta());
 			sp.onUpdate();
 			checkForUserPause();
 		}
 		else if(currentState == GameStates.Continous)
 		{
-			BigAnimate.onUpdate(fps.getDelta());
+			mainFox.onUpdate(fps.getDelta());
 			pm.onUpdate(fps.getDelta());
 			cous.onUpdate(fps.getDelta());
 			checkForUserPause();
@@ -138,9 +135,9 @@ public class SurfacePanel extends DrawablePanel
 		}
 		else if(currentState == GameStates.Continous)
 		{
-			BigAnimate.onDraw(canvas);
 			cous.onDraw(canvas);
 			pauseText.onDraw(canvas);
+			mainFox.onDraw(canvas);
 		}
 		else if(currentState == GameStates.Pause)
 			ps.onDraw(canvas);
@@ -242,7 +239,7 @@ public class SurfacePanel extends DrawablePanel
 		{
 			purgeManagers();
 			sp = new SinglePlayScreen(width, height);
-			sp.onInitialize(getResources(), im, pm, R.raw.level, BigAnimate);
+			sp.onInitialize(getResources(), im, pm, R.raw.level, mainFox);
 			oldState = GameStates.SinglePlay;
 			currentState = GameStates.Loading;
 		}
@@ -250,7 +247,7 @@ public class SurfacePanel extends DrawablePanel
 		{
 			purgeManagers();
 			cous = new ContinousScreen(width, height);
-			cous.onInitialize(getResources(), im, pm, BigAnimate);
+			cous.onInitialize(getResources(), im, pm, mainFox);
 			oldState = GameStates.TitleScreen;
 			currentState = GameStates.Continous;
 		}
