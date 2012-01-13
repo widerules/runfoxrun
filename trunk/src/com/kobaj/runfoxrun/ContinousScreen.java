@@ -124,10 +124,41 @@ public class ContinousScreen
 			{
 				int rand = random.nextInt(3);
 				
-				int x = random.nextInt(width / 2);
-				x += width;
-				int y = random.nextInt(height / 2);
-				y += height / 2;
+				int x;
+				int y;
+				
+				//first we want to know how far in the future we can code
+				double prevX = width - (last.getxPos() + last.getWidth()); //adjust to be in screen coordinates
+				double prevY = (height - last.getyPos()); // get this in real world corridnates
+				
+				float newY1;
+				float newY2;
+				
+				int newMaxX = (int) ((280 + prevY) / 1.0f);		
+				int newX = random.nextInt(newMaxX);
+				
+				//newY1 = (float) (-Math.abs(.777f * newX -140) + 140 + prevY);
+				newY1 = (float)((-1.0f * newX) + 280 + prevY);
+				
+				if(newY1 > 160)
+					newY1 = 159;
+
+				newY2 = (float) (-1.0f * newX + prevY);
+				
+				if(newY2 <= 0)
+					newY2 = 1;
+				
+				if(newY1 - newY2 <= 0)
+				{
+					newY1 = 10;
+					newY2 = 0;
+				}
+				
+				int newFinalY = (int) (random.nextInt((int) (newY1 - newY2)) + newY2);
+				
+				y = height - newFinalY;
+				x = newX + width;
+				
 				
 				Sprite temp = new Sprite();
 				
@@ -187,7 +218,7 @@ public class ContinousScreen
 	
 	private void startLevel()
 	{
-		for (int i = 0; i < 4; i++)
+		for (int i = 0; i < restartCount; i++)
 			hitList.add(new Sprite());
 		
 		for (int i = 0; i < hitList.size(); i++)

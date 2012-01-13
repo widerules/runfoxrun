@@ -39,6 +39,9 @@ public class Sprite
 	
 	private CollectableStates collectable;
 	
+	//wish I had extended my sprite classes correctly...too late now
+	private SoundManager sm;
+	
 	public CollectableStates getCollectable()
 	{
 		return collectable;
@@ -145,7 +148,7 @@ public class Sprite
 		if(physRectList == null || physRectList.isEmpty())
 		{
 			physRectList = new ArrayList<physRect>();
-			physRectList.add(new physRect(new Rect(dest.top, dest.right, dest.bottom, dest.left), false));
+			physRectList.add(new physRect(new Rect(dest.left, dest.top, dest.right, dest.bottom), false));
 		}
 		
 		initialized = true;
@@ -161,10 +164,16 @@ public class Sprite
 		onInitialize(img, 0, 0, -1, -1);
 	}
 	
-	public void onInitialize(Resources resources, int identity, int xPos, int yPos, int width, int height)
+	public void onInitialize(Resources resources, SoundManager sm, int identity, int xPos, int yPos, int width, int height)
 	{
+		this.sm = sm;
 		Bitmap temp = BitmapFactory.decodeResource(resources, identity);
 		onInitialize(temp, xPos, yPos, width, height);
+	}
+	
+	public void onInitialize(Resources resources, int identity, int xPos, int yPos, int width, int height)
+	{
+		onInitialize(resources, null, identity, xPos, yPos, width, height);
 	}
 	
 	public void onInitialize(Resources resources, int identity, int xPos, int yPos)
@@ -192,6 +201,15 @@ public class Sprite
 				
 				currentFrame += 1;
 				
+				if(this.currentSetAnimation.getName().equalsIgnoreCase(CharStates.Running.name()))
+				{
+					if(currentFrame == 1 || currentFrame == 3)
+					{
+						if(sm != null)
+							sm.playSound(1, .3f); //footsteps
+					}
+				}
+				
 				if (currentFrame > currentSetAnimation.getFrameCount())
 				{
 					if(currentSetAnimation.getName().equalsIgnoreCase(CharStates.Jump.name()))
@@ -202,8 +220,7 @@ public class Sprite
 					{
 						this.setAnimation(CharStates.Running);
 					}
-					
-					
+						
 					currentFrame = 1;
 				}
 				

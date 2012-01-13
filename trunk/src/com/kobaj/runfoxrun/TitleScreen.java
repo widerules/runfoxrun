@@ -11,6 +11,9 @@ public class TitleScreen extends ListScreens
 	private custString continousGame;
 	private custString highScores;
 	
+	public float titleScreenSoundTime = 30001;
+	public int titleScreenCurrentSong = 0;
+	
 	public void onInitialize(Resources resources, int identity)
 	{
 		count = 4;
@@ -37,6 +40,34 @@ public class TitleScreen extends ListScreens
 		stringList[3] = quit;
 		
 		initialized = true;
+	}
+	
+	public void onUpdate(float delta, MusicManager mm)
+	{
+		//music
+		titleScreenSoundTime += delta;	
+		if(titleScreenSoundTime > 30000)
+		{
+			titleScreenSoundTime = 0;
+			
+			if(titleScreenCurrentSong == 0)
+				mm.ChangeSongs(R.raw.pulse, new SoundFade(0, 1, 0, 3000), new SoundFade(0, 0, 1, 3000));
+			else if (titleScreenCurrentSong == 1)
+				mm.ChangeSongs(R.raw.aegissprint, new SoundFade(0, 1, 0, 3000), new SoundFade(0, 0, 1, 3000));
+			else if (titleScreenCurrentSong == 2)
+				mm.ChangeSongs(R.raw.catchinglightning, new SoundFade(0, 1, 0, 3000), new SoundFade(0, 0, 1, 3000));
+			else if (titleScreenCurrentSong == 3)
+				mm.ChangeSongs(R.raw.blackdiamond, new SoundFade(0, 1, 0, 3000), new SoundFade(0, 0, 1, 3000));
+			else if (titleScreenCurrentSong == 4)
+				mm.ChangeSongs(R.raw.quicken, new SoundFade(0, 1, 0, 3000), new SoundFade(0, 0, 1, 3000));
+			
+			mm.play(.0001f);
+			
+			titleScreenCurrentSong++;
+			
+			if(titleScreenCurrentSong >=5)
+				titleScreenCurrentSong = 0;
+		}
 	}
 	
 	public GameStates onTouch(int x, int y)

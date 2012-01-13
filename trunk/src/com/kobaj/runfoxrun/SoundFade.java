@@ -12,6 +12,11 @@ public class SoundFade
 	//x is time
 	//y is volume
 	
+	public float getEndVolume()
+	{
+		return endVolume;
+	}
+	
 	public SoundFade(int index, float startVolume, float endVolume, float time)
 	{
 		updateTime = 0;
@@ -54,7 +59,7 @@ public class SoundFade
 		if (time == updateTime)
 			return endVolume;
 		
-		return linInterp(updateTime);
+		return clampVolume(linInterp(updateTime));
 	}
 	
 	public boolean getValid()
@@ -72,6 +77,6 @@ public class SoundFade
 	
 	private float clampVolume(float value)
 	{
-		return Math.max(Math.min(value, 1.0f), 0.0f);
+		return Math.max(Math.min(value, .99f), 0.0001f);
 	}
 }

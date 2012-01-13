@@ -21,6 +21,7 @@ public class SurfacePanel extends DrawablePanel
 	public InputManager im;
 	private SoundManager sm;
 	private PhysicsManager pm;
+	private MusicManager mm;
 	
 	private Sprite mainFox;
 	
@@ -28,6 +29,8 @@ public class SurfacePanel extends DrawablePanel
 	private ContinousScreen cous;
 	private PauseScreen ps;
 	private SinglePlayScreen sp;
+	
+	public static final float scrollRate = -17.0f  / 100.0f;
 	
 	//semi arbitrary
 	
@@ -51,9 +54,11 @@ public class SurfacePanel extends DrawablePanel
 		sm = new SoundManager(context);
 		
 		pm = new PhysicsManager(width, height);
-		pm.setScrollRate(-20);
+		pm.setScrollRate(scrollRate);
 		
-		currentState = GameStates.TitleScreen;
+		mm = new MusicManager(context, R.raw.pulse);
+		
+		currentState = GameStates.Loading;
 		oldState = GameStates.TitleScreen;
 		
 		ts = new TitleScreen();
@@ -81,16 +86,12 @@ public class SurfacePanel extends DrawablePanel
 		ts.onInitialize(getResources(), R.drawable.titlescreen);
 		
 		pm.setPlayer(mainFox);
-		mainFox.onInitialize(getResources(), R.drawable.foxmain, (int)(width / 3.0f), -100, 82, 54);
+		mainFox.onInitialize(getResources(),sm, R.drawable.foxmain, (int)(width / 3.0f), -100, 82, 54);
 		mainFox.setAnimation(CharStates.Running);
 		
-		//semi arbitrary
+		sm.addSound(1, R.raw.footstep);
 		
 		LoadedResources.load(getResources());
-		
-		//arbitrary
-		
-		sm.addSound(0, R.raw.collision);
 	}
 	
 	public void onUpdate(long gameTime)
@@ -98,9 +99,10 @@ public class SurfacePanel extends DrawablePanel
 		fps.onUpdate(gameTime);
 		im.onUpdate();
 		sm.onUpdate(fps.getDelta());
+		mm.onUpdate(fps.getDelta());
 		
 		if(currentState == GameStates.TitleScreen)
-			onTitleScreen();
+			onTitleScreen(fps.getDelta());
 		else if(currentState == GameStates.SinglePlay)
 		{
 			mainFox.onUpdate(fps.getDelta());
@@ -152,6 +154,26 @@ public class SurfacePanel extends DrawablePanel
 	private void onLoadingScreen(float delta)
 	{
 		rotation += delta / 10.0f;
+		
+		if(oldState == GameStates.SinglePlay)
+			if(sp.getInitialized())
+			{
+				oldState = GameStates.Loading;
+				currentState = GameStates.SinglePlay;
+				mm.ChangeSongs(R.raw.pulse);
+				mm.addFade(new SoundFade(0,0,1,3000));
+				mm.play(0);
+			}
+	
+		if(oldState == GameStates.TitleScreen)
+		{
+			if(!mm.isLoaded() && sm.isAllLoaded())
+			//if(sm.isLoaded(0) == LoadStates.complete)
+			{
+				oldState = GameStates.Loading;
+				currentState = GameStates.TitleScreen;
+			}
+		}
 	}
 	
 	private void onDrawLoadingScreen(Canvas canvas)
@@ -159,13 +181,7 @@ public class SurfacePanel extends DrawablePanel
 		canvas.save();
 		canvas.rotate(rotation, width / 2, height / 2);
 		canvas.drawText("Loading...", width / 2 - textPaint.measureText("Loading") / 2, height / 2 - textPaint.getTextSize() * 2, textPaint);
-		canvas.restore();
-		
-		if(sp.getInitialized())
-		{
-			oldState = GameStates.Loading;
-			currentState = GameStates.SinglePlay;
-		}		
+		canvas.restore();		
 	}
 	
 	private void checkForUserPause()
@@ -174,11 +190,12 @@ public class SurfacePanel extends DrawablePanel
 		{
 			if(im.getReleased(i))
 			{
-			if(pauseText.fingertap((int) im.getY(i), (int) im.getY(i)))
-			{
-				oldState = currentState;
-				currentState = GameStates.Pause;
-			}
+				if(pauseText.fingertap((int) im.getY(i), (int) im.getY(i)))
+				{
+					oldState = currentState;
+					currentState = GameStates.Pause;
+					mm.setVolume(.35f);
+				}
 			}
 		}
 	}
@@ -212,13 +229,19 @@ public class SurfacePanel extends DrawablePanel
 		{
 			currentState = oldState;
 			oldState = GameStates.Pause;
+			mm.setVolume(1f);
 		}
 	}
 	
 	//special cause it handles a lot of stuff.
-	private void onTitleScreen()
+	//should really be inside of ts
+	private void onTitleScreen(float delta)
 	{
+		//sounds
+		ts.onUpdate(delta, mm);
+		
 		GameStates newState = GameStates.TitleScreen;
+		
 		
 		for(int i = 0; i < im.fingerCount; i++)
 		{
@@ -242,6 +265,11 @@ public class SurfacePanel extends DrawablePanel
 			sp.onInitialize(getResources(), im, pm, R.raw.level, mainFox);
 			oldState = GameStates.SinglePlay;
 			currentState = GameStates.Loading;
+			
+			ts.titleScreenCurrentSong = 0;
+			ts.titleScreenSoundTime = 3000000;
+			
+			mm.addFade(new SoundFade(0, 1, 0, 3000));
 		}
 		else if(newState == GameStates.Continous)
 		{
@@ -256,13 +284,13 @@ public class SurfacePanel extends DrawablePanel
 	private void purgeManagers()
 	{
 		pm.purge();
-		sm.purge();
+		//sm.purge();
 	}
 	
 	public void onScreenPause()
 	{
 		//when the game is paused by turning off.
-		
+		mm.release();
 	}
 
 	public void onScreenResume()
@@ -273,6 +301,8 @@ public class SurfacePanel extends DrawablePanel
 	private void onUserQuit()
 	{
 		//probably save stuff before actually quitting.
+		sm.release();
+		mm.release();
 		System.exit(0); 
 	}
 

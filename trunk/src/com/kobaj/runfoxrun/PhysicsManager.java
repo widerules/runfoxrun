@@ -16,8 +16,8 @@ public class PhysicsManager
 	
 	private HashSet<Sprite> backgroundables;
 	
-	private final float jumpFloat = -3.0f / 10.0f;
-	private final float userAcc = 30f / 100000.0f;
+	public final float jumpFloat = -3.0f / 10.0f;
+	public final float userAcc = 30f / 100000.0f;
 	private float userVel = 0;
 	private float userVelOld = 0;
 	
@@ -120,7 +120,7 @@ public class PhysicsManager
 		else
 			physObj.setyPos(-100);
 
-		float amount = scrollValue * delta / 100; //arbitrary
+		float amount = scrollValue * delta; //arbitrary
 		
 		if(reverse)
 			amount = -amount * 10;	
@@ -167,10 +167,11 @@ public class PhysicsManager
 			physObj.setAnimation(CharStates.LevelOut);
 		}
 		
-		if(userVel == 0 && userVelOld > 0)
+		if(userVel == 0 && (userVelOld != 0))
 		{
 			physObj.setAnimation(CharStates.GoingDown);
 		}
+	
 	}
 	
 	//really should make my own Math class...
@@ -184,7 +185,7 @@ public class PhysicsManager
 	
 	private void handleCollisions(int amount, boolean death)
 	{
-		int checkamount = (int)linInterp(0.001f, 0.3f, Math.abs(userVel), 10, physObj.getHeight());
+		int checkamount = (int)linInterp(0.001f, 0.25f, Math.abs(userVel), 10, physObj.getHeight());
 		
 		if(death)
 		{
