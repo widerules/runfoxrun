@@ -26,7 +26,9 @@ public class Level
 	private ArrayList<Sprite> levelSpriteList;
 	private int levelLength;
 	
+	@SuppressWarnings("unused")
 	private int height;
+	@SuppressWarnings("unused")
 	private int width;
 
 	//delete me

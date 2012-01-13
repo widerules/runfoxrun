@@ -25,9 +25,15 @@ public final class R {
         public static final int main=0x7f030000;
     }
     public static final class raw {
-        public static final int collision=0x7f040000;
-        public static final int foxmain=0x7f040001;
-        public static final int level=0x7f040002;
+        public static final int aegissprint=0x7f040000;
+        public static final int blackdiamond=0x7f040001;
+        public static final int catchinglightning=0x7f040002;
+        public static final int collision=0x7f040003;
+        public static final int footstep=0x7f040004;
+        public static final int foxmain=0x7f040005;
+        public static final int level=0x7f040006;
+        public static final int pulse=0x7f040007;
+        public static final int quicken=0x7f040008;
     }
     public static final class string {
         public static final int app_name=0x7f050001;
