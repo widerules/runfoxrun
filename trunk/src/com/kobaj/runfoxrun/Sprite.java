@@ -1,6 +1,7 @@
 package com.kobaj.runfoxrun;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import org.simpleframework.xml.ElementList;
 
@@ -49,6 +50,9 @@ public class Sprite
 	
 	public void setCollectable(CollectableStates collect)
 	{
+		if(collect == CollectableStates.collected)
+			sm.playSound(2);
+		
 		this.collectable = collect;
 	}
 	
@@ -96,6 +100,9 @@ public class Sprite
 	
 	private void updatesRect()
 	{
+		int deltaY = dest.top - (int)yPos;
+		int deltaX = dest.left - (int)xPos;
+		
 		dest.top = (int)yPos;
 		dest.bottom = (int)(yPos + height);
 		dest.left = (int)xPos;
@@ -103,7 +110,7 @@ public class Sprite
 		
 		for(int i = 0; i < physRectList.size(); i++)
 		{
-			physRectList.get(i).updatesRect(yPos, xPos + width, yPos + height, xPos);
+			physRectList.get(i).shiftRect((int) deltaX, (int) deltaY);
 		}
 	}
 	
@@ -150,6 +157,13 @@ public class Sprite
 			physRectList = new ArrayList<physRect>();
 			physRectList.add(new physRect(new Rect(dest.left, dest.top, dest.right, dest.bottom), false));
 		}
+		else
+			for(Iterator<physRect> it = physRectList.iterator(); it.hasNext();)
+			{
+				physRect rect = it.next();
+				
+				rect.shiftRect(-xPos, -yPos);
+			}
 		
 		initialized = true;
 	}
@@ -162,6 +176,12 @@ public class Sprite
 	public void onInitialize(Bitmap img)
 	{
 		onInitialize(img, 0, 0, -1, -1);
+	}
+	
+	public void onInitialize(Bitmap img, SoundManager sm, int xPos, int yPos, int width, int height)
+	{
+		this.sm = sm;
+		onInitialize(img, xPos, yPos, width, height);
 	}
 	
 	public void onInitialize(Resources resources, SoundManager sm, int identity, int xPos, int yPos, int width, int height)

@@ -130,9 +130,7 @@ public class PhysicsManager
 		
 		if(scrollProgress <= 0)
 			reverse = false;
-		
-		
-		
+			
 		//try to iterate only once
 		for (Iterator<Sprite> i = interactables.iterator(); i.hasNext();) 
 		{
@@ -210,6 +208,7 @@ public class PhysicsManager
 	
 	private void checkForCollisions(Sprite element)
 	{	
+		OuterLoop:
 		for(Iterator<physRect> i = element.getPhysRect().iterator(); i.hasNext();)
 		{
 			physRect elementPhysRect = i.next();
@@ -217,12 +216,21 @@ public class PhysicsManager
 			{
 				physRect physObjPhysRect = e.next();
 				
-				int amount = collisionDetec(elementPhysRect.getCollRect(), physObjPhysRect.getCollRect());
+				int amount = 0;
 				
-				if(element.getCollectable() == CollectableStates.collectable)
+				if(elementPhysRect.getCollRect().left >= 0 && elementPhysRect.getCollRect().right <= width)
+					amount = collisionDetec(elementPhysRect.getCollRect(), physObjPhysRect.getCollRect());
+				
+				if(element.getCollectable() == CollectableStates.collectable && amount != 0)
+				{
 					element.setCollectable(CollectableStates.collected);
-				else
+					break OuterLoop;
+				}
+				else if(amount != 0)
+				{
 					handleCollisions(amount, elementPhysRect.getHurts());
+					break OuterLoop;
+				}
 			}
 		}
 	}
@@ -233,13 +241,13 @@ public class PhysicsManager
 		
 		if(collision.setIntersect(obj1, obj2))
 		{	
-			if(collision.top > obj1.top)
+			if(collision.top < obj1.top)
 				return -collision.height();
 			
 			return collision.height();//Math.abs(collision.height());
 		}
-		
-		return 0;
+		else
+			return 0;
 	}
 	
 	public void setPlayer(Sprite input)

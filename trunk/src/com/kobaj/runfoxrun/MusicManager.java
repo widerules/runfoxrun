@@ -128,6 +128,8 @@ public class MusicManager
 		thisState = MusicStates.stopped;
 		
 		currentSong = value;
+		
+		mp.setLooping(true);
 	}
 	
 	public void ChangeSongs(int value, SoundFade fade)

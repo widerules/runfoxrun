@@ -11,6 +11,9 @@ public class LoadedResources
 	private static Bitmap red;
 	private static Bitmap background1;
 	private static Bitmap icon;
+	private static Bitmap badguy;
+	
+	private static Bitmap star;
 	
 	private static boolean loaded = false;
 	
@@ -22,9 +25,31 @@ public class LoadedResources
 		
 		background1 = BitmapFactory.decodeResource(resources, R.drawable.background1);
 		
+		badguy = BitmapFactory.decodeResource(resources, R.drawable.smoke);
+		
 		icon = BitmapFactory.decodeResource(resources,  R.drawable.icon);
 		
+		star = BitmapFactory.decodeResource(resources, R.drawable.star);
+		
 		loaded = true;
+	}
+	
+	public static Bitmap getStar(Resources resources)
+	{
+		if(loaded)
+			return star;
+		
+		load(resources);
+			return star;
+	}
+	
+	public static Bitmap getBadGuy(Resources resources)
+	{
+		if(loaded)
+			return badguy;
+		
+		load(resources);
+			return badguy;
 	}
 	
 	public static Bitmap getIcon(Resources resources)

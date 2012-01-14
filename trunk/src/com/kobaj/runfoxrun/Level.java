@@ -70,7 +70,7 @@ public class Level
 			levelObjectList = new ArrayList<LevelObject>();
 	}
 	
-	public void onInitialize(Resources resources, int width, int height)
+	public void onInitialize(Resources resources, int width, int height, SoundManager sm)
 	{
 		this.height = height;
 		this.width = width;
@@ -80,6 +80,7 @@ public class Level
 				
 		levelSpriteList = new ArrayList<Sprite>();
 		
+		//should be an iterator
 		for(int i = 0; i < levelObjectList.size(); i++)
 		{	
 			if(!levelObjectList.get(i).getOrientation())
@@ -113,6 +114,14 @@ public class Level
 				//will be changed to
 				// XMLHandler.readSerialFile(getResources(), R.raw.blue, Sprite.class);
 				temp.onInitialize(LoadedResources.getBlue(resources), levelObjectList.get(i).getxLoc(), levelObjectList.get(i).getyLoc());
+				levelSpriteList.add(temp);
+			}
+			
+			else if(levelObjectList.get(i).getName().equalsIgnoreCase("star"))
+			{
+				Sprite temp = XMLHandler.readSerialFile(resources, R.raw.star, Sprite.class);
+				temp.onInitialize(LoadedResources.getStar(resources), sm, levelObjectList.get(i).getxLoc(), levelObjectList.get(i).getyLoc(), 25, 24);
+				temp.setCollectable(CollectableStates.collectable);
 				levelSpriteList.add(temp);
 			}
 		}

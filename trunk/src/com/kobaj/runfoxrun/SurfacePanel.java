@@ -57,6 +57,7 @@ public class SurfacePanel extends DrawablePanel
 		pm.setScrollRate(scrollRate);
 		
 		mm = new MusicManager(context, R.raw.pulse);
+		mm.setLooping(true);
 		
 		currentState = GameStates.Loading;
 		oldState = GameStates.TitleScreen;
@@ -90,6 +91,7 @@ public class SurfacePanel extends DrawablePanel
 		mainFox.setAnimation(CharStates.Running);
 		
 		sm.addSound(1, R.raw.footstep);
+		sm.addSound(2, R.raw.pkup1);
 		
 		LoadedResources.load(getResources());
 	}
@@ -97,7 +99,6 @@ public class SurfacePanel extends DrawablePanel
 	public void onUpdate(long gameTime)
 	{
 		fps.onUpdate(gameTime);
-		im.onUpdate();
 		sm.onUpdate(fps.getDelta());
 		mm.onUpdate(fps.getDelta());
 		
@@ -107,7 +108,7 @@ public class SurfacePanel extends DrawablePanel
 		{
 			mainFox.onUpdate(fps.getDelta());
 			pm.onUpdate(fps.getDelta());
-			sp.onUpdate();
+			sp.onUpdate(fps.getDelta());
 			checkForUserPause();
 		}
 		else if(currentState == GameStates.Continous)
@@ -194,7 +195,7 @@ public class SurfacePanel extends DrawablePanel
 				{
 					oldState = currentState;
 					currentState = GameStates.Pause;
-					mm.setVolume(.35f);
+					mm.setVolume(.20f);
 				}
 			}
 		}
@@ -262,7 +263,7 @@ public class SurfacePanel extends DrawablePanel
 		{
 			purgeManagers();
 			sp = new SinglePlayScreen(width, height);
-			sp.onInitialize(getResources(), im, pm, R.raw.level, mainFox);
+			sp.onInitialize(getResources(), im, pm, sm, R.raw.level, mainFox);
 			oldState = GameStates.SinglePlay;
 			currentState = GameStates.Loading;
 			
