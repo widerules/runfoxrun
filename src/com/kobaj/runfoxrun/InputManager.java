@@ -1,5 +1,6 @@
 package com.kobaj.runfoxrun;
 
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 
 public class InputManager
@@ -18,6 +19,9 @@ public class InputManager
 	private boolean[] oldpressed;
 	private boolean[] pressed;
 	
+	private boolean[] dpads;
+	private boolean[] olddpads;
+	
 	public InputManager()
 	{
 		x = new float[fingerCount];
@@ -31,6 +35,67 @@ public class InputManager
 		
 		oldpressed = new boolean[fingerCount];
 		pressed = new boolean[fingerCount];
+	
+		dpads = new boolean[KeyCodes.values().length];
+		olddpads = new boolean[KeyCodes.values().length];
+	}
+	
+	public void eventUpdateUp(int i, KeyEvent event)
+	{	
+		if(i == KeyEvent.KEYCODE_DPAD_CENTER)
+		{
+			olddpads[KeyCodes.center.ordinal()] = true;
+			dpads[KeyCodes.center.ordinal()] = false;
+		}
+		else if (i == KeyEvent.KEYCODE_DPAD_LEFT)
+		{
+			olddpads[KeyCodes.left.ordinal()] = true;
+			dpads[KeyCodes.left.ordinal()] = false;
+		}
+		else if (i == KeyEvent.KEYCODE_DPAD_RIGHT)
+		{
+			olddpads[KeyCodes.right.ordinal()] = true;
+			dpads[KeyCodes.right.ordinal()] = false;
+		}
+		else if (i == KeyEvent.KEYCODE_DPAD_UP)
+		{
+			olddpads[KeyCodes.up.ordinal()] = true;
+			dpads[KeyCodes.up.ordinal()] = false;
+		}
+		else if (i == KeyEvent.KEYCODE_DPAD_DOWN)
+		{
+			olddpads[KeyCodes.down.ordinal()] = true;
+			dpads[KeyCodes.down.ordinal()] = false;
+		}
+	}
+	
+	public void eventUpdateDown(int i, KeyEvent event)
+	{
+		if(i == KeyEvent.KEYCODE_DPAD_CENTER)
+		{
+			olddpads[KeyCodes.center.ordinal()] = false;
+			dpads[KeyCodes.center.ordinal()] = true;
+		}
+		else if (i == KeyEvent.KEYCODE_DPAD_LEFT)
+		{
+			olddpads[KeyCodes.left.ordinal()] = false;
+			dpads[KeyCodes.left.ordinal()] = true;
+		}
+		else if (i == KeyEvent.KEYCODE_DPAD_RIGHT)
+		{
+			olddpads[KeyCodes.right.ordinal()] = false;
+			dpads[KeyCodes.right.ordinal()] = true;
+		}
+		else if (i == KeyEvent.KEYCODE_DPAD_UP)
+		{
+			olddpads[KeyCodes.up.ordinal()] = false;
+			dpads[KeyCodes.up.ordinal()] = true;
+		}
+		else if (i == KeyEvent.KEYCODE_DPAD_DOWN)
+		{
+			olddpads[KeyCodes.down.ordinal()] = false;
+			dpads[KeyCodes.down.ordinal()] = true;
+		}
 	}
 
 	public void eventUpdate(MotionEvent event)
@@ -83,22 +148,8 @@ public class InputManager
                          for( int i = 0; i < fingerCount; i++ )
                                  pressed[i] = false;
          }
-         /*if( action == MotionEvent.ACTION_CANCEL )
-         {
-             oldpressed[ptrId] = pressed[ptrId];
-                 pressed[ptrId] = false;
-                 if( event.getPointerCount() == 1 )
-                 for( int i = 0; i < fingerCount; i++ )
-                         pressed[i] = false;
-         }*/
 	}
 	
-	public void onUpdate()
-	{
-		/*for(int i = 0; i < fingerCount; i++)
-			oldpressed[i] = pressed[i];*/
-	}
-
 	public float getX(int index)
 	{
 		return x[index];
@@ -132,6 +183,28 @@ public class InputManager
 	public boolean getTouched(int index)
 	{
 		return pressed[index];
+	}
+	
+	public boolean getKeyPressed(int index)
+	{
+		if(dpads[index] && !olddpads[index])
+		{
+			olddpads[index] = true;
+			return true;
+		}
+		
+		return false;
+	}
+	
+	public boolean getKeyReleased(int index)
+	{
+		if(!dpads[index] && olddpads[index])
+		{
+			olddpads[index] = false;
+			return true;
+		}
+		
+		return false;
 	}
 	
 	public boolean getPressed(int index)

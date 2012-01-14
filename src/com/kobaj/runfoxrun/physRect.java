@@ -57,8 +57,16 @@ public class physRect
 		return collRect;
 	}
 
+	public void shiftRect(int x, int y)
+	{
+		collRect.top -= y;
+		collRect.bottom -= y;
+		collRect.left -= x;
+		collRect.right -= x;
+	}
+	
 	//top, right, bottom, left
-	public void updatesRect(float top, float right, float bottom, float left)
+	public void setRect(float top, float right, float bottom, float left)
 	{
 		//left, top, right, bottom;
 		collRect.set((int)left, (int)top, (int)right, (int)bottom);

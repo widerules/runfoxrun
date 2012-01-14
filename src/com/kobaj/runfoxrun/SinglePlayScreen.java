@@ -5,9 +5,11 @@ import java.util.Iterator;
 
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 
 public class SinglePlayScreen implements Runnable
 {
@@ -18,17 +20,21 @@ public class SinglePlayScreen implements Runnable
 	private int height;
 	
 	private ArrayList<Sprite> hitList;
+	private ArrayList<Sprite> collectionList;
 	
 	private Level level;
 	private int levelInt;
 	
 	private InputManager im;
 	private PhysicsManager pm;
+	private SoundManager sm;
 	private Resources resources;
 	
-	private int collectionScore;
+	private int collectionScore = 0;
+	private custString collectionText;
 	
 	private Sprite player;
+	private Sprite badGuy;
 	
 	private boolean initialized = false;
 	
@@ -69,10 +75,11 @@ public class SinglePlayScreen implements Runnable
 		return initialized;
 	}
 	
-	public void onInitialize(Resources resources, InputManager im, PhysicsManager pm, int level, Sprite player)
+	public void onInitialize(Resources resources, InputManager im, PhysicsManager pm, SoundManager sm, int level, Sprite player)
 	{
 		this.im = im;
 		this.pm = pm;
+		this.sm = sm;
 		
 		this.player = player;
 		
@@ -81,6 +88,9 @@ public class SinglePlayScreen implements Runnable
 		this.levelInt = level;
 		
 		progressBarIcon = LoadedResources.getIcon(resources);
+		//load dat bad guy
+		this.badGuy = XMLHandler.readSerialFile(resources, R.raw.smoke, Sprite.class);
+		badGuy.onInitialize(LoadedResources.getBadGuy(resources), 0, height - 470 , 164, 470);
 		
 		collectionScore = 0;
 		
@@ -89,10 +99,12 @@ public class SinglePlayScreen implements Runnable
 		linePaint.setStrokeWidth(1);
 		linePaint.setShadowLayer(1, 0, 0, Color.BLACK);
 		
+		collectionText = new custString("", width - 10, 0);
+		
 		start();
 	}
 
-	public void onUpdate()
+	public void onUpdate(float delta)
 	{
 		if (initialized)
 		{	
@@ -116,11 +128,30 @@ public class SinglePlayScreen implements Runnable
 				back.setxPos(0);
 			}
 			
+			//bad guy
+			badGuy.onUpdate(delta);
+			
 			//handle death;
 			if(pm.getDeath())
 			{
 				pm.levelReset();
 			}
+			
+			//set me collections
+			collectionText.setString("x " + String.valueOf(collectionScore));
+			
+			//gotta loop through and find the collected elements
+			/*for(Iterator<Sprite> it = collectionList.iterator(); it.hasNext();)
+			{
+				Sprite temp = it.next();
+				if(temp.getCollectable() == CollectableStates.collected)
+				{
+					collectionScore++;
+					it.remove();
+					hitList.remove(temp);
+					pm.removePhys(temp);
+				}	
+			}*/
 		}
 	}
 	
@@ -143,24 +174,36 @@ public class SinglePlayScreen implements Runnable
 			}
 			
 			//interaction layer
-			//should be a iterator
-			for(int i = 0; i < hitList.size(); i++)
-			{	
-				if(hitList.get(i).getCollectable() == CollectableStates.collected)
+			for(Iterator<Sprite> it = hitList.iterator(); it.hasNext();)
+			{
+				Sprite temp = it.next();
+				
+				//this logic should not be here, but we're starting to lose fps, and I only want to iterate once through this.
+				if(temp.getCollectable() == CollectableStates.collected)
 				{
-					hitList.remove(i);
-					pm.removePhys(hitList.get(i));
+					it.remove();
+					pm.removePhys(temp);
 					collectionScore++;
 				}
 				
-				if(hitList.get(i).getxPos() + hitList.get(i).getWidth() > 0) 
-					hitList.get(i).onDraw(canvas);
-				if(hitList.get(i).getxPos() > width + 20)
+				if(temp.getxPos() + temp.getWidth() > 0)
+					temp.onDraw(canvas);
+				else if (temp.getxPos() > width + 10)
 					break;
+			}
+			
+			//character debugging
+			for(Iterator<physRect> it = player.getPhysRect().iterator(); it.hasNext();)
+			{
+				physRect rect = it.next();
+				canvas.drawRect(rect.getCollRect(), new Paint());
 			}
 			
 			//character
 			player.onDraw(canvas);
+			
+			//bad guy
+			badGuy.onDraw(canvas);
 			
 			//overlay (I should really not be doing math/logic here >.<
 			int pad = (int)(width / 4.0f);
@@ -168,6 +211,10 @@ public class SinglePlayScreen implements Runnable
 			canvas.drawLine(pad, 15, pad, 27, linePaint);
 			canvas.drawLine(width - pad, 15, width - pad, 27, linePaint);
 			canvas.drawBitmap(progressBarIcon, linInterp(0, level.getLevelLength() , pm.getScrollProgress(), pad, width - pad), 0, null);
+			
+			//more overlay
+			canvas.drawBitmap(LoadedResources.getStar(resources), width - 10, 0, null);
+			collectionText.onDraw(canvas);
 		}
 	}
 	
@@ -183,11 +230,21 @@ public class SinglePlayScreen implements Runnable
 	{
 		// load in the level
 		this.level = XMLHandler.readSerialFile(resources, levelInt, Level.class);
-		this.level.onInitialize(resources, width, height);
+		this.level.onInitialize(resources, width, height, sm);
 		
 		// grab the hit list;
 		hitList = new ArrayList<Sprite>();
 		grabHitList();
+		
+		//grab collectionlist
+		collectionList = new ArrayList<Sprite>();
+		for(Iterator<Sprite> it = hitList.iterator(); it.hasNext();)
+		{
+			Sprite temp = it.next();
+			
+			if(temp.getCollectable() == CollectableStates.collectable)
+				collectionList.add(temp);
+		}
 		
 		setPlayerPos();
 			

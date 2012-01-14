@@ -16,6 +16,7 @@ import android.content.Context;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.PowerManager;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 
 //initialize game and surface class
@@ -54,6 +55,30 @@ public class RunfoxrunActivity extends Activity {
             wl.acquire();
             
             game.onScreenResume();
+    }
+    
+    @Override 
+    public boolean onKeyDown(int i, KeyEvent event) 
+    {
+    	if(i == KeyEvent.KEYCODE_BACK || i == KeyEvent.KEYCODE_VOLUME_DOWN
+    			|| i == KeyEvent.KEYCODE_VOLUME_UP || i == KeyEvent.KEYCODE_VOLUME_MUTE
+    			|| i == KeyEvent.KEYCODE_HOME )
+    		return super.onKeyDown(i, event);
+    	
+    	game.im.eventUpdateDown(i , event);
+    	return true;
+    }
+
+    @Override
+    public boolean onKeyUp(int i, KeyEvent event)
+    {
+    	if(i == KeyEvent.KEYCODE_BACK || i == KeyEvent.KEYCODE_VOLUME_DOWN
+    			|| i == KeyEvent.KEYCODE_VOLUME_UP || i == KeyEvent.KEYCODE_VOLUME_MUTE
+    			|| i == KeyEvent.KEYCODE_HOME )
+    		return super.onKeyDown(i, event);
+    	
+    	game.im.eventUpdateUp(i, event);
+    	return true;
     }
     
     @Override

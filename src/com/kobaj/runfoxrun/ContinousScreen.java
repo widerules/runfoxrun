@@ -42,10 +42,6 @@ public class ContinousScreen
 	
 	public void onInitialize(Resources resources, InputManager im, PhysicsManager pm, Sprite player)
 	{
-		// THIS CLASS IS NOT COMPLETE: simply an example of how a Screen can be
-		// used
-		// will be completed later.
-		
 		this.im = im;
 		this.pm = pm;
 		mResources = resources;
