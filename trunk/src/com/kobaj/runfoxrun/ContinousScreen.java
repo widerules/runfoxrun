@@ -34,16 +34,19 @@ public class ContinousScreen
 	private float initialSpeed;
 	private final int restartCount = 6;
 	
+	private SoundManager sm;
+	
 	public ContinousScreen(int width, int height)
 	{
 		this.width = width;
 		this.height = height;
 	}
 	
-	public void onInitialize(Resources resources, InputManager im, PhysicsManager pm, Sprite player)
+	public void onInitialize(Resources resources, InputManager im, PhysicsManager pm, SoundManager sm, Sprite player)
 	{
 		this.im = im;
 		this.pm = pm;
+		this.sm = sm;
 		mResources = resources;
 		
 		this.player = player;
@@ -102,9 +105,11 @@ public class ContinousScreen
 				
 				restartLevel();
 				
-				pm.setScrollRate(initialSpeed * speedup);
+				pm.setScrollRate(initialSpeed * pm.speedUp);
 				
 				diedRecently = true;
+				
+				sm.playSound(3);
 			}
 			
 			//still handling death

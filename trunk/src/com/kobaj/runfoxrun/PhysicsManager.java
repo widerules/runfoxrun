@@ -30,6 +30,8 @@ public class PhysicsManager
 	
 	private boolean touching = false;
 	
+	public static float speedUp = 12.5f;
+	
 	public void jump()
 	{
 		if(touching) 
@@ -62,11 +64,14 @@ public class PhysicsManager
 			temp.setxPos(temp.getxPos() - scrollProgress - value);
 		}
 		
-		for(Iterator<Sprite> it = backgroundables.iterator(); it.hasNext();)
+		
+		//in a perfect world I would add a boolean to see if the user wants to reset the background.
+		//here I will just pretend he does not.
+		/*for(Iterator<Sprite> it = backgroundables.iterator(); it.hasNext();)
 		{
 			Sprite temp = it.next();
 			temp.setxPos(temp.getxPos() - scrollProgress / 10.0f - value / 10.0f);
-		}
+		}*/
 		
 		scrollProgress = value;
 	}
@@ -128,7 +133,7 @@ public class PhysicsManager
 		float amount = scrollValue * delta; //arbitrary
 		
 		if(reverse)
-			amount = -amount * 10;	
+			amount = -amount * speedUp;	
 			
 		scrollDelta = -amount;
 		scrollProgress += scrollDelta;

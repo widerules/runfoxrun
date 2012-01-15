@@ -37,7 +37,7 @@ public class SinglePlayScreen implements Runnable
 	
 	private boolean initialized = false;
 	
-	private int levelNumber = 1;
+	private int levelNumber = 2;
 	
 	//top level
 	private Bitmap progressBarIcon;
@@ -100,7 +100,7 @@ public class SinglePlayScreen implements Runnable
 		progressBarIcon = LoadedResources.getIcon(resources);
 		//load dat bad guy
 		this.badGuy = XMLHandler.readSerialFile(resources, R.raw.smoke, Sprite.class);
-		badGuy.onInitialize(LoadedResources.getBadGuy(resources), 0, height - 470 , 164, 470);
+		badGuy.onInitialize(LoadedResources.getBadGuy(resources), -165, height - 470 , 164, 470);
 		
 		collectionScore = 0;
 		
@@ -117,11 +117,28 @@ public class SinglePlayScreen implements Runnable
 		
 		start();
 	}
-
+	
+	public boolean resetBad = false;
+	
 	public void onUpdate(float delta)
 	{
 		if (initialized)
 		{	
+			//badguy movement
+			if(resetBad)
+				if(badGuy.getxPos() + badGuy.getWidth() > 0)
+					badGuy.setxPos((badGuy.getxPos() - delta / 5.0f));
+				else
+					resetBad = false;
+			if(pm.getScrollProgress() >= 800)
+				if(badGuy.getxPos() < 0 && !resetBad)
+				{
+					badGuy.setxPos(badGuy.getxPos() + delta / 5f);
+					
+					if(badGuy.getxPos() > 0)
+						badGuy.setxPos(0);
+				}
+			
 			//handle input
 			for (int i = 0; i < im.fingerCount; i++)
 			{
@@ -166,6 +183,8 @@ public class SinglePlayScreen implements Runnable
 			if(pm.getDeath())
 			{
 				pm.levelReset();
+				resetBad = true;
+				sm.playSound(3);
 			}
 			
 			//set me collections
@@ -309,7 +328,7 @@ public class SinglePlayScreen implements Runnable
 		
 		initialized = true;
 		
-		pm.setScrollProgress(15000);
+		//pm.setScrollProgress(15000);
 	}
 	
 	//really should make my own Math class...
