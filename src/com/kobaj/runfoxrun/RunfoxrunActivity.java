@@ -8,6 +8,7 @@
 // http://stackoverflow.com/questions/6926644/android-color-to-int-conversion
 // http://www.codeproject.com/KB/recipes/simple_interpolation.aspx
 // http://www.droidbase.de/?p=103
+// http://www.superflashbros.net/as3sfxr/
 
 package com.kobaj.runfoxrun;
 
@@ -43,13 +44,13 @@ public class RunfoxrunActivity extends Activity
 		setContentView(game);
 	}
 	
-	@Override
+	/*@Override
 	public void onStop()
 	{
 		super.onStop();
 		wl.release();
 		game.onUserQuit();
-	}
+	}*/
 	
 	@Override
 	protected void onPause()

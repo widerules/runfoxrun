@@ -99,6 +99,7 @@ public class SurfacePanel extends DrawablePanel
 		
 		sm.addSound(1, R.raw.footstep);
 		sm.addSound(2, R.raw.pkup1);
+		sm.addSound(3, R.raw.death);
 	}
 	
 	public void onUpdate(long gameTime)
@@ -275,7 +276,7 @@ public class SurfacePanel extends DrawablePanel
 		{
 			purgeManagers();
 			cous = new ContinousScreen(width, height);
-			cous.onInitialize(getResources(), im, pm, mainFox);
+			cous.onInitialize(getResources(), im, pm, sm, mainFox);
 			oldState = GameStates.TitleScreen;
 			currentState = GameStates.Continous;
 			
@@ -315,7 +316,7 @@ public class SurfacePanel extends DrawablePanel
 		mm.stop();
 		mm.release();
 		stopThread();
-		//System.exit(0); 
+		System.exit(0); 
 	}
 
 }

@@ -188,14 +188,14 @@ public class Level
 			else if(tempLevelObject.getName().equalsIgnoreCase("smalltree"))
 			{
 				Sprite temp = XMLHandler.readSerialFile(resources, R.raw.smalltree, Sprite.class);
-				temp.onInitialize(LoadedResources.getSmallTree(), tempLevelObject.getxLoc(), tempLevelObject.getyLoc());
+				temp.onInitialize(LoadedResources.getSmallTree(), tempLevelObject.getxLoc(), tempLevelObject.getyLoc() - temp.getPhysRect().get(0).getCollRect().top);
 				levelSpriteList.add(temp);
 			}
 			
 			else if(tempLevelObject.getName().equalsIgnoreCase("tree"))
 			{
 				Sprite temp = XMLHandler.readSerialFile(resources, R.raw.tree, Sprite.class);
-				temp.onInitialize(LoadedResources.getTree(), tempLevelObject.getxLoc(), tempLevelObject.getyLoc());
+				temp.onInitialize(LoadedResources.getTree(), tempLevelObject.getxLoc(), tempLevelObject.getyLoc() - temp.getPhysRect().get(0).getCollRect().top);
 				levelSpriteList.add(temp);
 			}
 			
