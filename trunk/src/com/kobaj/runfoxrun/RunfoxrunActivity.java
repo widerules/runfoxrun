@@ -20,71 +20,79 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 
 //initialize game and surface class
-public class RunfoxrunActivity extends Activity {
-    /** Called when the activity is first created. */
+public class RunfoxrunActivity extends Activity
+{
+	/** Called when the activity is first created. */
 	
 	private PowerManager.WakeLock wl;
 	private SurfacePanel game;
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        
-        PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-        wl = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK, "DoNotDimScreen");
-        
-        setVolumeControlStream(AudioManager.STREAM_MUSIC);
-        
-        game = new SurfacePanel(this);
-        
-        //last
-        setContentView(game);
-    }
-    
-    @Override
-    protected void onPause() {
-            super.onPause();
-            wl.release();
-            
-            game.onScreenPause();
-    }
-
-    @Override
-    protected void onResume() {
-            super.onResume();
-            wl.acquire();
-            
-            game.onScreenResume();
-    }
-    
-    @Override 
-    public boolean onKeyDown(int i, KeyEvent event) 
-    {
-    	if(i == KeyEvent.KEYCODE_BACK || i == KeyEvent.KEYCODE_VOLUME_DOWN
-    			|| i == KeyEvent.KEYCODE_VOLUME_UP || i == KeyEvent.KEYCODE_VOLUME_MUTE
-    			|| i == KeyEvent.KEYCODE_HOME )
-    		return super.onKeyDown(i, event);
-    	
-    	game.im.eventUpdateDown(i , event);
-    	return true;
-    }
-
-    @Override
-    public boolean onKeyUp(int i, KeyEvent event)
-    {
-    	if(i == KeyEvent.KEYCODE_BACK || i == KeyEvent.KEYCODE_VOLUME_DOWN
-    			|| i == KeyEvent.KEYCODE_VOLUME_UP || i == KeyEvent.KEYCODE_VOLUME_MUTE
-    			|| i == KeyEvent.KEYCODE_HOME )
-    		return super.onKeyDown(i, event);
-    	
-    	game.im.eventUpdateUp(i, event);
-    	return true;
-    }
-    
-    @Override
-    public boolean onTouchEvent(MotionEvent e)
-    {
-    	game.im.eventUpdate(e);
-    	return true;
-    }
+	
+	@Override
+	public void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		
+		PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+		wl = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK, "DoNotDimScreen");
+		
+		setVolumeControlStream(AudioManager.STREAM_MUSIC);
+		
+		game = new SurfacePanel(this);
+		
+		// last
+		setContentView(game);
+	}
+	
+	@Override
+	public void onStop()
+	{
+		super.onStop();
+		wl.release();
+		game.onUserQuit();
+	}
+	
+	@Override
+	protected void onPause()
+	{
+		super.onPause();
+		wl.release();
+		
+		game.onScreenPause();
+	}
+	
+	@Override
+	protected void onResume()
+	{
+		super.onResume();
+		wl.acquire();
+		
+		game.onScreenResume();
+	}
+	
+	@Override
+	public boolean onKeyDown(int i, KeyEvent event)
+	{
+		if (i == KeyEvent.KEYCODE_BACK || i == KeyEvent.KEYCODE_HOME)
+			onPause();
+		
+		if (i == KeyEvent.KEYCODE_VOLUME_DOWN || i == KeyEvent.KEYCODE_VOLUME_UP)
+			return false;
+		
+		game.im.eventUpdateDown(i, event);
+		return true;
+	}
+	
+	@Override
+	public boolean onKeyUp(int i, KeyEvent event)
+	{
+		game.im.eventUpdateUp(i, event);
+		return true;
+	}
+	
+	@Override
+	public boolean onTouchEvent(MotionEvent e)
+	{
+		game.im.eventUpdate(e);
+		return true;
+	}
 }

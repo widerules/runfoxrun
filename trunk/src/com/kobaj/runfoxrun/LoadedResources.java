@@ -15,6 +15,22 @@ public class LoadedResources
 	
 	private static Bitmap star;
 	
+	private static Bitmap bigBackGround;
+	private static Bitmap bigBuilding;
+	private static Bitmap bigVine;
+	private static Bitmap grass;
+	private static Bitmap littleVine;
+	private static Bitmap sandFlat;
+	private static Bitmap sandHole;
+	private static Bitmap sandHoleLeft;
+	private static Bitmap sandHoleRight;
+	private static Bitmap smallBuilding;
+	private static Bitmap smallTree;
+	private static Bitmap tree;
+	private static Bitmap weed; 
+	
+	private static Bitmap foxTwo;
+	
 	private static boolean loaded = false;
 	
 	public static void load(Resources resources)
@@ -30,6 +46,22 @@ public class LoadedResources
 		icon = BitmapFactory.decodeResource(resources,  R.drawable.icon);
 		
 		star = BitmapFactory.decodeResource(resources, R.drawable.star);
+		
+		bigBackGround = BitmapFactory.decodeResource(resources, R.drawable.giantbackdrop);
+		bigBuilding = BitmapFactory.decodeResource(resources, R.drawable.bigbuilding);
+		bigVine = BitmapFactory.decodeResource(resources, R.drawable.bigvine);
+		grass = BitmapFactory.decodeResource(resources, R.drawable.grass);
+		littleVine = BitmapFactory.decodeResource(resources, R.drawable.littlevine);
+		sandFlat = BitmapFactory.decodeResource(resources, R.drawable.sandflat);
+		sandHole = BitmapFactory.decodeResource(resources, R.drawable.sandhole);
+		sandHoleLeft = BitmapFactory.decodeResource(resources, R.drawable.sandholeleft);
+		sandHoleRight = BitmapFactory.decodeResource(resources, R.drawable.sandholeright);
+		smallBuilding = BitmapFactory.decodeResource(resources, R.drawable.smallbuilding);
+		smallTree = BitmapFactory.decodeResource(resources, R.drawable.smalltree);
+		tree = BitmapFactory.decodeResource(resources, R.drawable.tree);
+		weed = BitmapFactory.decodeResource(resources, R.drawable.weed);
+		
+		foxTwo = BitmapFactory.decodeResource(resources, R.drawable.fox2);
 		
 		loaded = true;
 	}
@@ -95,5 +127,77 @@ public class LoadedResources
 		
 		load(resources);
 			return red;
+	}
+	
+	//screw that resource crap
+
+	public static Bitmap getBigBackGround()
+	{
+		return bigBackGround;
+	}
+
+	public static Bitmap getBigBuilding()
+	{
+		return bigBuilding;
+	}
+
+	public static Bitmap getBigVine()
+	{
+		return bigVine;
+	}
+
+	public static Bitmap getGrass()
+	{
+		return grass;
+	}
+
+	public static Bitmap getLittleVine()
+	{
+		return littleVine;
+	}
+
+	public static Bitmap getSandFlat()
+	{
+		return sandFlat;
+	}
+
+	public static Bitmap getSandHole()
+	{
+		return sandHole;
+	}
+
+	public static Bitmap getSandHoleLeft()
+	{
+		return sandHoleLeft;
+	}
+
+	public static Bitmap getSandHoleRight()
+	{
+		return sandHoleRight;
+	}
+
+	public static Bitmap getSmallBuilding()
+	{
+		return smallBuilding;
+	}
+
+	public static Bitmap getSmallTree()
+	{
+		return smallTree;
+	}
+
+	public static Bitmap getTree()
+	{
+		return tree;
+	}
+
+	public static Bitmap getWeed()
+	{
+		return weed;
+	}
+
+	public static Bitmap getFoxTwo()
+	{
+		return foxTwo;
 	}
 }

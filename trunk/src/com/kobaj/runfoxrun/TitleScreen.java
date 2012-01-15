@@ -6,6 +6,8 @@ import android.graphics.Color;
 
 public class TitleScreen extends ListScreens
 {	
+	private MusicManager mm;
+	
 	private custString newGame;
 	private custString quit;
 	private custString continousGame;
@@ -14,8 +16,10 @@ public class TitleScreen extends ListScreens
 	public float titleScreenSoundTime = 30001;
 	public int titleScreenCurrentSong = 0;
 	
-	public void onInitialize(Resources resources, int identity)
+	public void onInitialize(Resources resources, int identity, MusicManager mm)
 	{
+		this.mm = mm;
+		
 		count = 4;
 		
 		imgBackdrop = BitmapFactory.decodeResource(resources, identity);
@@ -42,7 +46,7 @@ public class TitleScreen extends ListScreens
 		initialized = true;
 	}
 	
-	public void onUpdate(float delta, MusicManager mm)
+	public void onUpdate(float delta)
 	{
 		//music
 		titleScreenSoundTime += delta;	
@@ -82,5 +86,11 @@ public class TitleScreen extends ListScreens
 			return GameStates.Quit;
 		
 		return GameStates.TitleScreen;
+	}
+
+	@Override
+	public void onInitialize(Resources rescoures, int identity)
+	{
+	 //do nothing
 	}
 }

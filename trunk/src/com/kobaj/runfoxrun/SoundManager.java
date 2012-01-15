@@ -143,12 +143,12 @@ public class SoundManager
 	
 	public void playSound(int index, float volume)
 	{
-		playSound(index, volume, 1);
+		playSound(index, volume, 0);
 	}
 	
 	public void playSound(int index)
 	{
-		playSound(index, 1.0f, 1);
+		playSound(index, 1.0f, 0);
 	}
 	
 	public void stopSound(int index)

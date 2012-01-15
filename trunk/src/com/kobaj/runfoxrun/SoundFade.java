@@ -64,7 +64,7 @@ public class SoundFade
 	
 	public boolean getValid()
 	{
-		if(updateTime < time)
+		if(updateTime <= time)
 			return true;
 		
 		return false;
