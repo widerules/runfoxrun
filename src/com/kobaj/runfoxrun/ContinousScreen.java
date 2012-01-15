@@ -124,7 +124,6 @@ public class ContinousScreen
 				int y;
 				
 				//first we want to know how far in the future we can code
-				double prevX = width - (last.getxPos() + last.getWidth()); //adjust to be in screen coordinates
 				double prevY = (height - last.getyPos()); // get this in real world corridnates
 				
 				float newY1;
@@ -141,8 +140,8 @@ public class ContinousScreen
 
 				newY2 = (float) (-1.0f * newX + prevY);
 				
-				if(newY2 <= 0)
-					newY2 = 1;
+				if(newY2 <= 9)
+					newY2 = 10;
 				
 				if(newY1 - newY2 <= 0)
 				{

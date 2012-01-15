@@ -10,7 +10,7 @@ import android.graphics.Typeface;
 
 public class custString
 {
-	private String string;
+	private StringBuilder string;
 	private Path stringPath;
 	
 	private int x;
@@ -27,7 +27,8 @@ public class custString
 	
 	public custString(String string, int x, int y)
 	{
-		this.string = string;
+		this.string = new StringBuilder();
+		this.string.append(string);
 		
 		this.x = x;
 		this.y = y;
@@ -55,8 +56,10 @@ public class custString
 	
 	private void generateMembers()
 	{
-		strokePaint.getTextBounds(string, 0, this.string.length(), rect);
-	    textPaint.getTextPath(this.string, 0, this.string.length(), x, y, stringPath);
+		char[] temp = new char[string.length()];
+		string.getChars(0, string.length(), temp, 0);
+		strokePaint.getTextBounds(temp, 0, temp.length, rect);
+	    textPaint.getTextPath(temp, 0, temp.length, x, y, stringPath);
 	    
 	    int width = rect.width();
 	    int height = rect.height();
@@ -82,7 +85,7 @@ public class custString
 	
 	public void concat(String string)
 	{
-		this.string += string;
+		this.string.append(string);
 		generateMembers();
 	}
 	
@@ -107,13 +110,14 @@ public class custString
 	
 	public void setString(String string)
 	{
-		this.string = string;
+		this.string.delete(0, this.string.length());
+		this.string.append(string);
 		generateMembers();
 	}
 	
 	public String getString()
 	{
-		return string;
+		return string.toString();
 	}
 	
 	public boolean fingertap(int x, int y)

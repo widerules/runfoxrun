@@ -1,6 +1,7 @@
 package com.kobaj.runfoxrun;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
@@ -10,8 +11,6 @@ import android.content.res.Resources;
 
 public class Level
 {
-	private Sprite background1;	
-	
 	@Element
 	private int playerStartx = 0;
 	@Element
@@ -74,71 +73,140 @@ public class Level
 	{
 		this.height = height;
 		this.width = width;
-		
-		background1 = new Sprite();
-		background1.onInitialize(LoadedResources.getBackground1(resources));
 				
 		levelSpriteList = new ArrayList<Sprite>();
 		
-		//should be an iterator
-		for(int i = 0; i < levelObjectList.size(); i++)
+		for(Iterator<LevelObject> it = levelObjectList.iterator(); it.hasNext();)
 		{	
-			if(!levelObjectList.get(i).getOrientation())
+			LevelObject tempLevelObject = it.next();
+			
+			if(!tempLevelObject.getOrientation())
 			{
-				levelObjectList.get(i).setyLoc(height - levelObjectList.get(i).getyLoc());
+				tempLevelObject.setyLoc(height - tempLevelObject.getyLoc());
 			}
 			
 			//hard coded
 			//its a little dumb, but thats how it goes
-			if(levelObjectList.get(i).getName().equalsIgnoreCase("green"))
+			if(tempLevelObject.getName().equalsIgnoreCase("green"))
 			{
 				Sprite temp = new Sprite(); 
 				//will be changed to
 				// XMLHandler.readSerialFile(getResources(), R.raw.green, Sprite.class);
-				temp.onInitialize(LoadedResources.getGreen(resources), levelObjectList.get(i).getxLoc(), levelObjectList.get(i).getyLoc());
+				temp.onInitialize(LoadedResources.getGreen(resources), tempLevelObject.getxLoc(), tempLevelObject.getyLoc());
 				levelSpriteList.add(temp);
 			}
 			
-			else if(levelObjectList.get(i).getName().equalsIgnoreCase("red"))
+			else if(tempLevelObject.getName().equalsIgnoreCase("red"))
 			{
 				Sprite temp = new Sprite(); 
 				//will be changed to
 				// XMLHandler.readSerialFile(getResources(), R.raw.red, Sprite.class);
-				temp.onInitialize(LoadedResources.getRed(resources), levelObjectList.get(i).getxLoc(), levelObjectList.get(i).getyLoc());
+				temp.onInitialize(LoadedResources.getRed(resources), tempLevelObject.getxLoc(), tempLevelObject.getyLoc());
 				levelSpriteList.add(temp);
 			}
 			
-			else if(levelObjectList.get(i).getName().equalsIgnoreCase("blue"))
+			else if(tempLevelObject.getName().equalsIgnoreCase("blue"))
 			{
 				Sprite temp = new Sprite(); 
 				//will be changed to
 				// XMLHandler.readSerialFile(getResources(), R.raw.blue, Sprite.class);
-				temp.onInitialize(LoadedResources.getBlue(resources), levelObjectList.get(i).getxLoc(), levelObjectList.get(i).getyLoc());
+				temp.onInitialize(LoadedResources.getBlue(resources), tempLevelObject.getxLoc(), tempLevelObject.getyLoc());
 				levelSpriteList.add(temp);
 			}
 			
-			else if(levelObjectList.get(i).getName().equalsIgnoreCase("star"))
+			else if(tempLevelObject.getName().equalsIgnoreCase("star"))
 			{
 				Sprite temp = XMLHandler.readSerialFile(resources, R.raw.star, Sprite.class);
-				temp.onInitialize(LoadedResources.getStar(resources), sm, levelObjectList.get(i).getxLoc(), levelObjectList.get(i).getyLoc(), 25, 24);
+				temp.onInitialize(LoadedResources.getStar(resources), sm, tempLevelObject.getxLoc(), tempLevelObject.getyLoc(), 25, 24);
 				temp.setCollectable(CollectableStates.collectable);
+				levelSpriteList.add(temp);
+			}
+			
+			else if(tempLevelObject.getName().equalsIgnoreCase("bigbuilding"))
+			{
+				Sprite temp = new Sprite(); //XMLHandler.readSerialFile(resources, R.raw., Sprite.class);
+				temp.onInitialize(LoadedResources.getBigBuilding(), tempLevelObject.getxLoc(), tempLevelObject.getyLoc());
+				levelSpriteList.add(temp);
+			}
+			
+			else if(tempLevelObject.getName().equalsIgnoreCase("smallbuilding"))
+			{
+				Sprite temp = new Sprite(); //XMLHandler.readSerialFile(resources, R.raw., Sprite.class);
+				temp.onInitialize(LoadedResources.getSmallBuilding(), tempLevelObject.getxLoc(), tempLevelObject.getyLoc());
+				levelSpriteList.add(temp);
+			}
+			
+			else if(tempLevelObject.getName().equalsIgnoreCase("sandflat"))
+			{
+				Sprite temp = new Sprite(); //XMLHandler.readSerialFile(resources, R.raw., Sprite.class);
+				temp.onInitialize(LoadedResources.getSandFlat(), tempLevelObject.getxLoc(), tempLevelObject.getyLoc());
+				levelSpriteList.add(temp);
+			}
+			
+			else if(tempLevelObject.getName().equalsIgnoreCase("bigvine"))
+			{
+				Sprite temp = XMLHandler.readSerialFile(resources, R.raw.bigvine, Sprite.class);
+				temp.onInitialize(LoadedResources.getBigVine(), tempLevelObject.getxLoc(), tempLevelObject.getyLoc() - LoadedResources.getBigVine().getHeight());
+				levelSpriteList.add(temp);
+			}
+			
+			else if(tempLevelObject.getName().equalsIgnoreCase("grass"))
+			{
+				Sprite temp = XMLHandler.readSerialFile(resources, R.raw.grass, Sprite.class);
+				temp.onInitialize(LoadedResources.getGrass(), tempLevelObject.getxLoc(), tempLevelObject.getyLoc());
+				levelSpriteList.add(temp);
+			}
+			
+			else if(tempLevelObject.getName().equalsIgnoreCase("littlevine"))
+			{
+				Sprite temp = XMLHandler.readSerialFile(resources, R.raw.littlevine, Sprite.class);
+				temp.onInitialize(LoadedResources.getLittleVine(), tempLevelObject.getxLoc(), tempLevelObject.getyLoc() - LoadedResources.getLittleVine().getHeight());
+				levelSpriteList.add(temp);
+			}
+			
+			else if(tempLevelObject.getName().equalsIgnoreCase("sandhole"))
+			{
+				Sprite temp = XMLHandler.readSerialFile(resources, R.raw.sandhole, Sprite.class);
+				temp.onInitialize(LoadedResources.getSandHole(), tempLevelObject.getxLoc(), tempLevelObject.getyLoc());
+				levelSpriteList.add(temp);
+			}
+			
+			else if(tempLevelObject.getName().equalsIgnoreCase("sandholeleft"))
+			{
+				Sprite temp = new Sprite();//XMLHandler.readSerialFile(resources, R.raw.sandholeleft, Sprite.class);
+				temp.onInitialize(LoadedResources.getSandHoleLeft(), tempLevelObject.getxLoc(), tempLevelObject.getyLoc());
+				levelSpriteList.add(temp);
+			}
+			
+			else if(tempLevelObject.getName().equalsIgnoreCase("sandholeright"))
+			{
+				Sprite temp = new Sprite(); //XMLHandler.readSerialFile(resources, R.raw.sandholeright, Sprite.class);
+				temp.onInitialize(LoadedResources.getSandHoleRight(), tempLevelObject.getxLoc(), tempLevelObject.getyLoc());
+				levelSpriteList.add(temp);
+			}
+			
+			else if(tempLevelObject.getName().equalsIgnoreCase("smalltree"))
+			{
+				Sprite temp = XMLHandler.readSerialFile(resources, R.raw.smalltree, Sprite.class);
+				temp.onInitialize(LoadedResources.getSmallTree(), tempLevelObject.getxLoc(), tempLevelObject.getyLoc());
+				levelSpriteList.add(temp);
+			}
+			
+			else if(tempLevelObject.getName().equalsIgnoreCase("tree"))
+			{
+				Sprite temp = XMLHandler.readSerialFile(resources, R.raw.tree, Sprite.class);
+				temp.onInitialize(LoadedResources.getTree(), tempLevelObject.getxLoc(), tempLevelObject.getyLoc());
+				levelSpriteList.add(temp);
+			}
+			
+			else if(tempLevelObject.getName().equalsIgnoreCase("weed"))
+			{
+				Sprite temp = XMLHandler.readSerialFile(resources, R.raw.weed, Sprite.class);
+				temp.onInitialize(LoadedResources.getWeed(), tempLevelObject.getxLoc(), tempLevelObject.getyLoc() - LoadedResources.getWeed().getHeight());
 				levelSpriteList.add(temp);
 			}
 		}
 		
-		levelLength = (int) (levelSpriteList.get(levelSpriteList.size() - 1).getxPos() + levelSpriteList.get(levelSpriteList.size() - 1).getWidth());
-	}
-
-	
-	//stupid stupid stupid stupid
-	
-	public Sprite getBackground1()
-	{
-		return background1;
-	}
-
-	public void setBackground1(Sprite background1)
-	{
-		this.background1 = background1;
+		levelLength = 16000;//(int) (levelSpriteList.get(levelSpriteList.size() - 1).getxPos() + levelSpriteList.get(levelSpriteList.size() - 1).getWidth());
 	}
 }

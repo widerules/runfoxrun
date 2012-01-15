@@ -35,6 +35,7 @@ public class SurfacePanel extends DrawablePanel
 	//semi arbitrary
 	
 	private Paint textPaint = new Paint();
+	private Sprite loadingStar;
 
 	//might be changed to an image
 	private custString pauseText;
@@ -65,7 +66,6 @@ public class SurfacePanel extends DrawablePanel
 		ts = new TitleScreen();
 		cous = new ContinousScreen(width, height);
 		ps = new PauseScreen();
-		ps.onInitialize(getResources(), R.drawable.titlescreen);
 		sp = new SinglePlayScreen(width, height);
 		
 		pauseText = new custString("PAUSE", 7, 30);
@@ -79,12 +79,19 @@ public class SurfacePanel extends DrawablePanel
 		textPaint.setStyle(Style.FILL);
 		textPaint.setAntiAlias(true);
 		textPaint.setTextSize(24);
+		
+		loadingStar = XMLHandler.readSerialFile(getResources(), R.raw.star, Sprite.class);
 	}
 	
 	//load in our resources
 	public void onInitialize()
 	{	
-		ts.onInitialize(getResources(), R.drawable.titlescreen);
+		LoadedResources.load(getResources());
+		
+		loadingStar.onInitialize(LoadedResources.getStar(getResources()), width / 2 - 12, height / 2, 25, 24);
+		
+		ts.onInitialize(getResources(), R.drawable.titlescreen, mm);
+		ps.onInitialize(getResources(), R.drawable.titlescreen);
 		
 		pm.setPlayer(mainFox);
 		mainFox.onInitialize(getResources(),sm, R.drawable.foxmain, (int)(width / 3.0f), -100, 82, 54);
@@ -92,8 +99,6 @@ public class SurfacePanel extends DrawablePanel
 		
 		sm.addSound(1, R.raw.footstep);
 		sm.addSound(2, R.raw.pkup1);
-		
-		LoadedResources.load(getResources());
 	}
 	
 	public void onUpdate(long gameTime)
@@ -151,24 +156,20 @@ public class SurfacePanel extends DrawablePanel
 		canvas.drawText("FPS " + String.valueOf(fps.getFPS()), width - textPaint.measureText("FPS " + String.valueOf(fps.getFPS())), height, textPaint);
 	}
 	
-	int rotation = 0;
 	private void onLoadingScreen(float delta)
 	{
-		rotation += delta / 10.0f;
+		loadingStar.onUpdate(delta);
 		
 		if(oldState == GameStates.SinglePlay)
 			if(sp.getInitialized())
 			{
 				oldState = GameStates.Loading;
 				currentState = GameStates.SinglePlay;
-				mm.ChangeSongs(R.raw.pulse);
-				mm.addFade(new SoundFade(0,0,1,3000));
-				mm.play(0);
 			}
 	
 		if(oldState == GameStates.TitleScreen)
 		{
-			if(!mm.isLoaded() && sm.isAllLoaded())
+			if(mm.isLoaded() && sm.isAllLoaded())
 			//if(sm.isLoaded(0) == LoadStates.complete)
 			{
 				oldState = GameStates.Loading;
@@ -179,10 +180,8 @@ public class SurfacePanel extends DrawablePanel
 	
 	private void onDrawLoadingScreen(Canvas canvas)
 	{
-		canvas.save();
-		canvas.rotate(rotation, width / 2, height / 2);
-		canvas.drawText("Loading...", width / 2 - textPaint.measureText("Loading") / 2, height / 2 - textPaint.getTextSize() * 2, textPaint);
-		canvas.restore();		
+		loadingStar.onDraw(canvas);
+		canvas.drawText("Loading...", width / 2 - textPaint.measureText("Loading...") / 2, height / 2 + 25 + 24, textPaint);
 	}
 	
 	private void checkForUserPause()
@@ -225,6 +224,7 @@ public class SurfacePanel extends DrawablePanel
 		{
 			oldState = GameStates.Pause;
 			currentState = GameStates.TitleScreen;
+			mm.addFade(new SoundFade(0, 1, 0, 3000));
 		}
 		else if(newState == GameStates.Resume)
 		{
@@ -239,11 +239,10 @@ public class SurfacePanel extends DrawablePanel
 	private void onTitleScreen(float delta)
 	{
 		//sounds
-		ts.onUpdate(delta, mm);
+		ts.onUpdate(delta);
 		
 		GameStates newState = GameStates.TitleScreen;
-		
-		
+			
 		for(int i = 0; i < im.fingerCount; i++)
 		{
 			if(im.getReleased(i))
@@ -263,7 +262,7 @@ public class SurfacePanel extends DrawablePanel
 		{
 			purgeManagers();
 			sp = new SinglePlayScreen(width, height);
-			sp.onInitialize(getResources(), im, pm, sm, R.raw.level, mainFox);
+			sp.onInitialize(getResources(), im, pm, sm, mm, R.raw.level, mainFox);
 			oldState = GameStates.SinglePlay;
 			currentState = GameStates.Loading;
 			
@@ -279,6 +278,8 @@ public class SurfacePanel extends DrawablePanel
 			cous.onInitialize(getResources(), im, pm, mainFox);
 			oldState = GameStates.TitleScreen;
 			currentState = GameStates.Continous;
+			
+			mm.addFade(new SoundFade(0, 1, 0, 3000));
 		}
 	}
 	
@@ -290,21 +291,31 @@ public class SurfacePanel extends DrawablePanel
 	
 	public void onScreenPause()
 	{
-		//when the game is paused by turning off.
+		//when the game is paused by outside shit.
+		this.oldState = this.currentState;
+		this.currentState = GameStates.Pause;
+		mm.stop();
 		mm.release();
+		stopThread();
 	}
 
 	public void onScreenResume()
 	{
-		
+		//recapture mm
+		//recapture sm
+		//set previous song to playing
+		//if(thread not running)
+		//  {start the thread; }
 	}
 	
-	private void onUserQuit()
+	public void onUserQuit()
 	{
 		//probably save stuff before actually quitting.
 		sm.release();
+		mm.stop();
 		mm.release();
-		System.exit(0); 
+		stopThread();
+		//System.exit(0); 
 	}
 
 }

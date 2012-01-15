@@ -28,7 +28,6 @@ public class PhysicsManager
 	private boolean death = false;
 	private boolean reverse = false;
 	
-	//specialized
 	private boolean touching = false;
 	
 	public void jump()
@@ -38,12 +37,6 @@ public class PhysicsManager
 			userVel = jumpFloat;
 			physObj.setAnimation(CharStates.Jump);
 		}
-	}
-	
-	//DELETE ME
-	public int getPhyObjCount()
-	{
-		return interactables.size();
 	}
 	
 	public boolean getDeath()
@@ -61,9 +54,21 @@ public class PhysicsManager
 		return scrollProgress;
 	}
 	
-	public void setScrollProgress(float amount)
+	public void setScrollProgress(float value)
 	{
-		scrollProgress = amount;
+		for(Iterator<Sprite> it = interactables.iterator(); it.hasNext();)
+		{
+			Sprite temp = it.next();
+			temp.setxPos(temp.getxPos() - scrollProgress - value);
+		}
+		
+		for(Iterator<Sprite> it = backgroundables.iterator(); it.hasNext();)
+		{
+			Sprite temp = it.next();
+			temp.setxPos(temp.getxPos() - scrollProgress / 10.0f - value / 10.0f);
+		}
+		
+		scrollProgress = value;
 	}
 	
 	public PhysicsManager(int width, int height)
@@ -96,7 +101,7 @@ public class PhysicsManager
 	}
 	
 	public void setScrollRate(float value)
-	{
+	{	
 		scrollValue = value;
 	}
 	
@@ -136,10 +141,10 @@ public class PhysicsManager
 		{
 		    Sprite element = i.next();
 		    {
-		    	if(element.getxPos() + element.getWidth() > 0 && element.getxPos() < width)
+	    		if(set)
 		    	{
-		    		if(set)
-		    			checkForCollisions(element);
+		    			if(physObj.getxPos() + physObj.getWidth() >= element.getxPos() && physObj.getxPos() <= element.getxPos() + element.getWidth())
+		    				checkForCollisions(element);
 		    	}
 		    	
 		    	element.setxPos((element.getxPos() + amount));	
@@ -183,7 +188,7 @@ public class PhysicsManager
 	
 	private void handleCollisions(int amount, boolean death)
 	{
-		int checkamount = (int)linInterp(0.001f, 0.25f, Math.abs(userVel), 10, physObj.getHeight());
+		int checkamount = (int)linInterp(-.001f, 0.25f, Math.abs(userVel), 10, physObj.getHeight());
 		
 		if(death)
 		{
@@ -216,10 +221,7 @@ public class PhysicsManager
 			{
 				physRect physObjPhysRect = e.next();
 				
-				int amount = 0;
-				
-				if(elementPhysRect.getCollRect().left >= 0 && elementPhysRect.getCollRect().right <= width)
-					amount = collisionDetec(elementPhysRect.getCollRect(), physObjPhysRect.getCollRect());
+				int amount = collisionDetec(elementPhysRect.getCollRect(), physObjPhysRect.getCollRect());
 				
 				if(element.getCollectable() == CollectableStates.collectable && amount != 0)
 				{
@@ -262,7 +264,10 @@ public class PhysicsManager
 	
 	public void purge()
 	{
-		for (Iterator<Sprite> i = interactables.iterator(); i.hasNext();) 
+		interactables.clear();
+		backgroundables.clear();
+		
+		/*for (Iterator<Sprite> i = interactables.iterator(); i.hasNext();) 
 		{
 			i.next();
 			i.remove();
@@ -272,7 +277,7 @@ public class PhysicsManager
 		{
 			i.next();
 			i.remove();
-		}
+		}*/
 		
 		scrollProgress = 0;
 		
@@ -290,6 +295,11 @@ public class PhysicsManager
 	{
 		reset();
 		reverse = true;
+	}
+	
+	public void nextLevel()
+	{
+		interactables.clear();
 	}
 	
 }

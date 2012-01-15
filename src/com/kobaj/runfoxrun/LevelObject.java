@@ -6,9 +6,6 @@ import org.simpleframework.xml.Element;
 public class LevelObject
 {
 	@Element
-	private boolean collectable;
-	
-	@Element
 	private boolean top;
 	
 	@Attribute
@@ -52,10 +49,5 @@ public class LevelObject
 	public boolean getOrientation()
 	{
 		return top;
-	}
-	
-	public boolean getCollectable()
-	{
-		return collectable;	
 	}
 }

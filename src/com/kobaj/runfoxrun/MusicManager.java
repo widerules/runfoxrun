@@ -10,7 +10,7 @@ public class MusicManager
 	private MediaPlayer mp;
 	private AudioManager mAudioManager;
 	
-	private boolean loaded = false;
+	private boolean loaded = true;
 	
 	private SoundFade thisFade;
 	private SoundFade nextFade;
@@ -22,6 +22,8 @@ public class MusicManager
 	
 	private int currentSong;
 	
+	private int checkupdate = 0;
+	
 	public MusicStates getSituation()
 	{
 		return thisState;
@@ -29,11 +31,14 @@ public class MusicManager
 	
 	public void onUpdate(float delta)
 	{
-		if(thisFade != null && thisState == MusicStates.playing)
+		if(thisState != MusicStates.playing)
+			return;
+		
+		if (thisFade != null && thisState == MusicStates.playing)
 		{
 			thisFade.onUpdate(delta);
 			
-			if(thisFade.getValid())
+			if (thisFade.getValid())
 			{
 				float volume = getCorrectedVolume(thisFade.getVolume());
 				
@@ -41,7 +46,7 @@ public class MusicManager
 			}
 			else
 			{
-				if(nextFade != null)
+				if (nextFade != null)
 				{
 					thisFade = nextFade;
 					nextFade = null;
@@ -49,7 +54,7 @@ public class MusicManager
 					play();
 					nextSong = -1;
 				}
-				else if(thisFade.getEndVolume() == 0)
+				else if (thisFade.getEndVolume() <= 0.01)
 				{
 					stop();
 					thisFade = null;
@@ -65,24 +70,27 @@ public class MusicManager
 		thisFade = fade;
 	}
 	
-	public MusicManager(Context context, int value )
-	{	
+	public MusicManager(Context context, int value)
+	{
 		mContext = context;
-		mAudioManager = (AudioManager)mContext.getSystemService(Context.AUDIO_SERVICE);
+		mAudioManager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
 		
 		mp = new MediaPlayer();
 		
-		mp.setOnPreparedListener(new OnPreparedListener(){
-
+		mp.setOnPreparedListener(new OnPreparedListener()
+		{
+			
 			@Override
 			public void onPrepared(MediaPlayer mp)
 			{
-				loaded = false;	
+				loaded = true;
 			}
 			
 		});
-		
+
 		ChangeSongs(value);
+		
+		loaded = true;
 	}
 	
 	public void play(float volume)
@@ -111,16 +119,16 @@ public class MusicManager
 	
 	public void setLooping(boolean looping)
 	{
-		mp.setLooping(looping);	
+		mp.setLooping(looping);
 	}
 	
 	public void ChangeSongs(int value)
 	{
 		loaded = false;
 		
-		mp.reset(); 
+		mp.reset();
 		
-		if(value != -1)
+		if (value != -1)
 		{
 			mp = MediaPlayer.create(mContext, value);
 		}
@@ -138,13 +146,13 @@ public class MusicManager
 	}
 	
 	public void ChangeSongs(int value, SoundFade fadeOut, SoundFade fadeIn)
-	{	
-		if(thisState == MusicStates.stopped)
+	{
+		if (thisState == MusicStates.stopped)
 			fadeOut = null;
 		
-		if(fadeOut != null)
+		if (fadeOut != null)
 		{
-			if(fadeIn != null)
+			if (fadeIn != null)
 			{
 				thisFade = fadeOut;
 				nextFade = fadeIn;
@@ -159,7 +167,7 @@ public class MusicManager
 		}
 		else
 		{
-			if(fadeIn != null)
+			if (fadeIn != null)
 			{
 				ChangeSongs(value);
 				thisFade = fadeIn;
@@ -197,12 +205,12 @@ public class MusicManager
 	{
 		mp.release();
 	}
-
+	
 	public boolean isLoaded()
 	{
 		return loaded;
 	}
-
+	
 	public int getCurrentSong()
 	{
 		return currentSong;

@@ -51,7 +51,8 @@ public class Sprite
 	public void setCollectable(CollectableStates collect)
 	{
 		if(collect == CollectableStates.collected)
-			sm.playSound(2);
+			if(sm != null)
+				sm.playSound(2, 1, 0);
 		
 		this.collectable = collect;
 	}
@@ -226,7 +227,7 @@ public class Sprite
 					if(currentFrame == 1 || currentFrame == 3)
 					{
 						if(sm != null)
-							sm.playSound(1, .3f); //footsteps
+							sm.playSound(1, .5f); //footsteps
 					}
 				}
 				
