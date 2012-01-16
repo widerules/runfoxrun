@@ -29,6 +29,10 @@ public class LoadedResources
 	private static Bitmap tree;
 	private static Bitmap weed; 
 	
+	private static Bitmap deadtree;
+	
+	private static Bitmap level3ground;
+	
 	private static Bitmap foxTwo;
 	
 	private static boolean loaded = false;
@@ -62,6 +66,10 @@ public class LoadedResources
 		weed = BitmapFactory.decodeResource(resources, R.drawable.weed);
 		
 		foxTwo = BitmapFactory.decodeResource(resources, R.drawable.fox2);
+		
+		level3ground = BitmapFactory.decodeResource(resources, R.drawable.level3ground);
+		
+		deadtree = BitmapFactory.decodeResource(resources, R.drawable.deadtree);
 		
 		loaded = true;
 	}
@@ -199,5 +207,15 @@ public class LoadedResources
 	public static Bitmap getFoxTwo()
 	{
 		return foxTwo;
+	}
+	
+	public static Bitmap getLevel3Ground()
+	{
+		return level3ground;
+	}
+	
+	public static Bitmap getDeadTree()
+	{
+		return deadtree;
 	}
 }

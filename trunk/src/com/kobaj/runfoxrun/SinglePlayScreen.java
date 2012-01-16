@@ -37,7 +37,7 @@ public class SinglePlayScreen implements Runnable
 	
 	private boolean initialized = false;
 	
-	private int levelNumber = 2;
+	private int levelNumber = 3;
 	
 	//top level
 	private Bitmap progressBarIcon;
@@ -142,14 +142,14 @@ public class SinglePlayScreen implements Runnable
 			//handle input
 			for (int i = 0; i < im.fingerCount; i++)
 			{
-				if (im.getPressed(i))
+				if (im.getPressed(i) && levelNumber != 3 && pm.getScrollProgress() < 15250)
 				{
 					pm.jump();
 				}
 			}
 			
 			//handle next level;
-			if(pm.getScrollProgress() >= 16000)
+			if(pm.getScrollProgress() >= levelList.get(levelNumber - 1).getLevelLength())
 			{
 				hitList.clear();
 				pm.nextLevel();
@@ -164,6 +164,12 @@ public class SinglePlayScreen implements Runnable
 				pm.setScrollProgress(0);
 				
 				grabHitList(levelNumber);
+			}
+			else if(levelNumber == 3 && pm.getScrollProgress() >= 15300)
+			{
+				pm.unsetPlayer();
+				pm.addPhys(player);
+				player.setAnimation(CharStates.Collapse);
 			}
 			
 			//background logics
@@ -223,45 +229,19 @@ public class SinglePlayScreen implements Runnable
 			{
 				back.onDraw(canvas, (int) -(-back.getWidth() + back.getxPos()), backheight);
 			}
-			
-			//debugging
-			/*Paint debugPaint = new Paint();
-			debugPaint.setColor(Color.BLACK);
-		    debugPaint.setStyle(Paint.Style.STROKE);
-		    debugPaint.setStrokeWidth(2);
-		    debugPaint.setAntiAlias(true);*/
-			
+					
 			//interaction layer
 			for(Iterator<Sprite> it = hitList.iterator(); it.hasNext();)
 			{
 				Sprite temp = it.next();
 				
-				if(temp.getxPos() + temp.getWidth() > 0)
+				int spritePosx = (int)temp.getxPos();
+				int spriteWidth = (int)temp.getWidth();
+				if(spritePosx < width && spritePosx + spriteWidth > 0)
 				{
 					temp.onDraw(canvas);
-					
-					//item debuggin
-					/*for(Iterator<physRect> ite = temp.getPhysRect().iterator(); ite.hasNext();)
-					{
-						physRect rect = ite.next();
-						if(rect.getHurts())
-							debugPaint.setColor(Color.RED);
-						else
-							debugPaint.setColor(Color.BLACK);
-						canvas.drawRect(rect.getCollRect(), debugPaint);
-					}*/
-					
 				}
-				else if (temp.getxPos() > width + 10)
-					break;
 			}
-			
-			//character debugging
-			/*for(Iterator<physRect> it = player.getPhysRect().iterator(); it.hasNext();)
-			{
-				physRect rect = it.next();
-				canvas.drawRect(rect.getCollRect(), debugPaint);
-			}*/
 			
 			//character
 			player.onDraw(canvas);
@@ -273,7 +253,7 @@ public class SinglePlayScreen implements Runnable
 			canvas.drawLine(pad, 20, width - pad, 20, linePaint);
 			canvas.drawLine(pad, 15, pad, 27, linePaint);
 			canvas.drawLine(width - pad, 15, width - pad, 27, linePaint);
-			canvas.drawBitmap(progressBarIcon, linInterp(0, 16400 , pm.getScrollProgress(), pad, width - pad), 0, bitmapPaint);
+			canvas.drawBitmap(progressBarIcon, linInterp(800, levelList.get(levelNumber - 1).getLevelLength() + 400 , pm.getScrollProgress(), pad, width - pad), 0, bitmapPaint);
 			
 			//more overlay
 			collectionScoreIcon.onDraw(canvas);
@@ -299,10 +279,21 @@ public class SinglePlayScreen implements Runnable
 		levelList.add(XMLHandler.readSerialFile(resources, R.raw.level, Level.class));
 		levelList.add(XMLHandler.readSerialFile(resources, R.raw.level2, Level.class));
 		levelList.add(XMLHandler.readSerialFile(resources, R.raw.level3, Level.class));
-		levelList.add(XMLHandler.readSerialFile(resources, R.raw.level4, Level.class));
+		//levelList.add(XMLHandler.readSerialFile(resources, R.raw.level4, Level.class));
 		
-		for(int i = 0; i < 4; i++)
-			levelList.get(i).onInitialize(resources, width, height, sm);
+		for(Iterator<Level> it = levelList.iterator(); it.hasNext();)
+			it.next().onInitialize(resources, width, height, sm);
+		
+		/*boolean going = true;
+		while(going)
+		{
+			going = false;
+			for(Iterator<Level> it = levelList.iterator(); it.hasNext();)
+			{
+				if(!it.next().getInitialized())
+					going = true;
+			}	
+		}*/
 		
 		// grab the hit list;
 		hitList = new ArrayList<Sprite>();

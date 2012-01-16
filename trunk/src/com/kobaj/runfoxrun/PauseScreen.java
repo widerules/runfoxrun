@@ -14,7 +14,7 @@ public class PauseScreen extends ListScreens
 	{
 		count = 3;
 		
-		imgBackdrop = BitmapFactory.decodeResource(resources, identity);
+		//imgBackdrop = BitmapFactory.decodeResource(resources, identity);
 		
 		contGame = new custString("Continue", 100, 100);
 		contGame.setSize(35);
@@ -31,7 +31,6 @@ public class PauseScreen extends ListScreens
 		
 		initialized = true;
 	}
-	
 	public GameStates onTouch(int x, int y)
 	{
 		if (contGame.fingertap(x, y))

@@ -231,6 +231,7 @@ public class Sprite
 					}
 				}
 				
+				
 				if (currentFrame > currentSetAnimation.getFrameCount())
 				{
 					if(currentSetAnimation.getName().equalsIgnoreCase(CharStates.Jump.name()))
@@ -240,6 +241,10 @@ public class Sprite
 					else if(currentSetAnimation.getName().equalsIgnoreCase(CharStates.GoingDown.name()))
 					{
 						this.setAnimation(CharStates.Running);
+					}
+					else if(currentSetAnimation.getName().equalsIgnoreCase(CharStates.Collapse.name()))
+					{
+						this.setAnimation(CharStates.Collapsed);
 					}
 						
 					currentFrame = 1;

@@ -29,6 +29,14 @@ public class MusicManager
 		return thisState;
 	}
 	
+	public void clearFades()
+	{
+		nextFade = null;
+		thisFade = null;
+		
+		nextSong = -1;
+	}
+	
 	public void onUpdate(float delta)
 	{
 		if(thisState != MusicStates.playing)
@@ -67,6 +75,7 @@ public class MusicManager
 	
 	public void addFade(SoundFade fade)
 	{
+		clearFades();
 		thisFade = fade;
 	}
 	
@@ -186,7 +195,7 @@ public class MusicManager
 	
 	private float getCorrectedVolume(float volume)
 	{
-		volume = Math.max(Math.min(volume, .99f), .0001f);
+		volume = Math.max(Math.min(volume, .75f), .0001f);
 		
 		float streamVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
 		streamVolume = streamVolume / mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC) * volume;
