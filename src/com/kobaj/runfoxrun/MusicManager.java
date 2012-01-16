@@ -22,8 +22,6 @@ public class MusicManager
 	
 	private int currentSong;
 	
-	private int checkupdate = 0;
-	
 	public MusicStates getSituation()
 	{
 		return thisState;

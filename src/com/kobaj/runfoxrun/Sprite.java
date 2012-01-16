@@ -207,6 +207,11 @@ public class Sprite
 		onInitialize(resources, identity, 0, 0, -1, -1);
 	}
 	
+	public String getCurAnimation()
+	{
+		return this.currentSetAnimation.getName();
+	}
+	
 	public void onUpdate(float delta)
 	{
 		// tumbling ifs!

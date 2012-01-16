@@ -7,6 +7,7 @@ import android.graphics.Rect;
 
 public class PhysicsManager
 {
+	@SuppressWarnings("unused")
 	private int width;
 	private int height;
 	
@@ -167,6 +168,7 @@ public class PhysicsManager
 		if(set)
 		if (physObj.getyPos() > height)
 		{
+			if(!reverse)
 			death = true;
 		}
 		
@@ -199,10 +201,12 @@ public class PhysicsManager
 		
 		if (death)
 		{
+			if(!reverse)
 			this.death = true;
 		}
 		else if (Math.abs(amount) >= checkamount)
 		{
+			if(!reverse)
 			this.death = true;
 		}
 		else if (Math.abs(amount) > 0) // bit relaxed

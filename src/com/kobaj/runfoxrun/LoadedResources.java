@@ -35,6 +35,8 @@ public class LoadedResources
 	
 	private static Bitmap foxTwo;
 	
+	private static Bitmap black;
+	
 	private static boolean loaded = false;
 	
 	public static void load(Resources resources)
@@ -71,9 +73,27 @@ public class LoadedResources
 		
 		deadtree = BitmapFactory.decodeResource(resources, R.drawable.deadtree);
 		
+		black = BitmapFactory.decodeResource(resources, R.drawable.black);
+		
+		BIGVine = XMLHandler.readSerialFile(resources, R.raw.bigvine, Sprite.class);
+		LITtleVine = XMLHandler.readSerialFile(resources, R.raw.littlevine, Sprite.class);
+		SANdHole = XMLHandler.readSerialFile(resources, R.raw.sandhole, Sprite.class);
+		SMAllTree = XMLHandler.readSerialFile(resources, R.raw.smalltree, Sprite.class);
+		TREe = XMLHandler.readSerialFile(resources, R.raw.tree, Sprite.class);
+		WEEd = XMLHandler.readSerialFile(resources, R.raw.weed, Sprite.class);
+		DEAdTree = XMLHandler.readSerialFile(resources, R.raw.deadtree, Sprite.class);
+		
 		loaded = true;
 	}
 	
+	static Sprite BIGVine;
+	static Sprite LITtleVine;
+	static Sprite SANdHole;
+	static Sprite SMAllTree;
+	static Sprite TREe;
+	static Sprite WEEd;
+	static Sprite DEAdTree;
+
 	public static Bitmap getStar(Resources resources)
 	{
 		if(loaded)
@@ -217,5 +237,45 @@ public class LoadedResources
 	public static Bitmap getDeadTree()
 	{
 		return deadtree;
+	}
+	
+	public static Bitmap getBlack()
+	{
+		return black;
+	}
+
+	public static Sprite getBIGVine()
+	{
+		return BIGVine;
+	}
+
+	public static Sprite getLITtleVine()
+	{
+		return LITtleVine;
+	}
+
+	public static Sprite getSANdHole()
+	{
+		return SANdHole;
+	}
+
+	public static Sprite getSMAllTree()
+	{
+		return SMAllTree;
+	}
+
+	public static Sprite getTREe()
+	{
+		return TREe;
+	}
+
+	public static Sprite getWEEd()
+	{
+		return WEEd;
+	}
+
+	public static Sprite getDEAdTree()
+	{
+		return DEAdTree;
 	}
 }

@@ -68,8 +68,6 @@ public class TitleScreen extends ListScreens
 			else if (titleScreenCurrentSong == 4)
 				mm.ChangeSongs(R.raw.quicken, new SoundFade(0, 1, 0, 3000), new SoundFade(0, 0, 1, 3000));
 			
-			mm.play(.0001f);
-			
 			titleScreenCurrentSong++;
 			
 			if(titleScreenCurrentSong >=5)

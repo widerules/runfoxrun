@@ -1,7 +1,6 @@
 package com.kobaj.runfoxrun;
 
 import android.content.res.Resources;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 
 public class PauseScreen extends ListScreens

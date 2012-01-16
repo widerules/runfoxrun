@@ -101,13 +101,13 @@ public class Level implements Runnable
 		levelSpriteList = new ArrayList<Sprite>();
 		
 		//in an attempt to make loading faster
-		Sprite BIGVine = XMLHandler.readSerialFile(resources, R.raw.bigvine, Sprite.class);
-		Sprite LITtleVine = XMLHandler.readSerialFile(resources, R.raw.littlevine, Sprite.class);
-		Sprite SANdHole = XMLHandler.readSerialFile(resources, R.raw.sandhole, Sprite.class);
-		Sprite SMAllTree = XMLHandler.readSerialFile(resources, R.raw.smalltree, Sprite.class);
-		Sprite TREe = XMLHandler.readSerialFile(resources, R.raw.tree, Sprite.class);
-		Sprite WEEd = XMLHandler.readSerialFile(resources, R.raw.weed, Sprite.class);
-		Sprite DEAdTree = XMLHandler.readSerialFile(resources, R.raw.deadtree, Sprite.class);
+		Sprite BIGVine = LoadedResources.getBIGVine();
+		Sprite LITtleVine = LoadedResources.getLITtleVine();
+		Sprite SANdHole = LoadedResources.getSANdHole();
+		Sprite SMAllTree = LoadedResources.getSMAllTree();
+		Sprite TREe = LoadedResources.getTREe();
+		Sprite WEEd = LoadedResources.getWEEd();
+		Sprite DEAdTree = LoadedResources.getDEAdTree();
 		
 		for(Iterator<LevelObject> it = levelObjectList.iterator(); it.hasNext();)
 		{	
@@ -299,6 +299,13 @@ public class Level implements Runnable
 					Rect collRect = physRectTemp.getCollRect();
 					temp.getPhysRect().add(new physRect(collRect.top + (int)temp.getyPos(), collRect.bottom + (int)temp.getyPos(), collRect.right + (int)temp.getxPos(), collRect.left + (int)temp.getxPos(), physRectTemp.getHurts()));
 				}
+				levelSpriteList.add(temp);
+			}
+			
+			else if(tempLevelObject.getName().equalsIgnoreCase("black"))
+			{
+				Sprite temp = new Sprite(); 
+				temp.onInitialize(LoadedResources.getBlack(), tempLevelObject.getxLoc(), tempLevelObject.getyLoc());
 				levelSpriteList.add(temp);
 			}
 		}
