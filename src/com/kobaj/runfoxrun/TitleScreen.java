@@ -26,16 +26,19 @@ public class TitleScreen extends ListScreens
 		
 		newGame = new custString("New Game", 100, 100);
 		newGame.setColor(Color.WHITE, Color.BLACK);
-		newGame.setSize(35);
+		newGame.setSize(55);
 		
 		continousGame = new custString("Endless Game", 100, 200);
 		continousGame.setColor(Color.WHITE, Color.BLACK);
+		continousGame.setSize(55);
 		
 		highScores = new custString("High Scores", 100, 300);
 		highScores.setColor(Color.GRAY, Color.BLACK);
+		highScores.setSize(55);
 		
 		quit = new custString("Quit Game", 400, 400);
 		quit.setColor(Color.RED, Color.BLACK);
+		quit.setSize(55);
 		
 		stringList = new custString[count];
 		stringList[0] = newGame;

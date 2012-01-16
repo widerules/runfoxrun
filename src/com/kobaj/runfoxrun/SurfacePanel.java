@@ -148,8 +148,17 @@ public class SurfacePanel extends DrawablePanel
 			pauseText.onDraw(canvas);
 			mainFox.onDraw(canvas);
 		}
-		else if(currentState == GameStates.Pause)
+		else if(currentState == GameStates.Pause && oldState == GameStates.SinglePlay)
+		{
+			sp.onDraw(canvas);
 			ps.onDraw(canvas);
+		}
+		else if(currentState == GameStates.Pause && oldState == GameStates.Continous)
+		{
+			cous.onDraw(canvas);
+			mainFox.onDraw(canvas);
+			ps.onDraw(canvas);
+		}
 		else if(currentState == GameStates.Loading)
 			onDrawLoadingScreen(canvas);
 		
@@ -215,6 +224,10 @@ public class SurfacePanel extends DrawablePanel
 			if(newState != GameStates.Pause)
 				break;
 			}
+			
+			//DELETE ME (cheats and h4x :D)
+			int deltax = (int) im.getDeltax(i);
+			pm.setScrollProgress(pm.getScrollProgress() + -deltax/ 4.0f);
 		}
 		
 		if(newState == GameStates.Quit)
@@ -269,7 +282,6 @@ public class SurfacePanel extends DrawablePanel
 			
 			ts.titleScreenCurrentSong = 0;
 			ts.titleScreenSoundTime = 3000000;
-			
 			mm.addFade(new SoundFade(0, 1, 0, 3000));
 		}
 		else if(newState == GameStates.Continous)

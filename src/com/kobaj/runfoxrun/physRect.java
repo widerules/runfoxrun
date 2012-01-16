@@ -25,8 +25,7 @@ public class physRect
 	
 	private Rect collRect;
 	
-	@SuppressWarnings("unused")
-	private physRect(@Attribute(name = "top") int top,
+	public physRect(@Attribute(name = "top") int top,
 			@Attribute(name = "bottom") int bottom,
 			@Attribute(name = "right") int right,
 			@Attribute(name = "left") int left,

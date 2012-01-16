@@ -19,7 +19,8 @@ public abstract class ListScreens
 	{
 		if(initialized)
 		{
-		canvas.drawBitmap(imgBackdrop, 0, 0, null);
+			if(imgBackdrop != null)
+				canvas.drawBitmap(imgBackdrop, 0, 0, null);
 		
 		//array yay :D
 		for(int i = 0; i < count; i++)
