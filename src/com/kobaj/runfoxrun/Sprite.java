@@ -9,6 +9,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.Rect;
 
 public class Sprite
@@ -39,6 +40,8 @@ public class Sprite
 	private boolean initialized = false;
 	
 	private CollectableStates collectable;
+	
+	private Paint myPaint = new Paint();
 	
 	//wish I had extended my sprite classes correctly...too late now
 	private SoundManager sm;
@@ -232,7 +235,7 @@ public class Sprite
 					if(currentFrame == 1 || currentFrame == 3)
 					{
 						if(sm != null)
-							sm.playSound(1, .5f); //footsteps
+							sm.playSound(1, .75f); //footsteps
 					}
 				}
 				
@@ -246,6 +249,8 @@ public class Sprite
 					else if(currentSetAnimation.getName().equalsIgnoreCase(CharStates.GoingDown.name()))
 					{
 						this.setAnimation(CharStates.Running);
+						if(sm != null)
+						sm.playSound(5, .75f); //landing
 					}
 					else if(currentSetAnimation.getName().equalsIgnoreCase(CharStates.Collapse.name()))
 					{
@@ -263,7 +268,7 @@ public class Sprite
 	public void onDraw(Canvas canvas)
 	{
 		if (initialized)
-			canvas.drawBitmap(img, sRectangle, dest, null);
+			canvas.drawBitmap(img, sRectangle, dest, myPaint);
 	}
 	
 	public void onDraw(Canvas canvas, int scrollingPositionX, int scrollingPositionY)
@@ -272,7 +277,7 @@ public class Sprite
 		Rect rect2 = new Rect(0, 0, canvas.getWidth(), canvas.getHeight());
 
 		if(initialized)
-			canvas.drawBitmap(img, rect1, rect2, null);
+			canvas.drawBitmap(img, rect1, rect2, myPaint);
 	}
 	
 	public void setAnimation(CharStates state)
@@ -315,5 +320,10 @@ public class Sprite
 		img = null;
 		
 		animationList.clear();
+	}
+
+	public void setPaintColorFilter(int alpha)
+	{
+		myPaint.setAlpha(alpha);
 	}
 }

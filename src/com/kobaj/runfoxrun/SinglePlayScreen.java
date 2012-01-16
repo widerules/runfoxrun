@@ -37,7 +37,7 @@ public class SinglePlayScreen implements Runnable
 	
 	private boolean initialized = false;
 	
-	private int levelNumber = 4;
+	private int levelNumber = 1;
 	
 	//top level
 	private Bitmap progressBarIcon;
@@ -47,9 +47,13 @@ public class SinglePlayScreen implements Runnable
 	
 	private boolean sceneDead = false;
 	
+	private Creditables myCredits;
+	
 	int pad;
 	
 	public boolean resetBad = false;
+	
+	private float credits = 0;
 	
 	private void setPlayerPos()
 	{
@@ -82,9 +86,11 @@ public class SinglePlayScreen implements Runnable
 		
 		this.resources = resources;
 		
+		myCredits = new Creditables(width, height);
+		
 		start();
 	}
-	public void onUpdate(float delta)
+	public boolean onUpdate(float delta)
 	{
 		if (initialized)
 		{	
@@ -94,13 +100,18 @@ public class SinglePlayScreen implements Runnable
 					badGuy.setxPos((badGuy.getxPos() - delta / 5.0f));
 				else
 					resetBad = false;
+			
 			if(pm.getScrollProgress() >= 800)
 				if(badGuy.getxPos() < 0 && !resetBad)
 				{
 					badGuy.setxPos(badGuy.getxPos() + delta / 5f);
 					
-					if(badGuy.getxPos() > 0)
-						badGuy.setxPos(0);
+					 if(badGuy.getxPos() > 0)
+					{
+						badGuy.setxPos(0); //done resettings
+						//sm.playSound(4, .01f, 1000); 
+						//sm.addFade(new SoundFade(4, 0.01f, .75f, 3000));
+					}
 				}
 			
 			//handle input
@@ -108,7 +119,7 @@ public class SinglePlayScreen implements Runnable
 			{
 				if(im.getPressed(i))
 				{
-					if(!sceneDead)
+					if(!sceneDead && this.credits == 0)
 						pm.jump();	
 				}
 			}
@@ -159,7 +170,54 @@ public class SinglePlayScreen implements Runnable
 				this.setPlayerPos();
 				badGuy.setyPos(-height - badGuy.getHeight() - 10);
 			}
-			//for this elsif do something like if pm.getscrollprogress-width to make sure our grass never clips off the screen.
+			else if(levelNumber == 4 && pm.getScrollProgress() >= 14950 && pm.getScrollProgress() < 15000 + pm.getScrollDelta() * delta && credits == 0)
+			{
+				credits += delta;		
+			}
+			else if(levelNumber == 4 && pm.getScrollProgress() >= 16000 - width - 25)
+			{
+				pm.setScrollRate(0);
+				player.setAnimation(CharStates.Standing); 
+				pm.unsetPlayer();
+				
+				pm.purge(); //may need to be removed
+			}
+			
+			if(credits > 0)
+				credits += delta;
+			
+			//credits;
+			if(credits > 10000 && credits < 15000)
+			{
+				int multiplier = (int) this.linInterp(10000, 15000, credits, 255, 0);
+				for(Iterator<Sprite> it = hitList.iterator(); it.hasNext();)
+				{
+					it.next().setPaintColorFilter(multiplier);
+				}
+				
+				player.setPaintColorFilter(multiplier);
+				badGuy.setPaintColorFilter(multiplier);
+				linePaint.setShadowLayer(0, 0, 0, Color.BLACK);
+				linePaint.setAlpha(multiplier);
+				bitmapPaint.setAlpha(multiplier);
+			}
+			if(credits > 15000)
+			{
+				hitList.clear();
+				collectionList.clear();
+				if(!myCredits.getDone())
+				{
+					myCredits.onUpdate(delta);
+				}
+				else
+					return false;
+				
+				player.setyPos(-height - player.getHeight() - 25);
+				player.setPaintColorFilter(0);
+				badGuy.setPaintColorFilter(0);
+				linePaint.setAlpha(0);
+				bitmapPaint.setAlpha(0);
+			}
 			
 			//background logics
 			if(back.getxPos() + back.getWidth() <= 0)
@@ -180,6 +238,7 @@ public class SinglePlayScreen implements Runnable
 				pm.levelReset();
 				resetBad = true;
 				sm.playSound(3, .25f);
+				//sm.stopSound(4);
 			}
 			
 			//set me collections
@@ -200,10 +259,12 @@ public class SinglePlayScreen implements Runnable
 				}	
 			}
 		}
+		
+		return true;
 	}
 	
 	public void onDraw(Canvas canvas)
-	{
+	{		
 		if (initialized)
 		{
 			//background
@@ -251,6 +312,10 @@ public class SinglePlayScreen implements Runnable
 			
 			//bit of debuggings
 			canvas.drawText(String.valueOf(pm.getScrollProgress()), width - 300, 150, deleteme);
+			canvas.drawText(String.valueOf(credits), width-300, 100, deleteme);
+			
+			if(credits > 15000)
+				myCredits.onDraw(canvas);
 		}
 	}
 	Paint deleteme = new Paint();
@@ -266,7 +331,7 @@ public class SinglePlayScreen implements Runnable
 	public void run()
 	{
 		back = new Sprite();
-		back.onInitialize(LoadedResources.getBackground1(resources));
+		back.onInitialize(LoadedResources.getBigBackGround());
 		
 		progressBarIcon = LoadedResources.getIcon(resources);
 		//load dat bad guy
@@ -329,8 +394,8 @@ public class SinglePlayScreen implements Runnable
 		mm.play(0);
 		
 		initialized = true;
-		
-		//pm.setScrollProgress(15000);
+
+		//pm.setScrollProgress(14800);
 	}
 	
 	//really should make my own Math class...
