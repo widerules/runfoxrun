@@ -10,10 +10,8 @@ import org.simpleframework.xml.ElementList;
 import android.content.res.Resources;
 import android.graphics.Rect;
 
-public class Level implements Runnable
+public class Level
 {
-	private Thread thread;
-	
 	@Element
 	private int playerStartx = 0;
 	@Element
@@ -30,7 +28,6 @@ public class Level implements Runnable
 	@Element
 	private int levelLength;
 	
-	@SuppressWarnings("unused")
 	private int height;
 	@SuppressWarnings("unused")
 	private int width;
@@ -94,8 +91,7 @@ public class Level implements Runnable
 		//thread.start();
 		run();
 	}
-	
-	@Override
+
 	public void run()
 	{
 		levelSpriteList = new ArrayList<Sprite>();
@@ -306,6 +302,15 @@ public class Level implements Runnable
 			{
 				Sprite temp = new Sprite(); 
 				temp.onInitialize(LoadedResources.getBlack(), tempLevelObject.getxLoc(), tempLevelObject.getyLoc());
+				levelSpriteList.add(temp);
+			}
+			
+			else if(tempLevelObject.getName().equalsIgnoreCase("foxtwo"))
+			{
+				Sprite temp = XMLHandler.readSerialFile(resources, R.raw.foxmain, Sprite.class);
+				temp.onInitialize(LoadedResources.getFoxTwo(), tempLevelObject.getxLoc(), tempLevelObject.getyLoc() - 54, 82, 54);
+				temp.setAnimation(CharStates.Sitting);
+				temp.setCollectable(CollectableStates.collectable);
 				levelSpriteList.add(temp);
 			}
 		}

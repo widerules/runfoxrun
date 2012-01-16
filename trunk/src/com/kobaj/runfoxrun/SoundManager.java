@@ -81,7 +81,7 @@ public class SoundManager
 			
 			if(!temp.getValid())
 			{
-				if(temp.getEndVolume() == 0)
+				if(temp.getEndVolume() <= 0.1f)
 				{
 					stopSound(temp.getIndex());
 				}
@@ -154,7 +154,11 @@ public class SoundManager
 	public void stopSound(int index)
 	{
 		if( mSoundPoolMap.containsKey(index))
+		{
+			mSoundPool.setLoop((Integer) mSoundPoolMap.get(index).getSoundPoolint(), 0);
+			
 			mSoundPool.stop((Integer) mSoundPoolMap.get(index).getSoundPoolint());
+		}
 	}
 	
 	public void pauseAll()

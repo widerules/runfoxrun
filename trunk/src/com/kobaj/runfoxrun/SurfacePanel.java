@@ -32,8 +32,7 @@ public class SurfacePanel extends DrawablePanel
 	
 	public static final float scrollRate = -17.0f  / 100.0f;
 	
-	//semi arbitrary
-	
+	//semi arbitrary	
 	private Paint textPaint = new Paint();
 	private Sprite loadingStar;
 
@@ -100,34 +99,41 @@ public class SurfacePanel extends DrawablePanel
 		sm.addSound(1, R.raw.footstep);
 		sm.addSound(2, R.raw.pkup1);
 		sm.addSound(3, R.raw.death);
+		sm.addSound(4, R.raw.rumbling1);
+		sm.addSound(5, R.raw.landing);
 	}
 	
 	public void onUpdate(long gameTime)
 	{
 		fps.onUpdate(gameTime);
-		sm.onUpdate(fps.getDelta());
-		mm.onUpdate(fps.getDelta());
+		float delta = fps.getDelta();
+		sm.onUpdate(delta);
+		mm.onUpdate(delta);
 		
 		if(currentState == GameStates.TitleScreen)
-			onTitleScreen(fps.getDelta());
+			onTitleScreen(delta);
 		else if(currentState == GameStates.SinglePlay)
 		{
 			mainFox.onUpdate(fps.getDelta());
-			pm.onUpdate(fps.getDelta());
-			sp.onUpdate(fps.getDelta());
+			pm.onUpdate(delta);
+			if(!sp.onUpdate(delta))
+			{
+				currentState = GameStates.TitleScreen;
+				oldState = GameStates.SinglePlay;
+			}
 			checkForUserPause();
 		}
 		else if(currentState == GameStates.Continous)
 		{
-			mainFox.onUpdate(fps.getDelta());
-			pm.onUpdate(fps.getDelta());
-			cous.onUpdate(fps.getDelta());
+			mainFox.onUpdate(delta);
+			pm.onUpdate(delta);
+			cous.onUpdate(delta);
 			checkForUserPause();
 		}
 		else if(currentState == GameStates.Pause)
 			onPauseScreen();
 		else if(currentState == GameStates.Loading)
-			onLoadingScreen(fps.getDelta());
+			onLoadingScreen(delta);
 	}
 
 	public void onDraw(Canvas canvas)
@@ -309,6 +315,8 @@ public class SurfacePanel extends DrawablePanel
 		this.currentState = GameStates.Pause;
 		mm.stop();
 		mm.release();
+		sm.pauseAll();
+		sm.release();
 		stopThread();
 	}
 
