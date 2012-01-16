@@ -46,6 +46,6 @@ public abstract class DrawablePanel extends SurfaceView implements SurfaceHolder
 	public void onDraw(Canvas canvas)
 	{
 		//reset everything.
-		canvas.drawColor(Color.BLUE);
+		canvas.drawColor(Color.BLACK);
 	}
 }

@@ -58,6 +58,7 @@ public class SurfacePanel extends DrawablePanel
 		
 		mm = new MusicManager(context, R.raw.pulse);
 		mm.setLooping(true);
+		mm.play(0);
 		
 		currentState = GameStates.Loading;
 		oldState = GameStates.TitleScreen;
@@ -298,7 +299,7 @@ public class SurfacePanel extends DrawablePanel
 			oldState = GameStates.TitleScreen;
 			currentState = GameStates.Continous;
 			
-			mm.addFade(new SoundFade(0, 1, 0, 3000));
+			mm.ChangeSongs(R.raw.catchinglightning, new SoundFade(0, 1, 0, 3000), new SoundFade(0, 0, 1, 3000));
 		}
 	}
 	
