@@ -30,9 +30,12 @@ public class ContinousScreen
 	private boolean diedRecently = false;
 	
 	private final int startHeight = -100;
-	private final int speedup = 10;
+	private final int speedUp = 10;
 	private float initialSpeed;
 	private final int restartCount = 6;
+	
+	private int score = 0;
+	private custString scoreString;
 	
 	private SoundManager sm;
 	
@@ -62,6 +65,8 @@ public class ContinousScreen
 		background1.onInitialize(LoadedResources.getBackground1(resources)); //should be different
 		pm.addBackgroundPhys(background1);
 		
+		scoreString = new custString("", width - 180, 24);
+		
 		initialized = true;
 	}
 	
@@ -70,6 +75,14 @@ public class ContinousScreen
 		if (initialized)
 		{	
 			// everything below this line
+			
+			//score
+			score += 1.0f * delta / 10.0f;
+	        String s = "000000000000"+ String.valueOf(score); // twelve zeros prepended
+	        scoreString.setString(s.substring(s.length()-13)); // keep the rightmost 13 chars
+			
+	        //slowly get faster
+	        pm.setScrollRate(pm.getScrollRate() - delta / 1000000.0f);
 			
 			//background logics
 			Sprite back = background1;
@@ -105,11 +118,13 @@ public class ContinousScreen
 				
 				restartLevel();
 				
-				pm.setScrollRate(initialSpeed * pm.speedUp);
+				pm.setScrollRate(initialSpeed * speedUp);
 				
 				diedRecently = true;
 				
 				sm.playSound(3);
+				
+				score = 0;
 			}
 			
 			//still handling death
@@ -213,6 +228,9 @@ public class ContinousScreen
 				if (hitList.get(i).getxPos() + hitList.get(i).getWidth() > 0)
 					hitList.get(i).onDraw(canvas);
 			}
+			
+			//score
+			scoreString.onDraw(canvas);
 		}
 	}
 	
@@ -255,7 +273,7 @@ public class ContinousScreen
 		{
 			if(!hitList.get(i).getInitialized())
 			{
-				hitList.get(i).onInitialize(mResources, R.drawable.green, (e * 180) + width + 1, height - 10); // TODO shit.
+				hitList.get(i).onInitialize(LoadedResources.getGreen(mResources), (e * 180) + width + 1, height - 10); 
 				this.pm.addPhys(hitList.get(i));
 			
 				e--;

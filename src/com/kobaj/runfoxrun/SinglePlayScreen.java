@@ -144,16 +144,16 @@ public class SinglePlayScreen implements Runnable
 				else if(levelNumber == 4)
 				{
 					mm.ChangeSongs(R.raw.blackdiamond, new SoundFade(0, 1, 0, 3000), new SoundFade(0, 0, 1, 3000));
-					pm.setScrollRate((float) (pm.getScrollRate() + .03));
+					pm.setScrollRate((float) (pm.getScrollRate() - .03));
 				}
 				
 				pm.setScrollProgress(0);
 				
 				grabHitList(levelNumber);
 			}
-			else if(levelNumber == 3 && pm.getScrollProgress() >= 15000 && pm.getScrollProgress() < 15000 + pm.getScrollDelta() * delta)
+			else if(levelNumber == 3 && pm.getScrollProgress() >= 16000 - width - 200 && pm.getScrollProgress() < 16000 - width - 200 + pm.getScrollDelta() * delta)
 					sceneDead = true;
-			else if(levelNumber == 3 && pm.getScrollProgress() >= 15300 && pm.getScrollProgress() < 15300 + pm.getScrollDelta() * delta)
+			else if(levelNumber == 3 && pm.getScrollProgress() >= 16000 - width + 100 && pm.getScrollProgress() < 16000 - width + 100 + pm.getScrollDelta() * delta)
 			{
 				if(player.getCurAnimation().equalsIgnoreCase(CharStates.Running.name()))
 				{
@@ -170,17 +170,20 @@ public class SinglePlayScreen implements Runnable
 				this.setPlayerPos();
 				badGuy.setyPos(-height - badGuy.getHeight() - 10);
 			}
-			else if(levelNumber == 4 && pm.getScrollProgress() >= 14950 && pm.getScrollProgress() < 15000 + pm.getScrollDelta() * delta && credits == 0)
+			else if(levelNumber == 4 && pm.getScrollProgress() >= 16000 - width - 250 && pm.getScrollProgress() < 16000 - width - 200 + pm.getScrollDelta() * delta && credits == 0)
 			{
 				credits += delta;		
 			}
 			else if(levelNumber == 4 && pm.getScrollProgress() >= 16000 - width - 25)
 			{
-				pm.setScrollRate(0);
-				player.setAnimation(CharStates.Standing); 
-				pm.unsetPlayer();
+				if(player.getCurAnimation().equalsIgnoreCase(CharStates.Running.name()))
+				{
+					pm.setScrollRate(0);
+					player.setAnimation(CharStates.Standing); 
+					pm.unsetPlayer();
 				
-				pm.purge(); //may need to be removed
+					pm.purge(); //may need to be removed
+				}
 			}
 			
 			if(credits > 0)
@@ -237,8 +240,10 @@ public class SinglePlayScreen implements Runnable
 			{
 				pm.levelReset();
 				resetBad = true;
-				sm.playSound(3, .25f);
-				//sm.stopSound(4);
+				if(levelNumber != 4)
+					sm.playSound(3, .25f);
+				else
+					sm.playSound(3, .10f);
 			}
 			
 			//set me collections
@@ -331,7 +336,7 @@ public class SinglePlayScreen implements Runnable
 	public void run()
 	{
 		back = new Sprite();
-		back.onInitialize(LoadedResources.getBigBackGround());
+		back.onInitialize(LoadedResources.getBigBackGround(), 0, height - 480);
 		
 		progressBarIcon = LoadedResources.getIcon(resources);
 		//load dat bad guy
@@ -359,17 +364,6 @@ public class SinglePlayScreen implements Runnable
 		
 		for(Iterator<Level> it = levelList.iterator(); it.hasNext();)
 			it.next().onInitialize(resources, width, height, sm);
-		
-		/*boolean going = true;
-		while(going)
-		{
-			going = false;
-			for(Iterator<Level> it = levelList.iterator(); it.hasNext();)
-			{
-				if(!it.next().getInitialized())
-					going = true;
-			}	
-		}*/
 		
 		// grab the hit list;
 		hitList = new ArrayList<Sprite>();

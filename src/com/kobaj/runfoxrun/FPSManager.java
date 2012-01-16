@@ -42,7 +42,7 @@ public class FPSManager
 	}
 	
 	//averages
-	private int max = 3;
+	private int max = 4;
     private Queue<Float> averageList = new LinkedList<Float>();
     private float average = 0;
     
