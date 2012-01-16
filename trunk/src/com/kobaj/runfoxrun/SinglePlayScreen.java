@@ -37,7 +37,7 @@ public class SinglePlayScreen implements Runnable
 	
 	private boolean initialized = false;
 	
-	private int levelNumber = 3;
+	private int levelNumber = 4;
 	
 	//top level
 	private Bitmap progressBarIcon;
@@ -45,27 +45,15 @@ public class SinglePlayScreen implements Runnable
 	private Paint linePaint;
 	private Paint bitmapPaint;
 	
+	private boolean sceneDead = false;
+	
 	int pad;
 	
-	//for testing purposes, m
-	//delete me later
-	/*public static void writelevel()
-	{
-		Level lev = new Level("test map", width, height);
-		
-		ArrayList<LevelObject> templist = new ArrayList<LevelObject>();
-		templist.add(new LevelObject("green", 0, 470));
-		templist.add(new LevelObject("green", 200, 460));
-		templist.add(new LevelObject("green", 400, 470));
-		
-		lev.populatelevelObjects(templist);
-		
-		XMLHandler.writeSerialFile(lev, "level");
-	}*/
+	public boolean resetBad = false;
 	
 	private void setPlayerPos()
 	{
-		//player.setxPos(level.getPlayerStartX());
+		player.setxPos((int)(width / 3.0f));
 		player.setyPos(levelList.get(levelNumber - 1).getPlayerStartY());
 	}
 	
@@ -90,36 +78,12 @@ public class SinglePlayScreen implements Runnable
 		this.sm = sm;
 		this.mm = mm;
 		
-		back = new Sprite();
-		back.onInitialize(LoadedResources.getBackground1(resources));
-		
 		this.player = player;
 		
 		this.resources = resources;
 		
-		progressBarIcon = LoadedResources.getIcon(resources);
-		//load dat bad guy
-		this.badGuy = XMLHandler.readSerialFile(resources, R.raw.smoke, Sprite.class);
-		badGuy.onInitialize(LoadedResources.getBadGuy(resources), -165, height - 470 , 164, 470);
-		
-		collectionScore = 0;
-		
-		linePaint = new Paint();
-		linePaint.setColor(Color.WHITE);
-		linePaint.setStrokeWidth(1);
-		linePaint.setShadowLayer(1, 0, 0, Color.BLACK);
-		
-		bitmapPaint = new Paint();
-		
-		collectionText = new custString("", width - 55, 24);
-		collectionScoreIcon = XMLHandler.readSerialFile(resources, R.raw.star, Sprite.class);
-		collectionScoreIcon.onInitialize(LoadedResources.getStar(resources), width - 85, 5, 25, 24);
-		
 		start();
 	}
-	
-	public boolean resetBad = false;
-	
 	public void onUpdate(float delta)
 	{
 		if (initialized)
@@ -142,13 +106,15 @@ public class SinglePlayScreen implements Runnable
 			//handle input
 			for (int i = 0; i < im.fingerCount; i++)
 			{
-				if (im.getPressed(i) && levelNumber != 3 && pm.getScrollProgress() < 15250)
+				if(im.getPressed(i))
 				{
-					pm.jump();
+					if(!sceneDead)
+						pm.jump();	
 				}
 			}
 			
 			//handle next level;
+			//probably could have done this a bit better.
 			if(pm.getScrollProgress() >= levelList.get(levelNumber - 1).getLevelLength())
 			{
 				hitList.clear();
@@ -157,20 +123,43 @@ public class SinglePlayScreen implements Runnable
 				levelNumber++;
 				
 				if(levelNumber == 2)
+				{
 					mm.ChangeSongs(R.raw.quicken, new SoundFade(0, 1, 0, 3000), new SoundFade(0,0,1,3000));
-				else if(levelNumber ==3)
+				}
+				else if(levelNumber == 3)
+				{
 					mm.ChangeSongs(R.raw.aegissprint, new SoundFade(0, 1, 0, 3000), new SoundFade(0, 0, 1, 3000));
-						
+				}
+				else if(levelNumber == 4)
+				{
+					mm.ChangeSongs(R.raw.blackdiamond, new SoundFade(0, 1, 0, 3000), new SoundFade(0, 0, 1, 3000));
+					pm.setScrollRate((float) (pm.getScrollRate() + .03));
+				}
+				
 				pm.setScrollProgress(0);
 				
 				grabHitList(levelNumber);
 			}
-			else if(levelNumber == 3 && pm.getScrollProgress() >= 15300)
+			else if(levelNumber == 3 && pm.getScrollProgress() >= 15000 && pm.getScrollProgress() < 15000 + pm.getScrollDelta() * delta)
+					sceneDead = true;
+			else if(levelNumber == 3 && pm.getScrollProgress() >= 15300 && pm.getScrollProgress() < 15300 + pm.getScrollDelta() * delta)
 			{
-				pm.unsetPlayer();
-				pm.addPhys(player);
-				player.setAnimation(CharStates.Collapse);
+				if(player.getCurAnimation().equalsIgnoreCase(CharStates.Running.name()))
+				{
+					pm.unsetPlayer();
+					pm.addPhys(player);
+					player.setAnimation(CharStates.Collapse);
+				}
 			}
+			else if(levelNumber == 4 && sceneDead && pm.getScrollProgress() >= 200)
+			{
+				sceneDead = false;
+				pm.setPlayer(player);
+				player.setAnimation(CharStates.Running);
+				this.setPlayerPos();
+				badGuy.setyPos(-height - badGuy.getHeight() - 10);
+			}
+			//for this elsif do something like if pm.getscrollprogress-width to make sure our grass never clips off the screen.
 			
 			//background logics
 			if(back.getxPos() + back.getWidth() <= 0)
@@ -190,7 +179,7 @@ public class SinglePlayScreen implements Runnable
 			{
 				pm.levelReset();
 				resetBad = true;
-				sm.playSound(3);
+				sm.playSound(3, .25f);
 			}
 			
 			//set me collections
@@ -247,7 +236,8 @@ public class SinglePlayScreen implements Runnable
 			player.onDraw(canvas);
 			
 			//bad guy
-			badGuy.onDraw(canvas);
+			if(badGuy.getyPos() > 0)
+				badGuy.onDraw(canvas);
 			
 			//overlay (I should really not be doing math/logic here >.<
 			canvas.drawLine(pad, 20, width - pad, 20, linePaint);
@@ -275,11 +265,32 @@ public class SinglePlayScreen implements Runnable
 	@Override
 	public void run()
 	{
+		back = new Sprite();
+		back.onInitialize(LoadedResources.getBackground1(resources));
+		
+		progressBarIcon = LoadedResources.getIcon(resources);
+		//load dat bad guy
+		this.badGuy = XMLHandler.readSerialFile(resources, R.raw.smoke, Sprite.class);
+		badGuy.onInitialize(LoadedResources.getBadGuy(resources), -165, height - 470 , 164, 470);
+		
+		collectionScore = 0;
+		
+		linePaint = new Paint();
+		linePaint.setColor(Color.WHITE);
+		linePaint.setStrokeWidth(1);
+		linePaint.setShadowLayer(1, 0, 0, Color.BLACK);
+		
+		bitmapPaint = new Paint();
+		
+		collectionText = new custString("", width - 55, 24);
+		collectionScoreIcon = XMLHandler.readSerialFile(resources, R.raw.star, Sprite.class);
+		collectionScoreIcon.onInitialize(LoadedResources.getStar(resources), width - 85, 5, 25, 24);
+		
 		// load in the level
 		levelList.add(XMLHandler.readSerialFile(resources, R.raw.level, Level.class));
 		levelList.add(XMLHandler.readSerialFile(resources, R.raw.level2, Level.class));
 		levelList.add(XMLHandler.readSerialFile(resources, R.raw.level3, Level.class));
-		//levelList.add(XMLHandler.readSerialFile(resources, R.raw.level4, Level.class));
+		levelList.add(XMLHandler.readSerialFile(resources, R.raw.level4, Level.class));
 		
 		for(Iterator<Level> it = levelList.iterator(); it.hasNext();)
 			it.next().onInitialize(resources, width, height, sm);
