@@ -11,6 +11,7 @@ public class ContinousScreen
 {
 	private ArrayList<Sprite> hitList;
 	private Sprite background1;
+	private Sprite background2;
 	
 	private Resources mResources;
 	
@@ -67,7 +68,11 @@ public class ContinousScreen
 		player.setyPos(startHeight);
 		
 		background1 = new Sprite();
-		background1.onInitialize(LoadedResources.getBackground1(resources), 0 , height);
+		background1.onInitialize(LoadedResources.getBackground1(resources), 0 , height - LoadedResources.getBackground1(resources).getHeight(), LoadedResources.getBackground1(resources).getWidth(), LoadedResources.getBackground1(resources).getHeight());
+		pm.addBackgroundPhys(background1);
+		
+		background2 = new Sprite();
+		background2.onInitialize(LoadedResources.getBackground1(resources), background1.getWidth(), height - LoadedResources.getBackground1(resources).getHeight(), LoadedResources.getBackground1(resources).getWidth(), LoadedResources.getBackground1(resources).getHeight());
 		pm.addBackgroundPhys(background1);
 		
 		scoreString = new custString(resources, "", width - (int)(120 * scale), (int)(16 * scale));
@@ -94,15 +99,11 @@ public class ContinousScreen
 			pm.setScrollRate(pm.getScrollRate() - delta / (1000000.0f - 5000.0f));
 			
 			// background logics
-			Sprite back = background1;
-			if (back.getxPos() + back.getWidth() <= 0)
-			{
-				back.setxPos(0);
-			}
-			if (back.getxPos() >= width)
-			{
-				back.setxPos(0);
-			}
+			if(background1.getxPos() + background1.getWidth() <= 0)
+				background1.setxPos(background2.getxPos() + background2.getWidth());
+			
+			if(background2.getxPos() + background2.getWidth() <= 0)
+				background2.setxPos(background1.getxPos() + background1.getWidth());
 			
 			// get rid of old blocks
 			for (Iterator<Sprite> it = hitList.iterator(); it.hasNext();)
@@ -218,17 +219,8 @@ public class ContinousScreen
 		if (initialized)
 		{
 			// background
-			int backheight = height - background1.getHeight();
-			background1.onDraw(canvas, (int) -background1.getxPos(), backheight);
-			float backPos = (background1.getxPos() + background1.getWidth());
-			if (backPos <= width)
-			{
-				background1.onDraw(canvas, -(int) backPos, backheight);
-			}
-			if (background1.getxPos() >= 0)
-			{
-				background1.onDraw(canvas, (int) -(-background1.getWidth() + background1.getxPos()), backheight);
-			}
+			background1.onDraw(canvas);
+			background2.onDraw(canvas);
 			
 			// objects
 			for (int i = 0; i < hitList.size(); i++)

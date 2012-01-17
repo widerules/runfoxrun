@@ -150,6 +150,7 @@ public class SinglePlayScreen implements Runnable
 				HighScores.setLevel(levelNumber);
 				
 				pm.setBackDiv(10.0f);
+				back.setxPos(-1600 * (levelNumber - 1));
 				
 				if (levelNumber == 2)
 				{
@@ -163,7 +164,7 @@ public class SinglePlayScreen implements Runnable
 				else if (levelNumber == 4)
 				{
 					mm.ChangeSongs(R.raw.blackdiamond, new SoundFade(0, 1, 0, 3000), new SoundFade(0, 0, 1, 3000));
-					pm.setScrollRate((float) (pm.getScrollRate() - .03));
+					pm.setScrollRate((float) (pm.getScrollRate() - .025));
 				}
 				
 				pm.setScrollProgress(0, false);
@@ -241,21 +242,11 @@ public class SinglePlayScreen implements Runnable
 				bitmapPaint.setAlpha(0);
 			}
 			
-			// background logics
-			if (back.getxPos() + back.getWidth() <= 0)
-			{
-				back.setxPos(0);
-			}
-			if (back.getxPos() >= width)
-			{
-				back.setxPos(0);
-			}
-			
 			// bad guy
 			badGuy.onUpdate(delta);
 			
 			// handle death;
-			if (pm.getDeath())
+			/*if (pm.getDeath())
 			{
 				pm.levelReset();
 				resetBad = true;
@@ -263,7 +254,7 @@ public class SinglePlayScreen implements Runnable
 					sm.playSound(3, .25f);
 				else
 					sm.playSound(3, .10f);
-			}
+			}*/
 			
 			// set me collections
 			collectionText.setString("x " + String.valueOf(collectionScore));
@@ -292,17 +283,7 @@ public class SinglePlayScreen implements Runnable
 		if (initialized)
 		{
 			// background
-			int backheight = height - back.getHeight();
-			back.onDraw(canvas, (int) -back.getxPos(), backheight);
-			float backPos = (back.getxPos() + back.getWidth());
-			if (backPos <= width)
-			{
-				back.onDraw(canvas, -(int) backPos, backheight);
-			}
-			if (back.getxPos() >= 0)
-			{
-				back.onDraw(canvas, (int) -(-back.getWidth() + back.getxPos()), backheight);
-			}
+			back.onDraw(canvas);
 			
 			// interaction layer
 			for (Iterator<Sprite> it = hitList.iterator(); it.hasNext();)
@@ -351,7 +332,7 @@ public class SinglePlayScreen implements Runnable
 	public void run()
 	{
 		back = new Sprite();
-		back.onInitialize(LoadedResources.getBigBackGround(), 0, height);
+		back.onInitialize(LoadedResources.getBigBackGround(), 0, height - 480, 6400, 480);
 		
 		progressBarIcon = LoadedResources.getIcon(resources);
 		// load dat bad guy

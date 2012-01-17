@@ -64,6 +64,15 @@ public class PhysicsManager
 		return scrollProgress;
 	}
 	
+	public void setBackDrop(float value)
+	{
+		for (Iterator<Sprite> it = backgroundables.iterator(); it.hasNext();)
+		{
+			Sprite temp = it.next();
+			temp.setxPos(temp.getxPos() + scrollProgress / backDiv - value / backDiv);
+		}
+	}
+	
 	public void setScrollProgress(float value, boolean resetBackToo)
 	{
 		for (Iterator<Sprite> it = interactables.iterator(); it.hasNext();)
