@@ -66,8 +66,8 @@ public class RunfoxrunActivity extends Activity
 	@Override
 	public boolean onKeyDown(int i, KeyEvent event)
 	{
-		if (i == KeyEvent.KEYCODE_BACK || i == KeyEvent.KEYCODE_HOME)
-			onPause();
+		if (i == KeyEvent.KEYCODE_BACK || i == KeyEvent.KEYCODE_HOME || i == KeyEvent.KEYCODE_SEARCH || i == KeyEvent.KEYCODE_MENU)
+			game.onUserPause();
 		
 		if (i == KeyEvent.KEYCODE_VOLUME_DOWN || i == KeyEvent.KEYCODE_VOLUME_UP)
 			return false;

@@ -351,6 +351,15 @@ public class SurfacePanel extends DrawablePanel
 		System.exit(0);
 	}
 	
+	public void onUserPause()
+	{
+		if(this.currentState != GameStates.TitleScreen)
+		{
+			this.oldState = this.currentState;
+			this.currentState = GameStates.Pause;
+		}
+	}
+	
 	public void onScreenResume()
 	{
 		// should really have gotten this working >.<
