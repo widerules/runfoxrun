@@ -47,6 +47,12 @@ public class ContinousScreen
 		this.height = height;
 	}
 	
+	private void setPlayerPos()
+	{
+		player.setxPos((int) (width / 3.0f));
+		player.setyPos(startHeight);
+	}
+	
 	public void onInitialize(Resources resources, InputManager im, PhysicsManager pm, SoundManager sm, Sprite player)
 	{
 		float scale = resources.getDisplayMetrics().density;
@@ -58,6 +64,8 @@ public class ContinousScreen
 		
 		this.player = player;
 		
+		setPlayerPos();
+		
 		pm.setPlayer(player);
 		
 		hitList = new ArrayList<Sprite>();
@@ -65,6 +73,7 @@ public class ContinousScreen
 		startLevel();
 		
 		initialSpeed = -17.0f / 100.0f;
+		pm.setScrollRate(initialSpeed);
 		player.setyPos(startHeight);
 		
 		background1 = new Sprite();
@@ -73,7 +82,7 @@ public class ContinousScreen
 		
 		background2 = new Sprite();
 		background2.onInitialize(LoadedResources.getBackground1(resources), background1.getWidth(), height - LoadedResources.getBackground1(resources).getHeight(), LoadedResources.getBackground1(resources).getWidth(), LoadedResources.getBackground1(resources).getHeight());
-		pm.addBackgroundPhys(background1);
+		pm.addBackgroundPhys(background2);
 		
 		scoreString = new custString(resources, "", width - (int)(120 * scale), (int)(16 * scale));
 		scoreWord = new custString(resources, "Score: ", width - (int)(167 * scale), (int)(16 * scale));
@@ -121,7 +130,7 @@ public class ContinousScreen
 			{
 				pm.reset();
 				
-				player.setyPos(startHeight);
+				this.setPlayerPos();
 				
 				restartLevel();
 				
