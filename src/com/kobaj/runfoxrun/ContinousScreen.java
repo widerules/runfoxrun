@@ -48,6 +48,8 @@ public class ContinousScreen
 	
 	public void onInitialize(Resources resources, InputManager im, PhysicsManager pm, SoundManager sm, Sprite player)
 	{
+		float scale = resources.getDisplayMetrics().density;
+		
 		this.im = im;
 		this.pm = pm;
 		this.sm = sm;
@@ -61,15 +63,17 @@ public class ContinousScreen
 		
 		startLevel();
 		
-		initialSpeed =  -17.0f  / 100.0f;
+		initialSpeed = -17.0f / 100.0f;
 		player.setyPos(startHeight);
 		
 		background1 = new Sprite();
-		background1.onInitialize(LoadedResources.getBackground1(resources)); //should be different
+		background1.onInitialize(LoadedResources.getBackground1(resources)); // should
+																				// be
+																				// different
 		pm.addBackgroundPhys(background1);
 		
-		scoreString = new custString("", width - 180, 24);
-		scoreWord = new custString("Score: ", width - 250, 24);
+		scoreString = new custString(resources, "", width - (int)(120 * scale), (int)(16 * scale));
+		scoreWord = new custString(resources, "Score: ", width - (int)(167 * scale), (int)(16 * scale));
 		
 		initialized = true;
 	}
@@ -77,24 +81,27 @@ public class ContinousScreen
 	public void onUpdate(float delta)
 	{
 		if (initialized)
-		{	
+		{
 			// everything below this line
 			
-			//score
+			// score
 			score += 1.0f * delta / 10.0f;
-	        String s = "000000000000"+ String.valueOf(score); // twelve zeros prepended
-	        scoreString.setString(s.substring(s.length()-13)); // keep the rightmost 13 chars
+			String s = "000000000000" + String.valueOf(score); // twelve zeros
+																// prepended
+			scoreString.setString(s.substring(s.length() - 13)); // keep the
+																	// rightmost
+																	// 13 chars
 			
-	        //slowly get faster
-	        pm.setScrollRate(pm.getScrollRate() - delta / (1000000.0f - 5000.0f));
+			// slowly get faster
+			pm.setScrollRate(pm.getScrollRate() - delta / (1000000.0f - 5000.0f));
 			
-			//background logics
+			// background logics
 			Sprite back = background1;
-			if(back.getxPos() + back.getWidth() <= 0)
+			if (back.getxPos() + back.getWidth() <= 0)
 			{
 				back.setxPos(0);
 			}
-			if(back.getxPos() >= width)
+			if (back.getxPos() >= width)
 			{
 				back.setxPos(0);
 			}
@@ -112,7 +119,7 @@ public class ContinousScreen
 			
 			// handle death
 			if (pm.getDeath())
-			{	
+			{
 				pm.reset();
 				
 				player.setyPos(startHeight);
@@ -125,11 +132,13 @@ public class ContinousScreen
 				
 				sm.playSound(3);
 				
+				HighScores.addScore(score);
+				
 				score = 0;
 			}
 			
-			//still handling death
-			if(player.getyPos() > 0 && diedRecently)
+			// still handling death
+			if (player.getyPos() > 0 && diedRecently)
 			{
 				diedRecently = false;
 				pm.setScrollRate(initialSpeed);
@@ -142,27 +151,28 @@ public class ContinousScreen
 				int x;
 				int y;
 				
-				//first we want to know how far in the future we can code
-				double prevY = (height - last.getyPos()); // get this in real world corridnates
+				// first we want to know how far in the future we can code
+				double prevY = (height - last.getyPos()); // get this in real
+															// world corridnates
 				
 				float newY1;
 				float newY2;
 				
-				int newMaxX = (int) ((280 + prevY) / 1.0f);		
+				int newMaxX = (int) ((280 + prevY) / 1.0f);
 				int newX = random.nextInt(newMaxX);
 				
-				//newY1 = (float) (-Math.abs(.777f * newX -140) + 140 + prevY);
-				newY1 = (float)((-1.0f * newX) + 280 + prevY);
+				// newY1 = (float) (-Math.abs(.777f * newX -140) + 140 + prevY);
+				newY1 = (float) ((-1.0f * newX) + 280 + prevY);
 				
-				if(newY1 > 160)
+				if (newY1 > 160)
 					newY1 = 159;
-
+				
 				newY2 = (float) (-1.0f * newX + prevY);
 				
-				if(newY2 <= 9)
+				if (newY2 <= 9)
 					newY2 = 10;
 				
-				if(newY1 - newY2 <= 0)
+				if (newY1 - newY2 <= 0)
 				{
 					newY1 = 10;
 					newY2 = 0;
@@ -171,12 +181,12 @@ public class ContinousScreen
 				int newFinalY = (int) (random.nextInt((int) (newY1 - newY2)) + newY2);
 				
 				y = height - newFinalY;
-				x = newX + width;				
+				x = newX + width;
 				
 				Sprite temp = new Sprite();
 				
 				int rand = random.nextInt(30);
-					
+				
 				if (rand >= 0 && rand <= 12)
 				{
 					temp.onInitialize(LoadedResources.getGreen(mResources), x, y);
@@ -209,27 +219,27 @@ public class ContinousScreen
 	{
 		if (initialized)
 		{
-			//background
+			// background
 			int backheight = height - background1.getHeight();
 			background1.onDraw(canvas, (int) -background1.getxPos(), backheight);
 			float backPos = (background1.getxPos() + background1.getWidth());
-			if(backPos <= width)
+			if (backPos <= width)
 			{
-				background1.onDraw(canvas, -(int)backPos, backheight);
+				background1.onDraw(canvas, -(int) backPos, backheight);
 			}
-			if(background1.getxPos() >= 0)
+			if (background1.getxPos() >= 0)
 			{
 				background1.onDraw(canvas, (int) -(-background1.getWidth() + background1.getxPos()), backheight);
 			}
 			
-			//objects
+			// objects
 			for (int i = 0; i < hitList.size(); i++)
 			{
 				if (hitList.get(i).getxPos() + hitList.get(i).getWidth() > 0)
 					hitList.get(i).onDraw(canvas);
 			}
 			
-			//score
+			// score
 			scoreString.onDraw(canvas);
 			scoreWord.onDraw(canvas);
 		}
@@ -243,9 +253,9 @@ public class ContinousScreen
 		for (int i = 0; i < hitList.size(); i++)
 		{
 			hitList.get(i).onInitialize(mResources, R.drawable.green, i * 180, height - 10); // TODO
-																							// fix
-																							// this
-																							// shit.
+																								// fix
+																								// this
+																								// shit.
 			this.pm.addPhys(hitList.get(i));
 		}
 	}
@@ -272,11 +282,11 @@ public class ContinousScreen
 		
 		for (int i = hitList.size() - 1; i >= 0; i--)
 		{
-			if(!hitList.get(i).getInitialized())
+			if (!hitList.get(i).getInitialized())
 			{
-				hitList.get(i).onInitialize(LoadedResources.getGreen(mResources), (e * 180) + width + 1, height - 10); 
+				hitList.get(i).onInitialize(LoadedResources.getGreen(mResources), (e * 180) + width + 1, height - 10);
 				this.pm.addPhys(hitList.get(i));
-			
+				
 				e--;
 			}
 			else

@@ -37,7 +37,7 @@ public class MusicManager
 	
 	public void onUpdate(float delta)
 	{
-		if(thisState != MusicStates.playing)
+		if (thisState != MusicStates.playing)
 			return;
 		
 		if (thisFade != null && thisState == MusicStates.playing)
@@ -94,7 +94,7 @@ public class MusicManager
 			}
 			
 		});
-
+		
 		ChangeSongs(value);
 		
 		loaded = true;

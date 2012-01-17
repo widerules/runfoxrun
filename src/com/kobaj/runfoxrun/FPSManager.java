@@ -16,7 +16,7 @@ public class FPSManager
 	
 	public FPSManager()
 	{
-		;//blank
+		;// blank
 	}
 	
 	public void onUpdate(long gameTime)
@@ -25,14 +25,14 @@ public class FPSManager
 		
 		delta = nowTime - lastTime;
 		
-		if(reset < wait)
+		if (reset < wait)
 			reset += delta;
 		else
 		{
 			fps = (int) ((1.0 / (delta)) * 1000.0);
 			reset = 0;
 		}
-	
+		
 		lastTime = nowTime;
 	}
 	
@@ -41,28 +41,28 @@ public class FPSManager
 		return fps;
 	}
 	
-	//averages
+	// averages
 	private int max = 4;
-    private Queue<Float> averageList = new LinkedList<Float>();
-    private float average = 0;
-    
-    private float calculateaverage(float newV)
-    {
-    	averageList.offer(newV);
-    	
-    	if(averageList.size() > max)
-    		averageList.poll();
-    	
-    	for(Iterator<Float> it = averageList.iterator(); it.hasNext();)
-    	{
-    		average += it.next();
-    	}
-    	
-    	average = average / averageList.size();
-    	
-    	return average;
-    }
-
+	private Queue<Float> averageList = new LinkedList<Float>();
+	private float average = 0;
+	
+	private float calculateaverage(float newV)
+	{
+		averageList.offer(newV);
+		
+		if (averageList.size() > max)
+			averageList.poll();
+		
+		for (Iterator<Float> it = averageList.iterator(); it.hasNext();)
+		{
+			average += it.next();
+		}
+		
+		average = average / averageList.size();
+		
+		return average;
+	}
+	
 	public float getDelta()
 	{
 		return Math.max(Math.min(calculateaverage(delta), 1000), 0);

@@ -2,6 +2,7 @@ package com.kobaj.runfoxrun;
 
 import java.util.ArrayList;
 
+import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -24,7 +25,7 @@ public class Creditables
 		return done;
 	}
 	
-	public Creditables(int width, int height)
+	public Creditables(Resources resources, int width, int height)
 	{
 		Titles = new ArrayList<custString>();
 		Name = new ArrayList<custString>();
@@ -50,15 +51,15 @@ public class Creditables
 		Paint tempPaint = new Paint();
 		
 		for (String it : temp)
-			Titles.add(new custString(it, (int) (width / 2 - tempPaint.measureText(it)), height / 2 + 20));
+			Titles.add(new custString(resources, it, (int) (width / 2 - tempPaint.measureText(it)), height / 2 + 20));
 		
 		for (String it : temp2)
-			Name.add(new custString(it, (int) (width / 2 - tempPaint.measureText(it)), height / 2 - 20));
+			Name.add(new custString(resources, it, (int) (width / 2 - tempPaint.measureText(it)), height / 2 - 20));
 		
-		for(custString it : Titles)
+		for (custString it : Titles)
 			it.setColor(Color.TRANSPARENT, Color.TRANSPARENT);
 		
-		for(custString it: Name)
+		for (custString it : Name)
 			it.setColor(Color.TRANSPARENT, Color.TRANSPARENT);
 	}
 	
@@ -76,38 +77,38 @@ public class Creditables
 		amount += delta;
 		
 		if (displaying < Titles.size())
-		{		
+		{
 			if (amount < fadeTime)
 			{
-				//fade in
+				// fade in
 				
 				int Multiplicity = (int) linInterp(0, fadeTime, amount, 0, 256);
 				int mainColor = Color.argb(Multiplicity, 255, 255, 255);
-				int outlineColor = Color.argb(Multiplicity, 0, 0,0);
+				int outlineColor = Color.argb(Multiplicity, 0, 0, 0);
 				Titles.get(displaying).setColor(mainColor, outlineColor);
 				Name.get(displaying).setColor(mainColor, outlineColor);
 			}
 			
 			else if (amount > fadeTime && amount < fadeTime + displayTime)
 			{
-				//display
+				// display
 				
 			}
 			
-			else if (amount > fadeTime +  displayTime && amount < fadeTime + displayTime + fadeTime)
+			else if (amount > fadeTime + displayTime && amount < fadeTime + displayTime + fadeTime)
 			{
-				//fade out
+				// fade out
 				
-				int Multiplicity = (int) linInterp( fadeTime +  displayTime, fadeTime + displayTime + fadeTime, amount, 256, 0);
+				int Multiplicity = (int) linInterp(fadeTime + displayTime, fadeTime + displayTime + fadeTime, amount, 256, 0);
 				int mainColor = Color.argb(Multiplicity, 255, 255, 255);
-				int outlineColor = Color.argb(Multiplicity, 0, 0,0);
+				int outlineColor = Color.argb(Multiplicity, 0, 0, 0);
 				Titles.get(displaying).setColor(mainColor, outlineColor);
 				Name.get(displaying).setColor(mainColor, outlineColor);
 			}
 			
 			else
 			{
-				//swap
+				// swap
 				amount = 0;
 				displaying++;
 			}

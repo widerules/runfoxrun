@@ -9,8 +9,8 @@ public class SoundFade
 	
 	private float updateTime;
 	
-	//x is time
-	//y is volume
+	// x is time
+	// y is volume
 	
 	public float getEndVolume()
 	{
@@ -24,13 +24,13 @@ public class SoundFade
 		startVolume = clampVolume(startVolume);
 		endVolume = clampVolume(endVolume);
 		
-		if(startVolume == endVolume)
+		if (startVolume == endVolume)
 		{
 			startVolume = 0;
 			endVolume = 1;
 		}
 		
-		if(time == 0)
+		if (time == 0)
 		{
 			time = 3;
 		}
@@ -64,7 +64,7 @@ public class SoundFade
 	
 	public boolean getValid()
 	{
-		if(updateTime <= time)
+		if (updateTime <= time)
 			return true;
 		
 		return false;
@@ -72,7 +72,7 @@ public class SoundFade
 	
 	private float linInterp(float x)
 	{
-		return  startVolume*(x - time)/(0 - time) + endVolume*(x - 0)/(time - 0);
+		return startVolume * (x - time) / (0 - time) + endVolume * (x - 0) / (time - 0);
 	}
 	
 	private float clampVolume(float value)

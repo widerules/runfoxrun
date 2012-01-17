@@ -8,37 +8,46 @@ public class PauseScreen extends ListScreens
 	private custString contGame;
 	private custString titleScreen;
 	private custString quit;
+	private custString highScores;
 	
 	public void onInitialize(Resources resources, int identity)
 	{
-		count = 3;
+		float scale = resources.getDisplayMetrics().density;
 		
-		//imgBackdrop = BitmapFactory.decodeResource(resources, identity);
+		count = 4;
 		
-		contGame = new custString("Continue", 150,210);
-		contGame.setSize(40);
+		// imgBackdrop = BitmapFactory.decodeResource(resources, identity);
 		
-		titleScreen = new custString("Title Screen", 150, 260);
-		titleScreen.setSize(40);
-	
-		quit = new custString("Quit Game", 150, 360);
+		contGame = new custString(resources, "Continue", (int) (100 * scale), (int) (140 * scale));
+		contGame.setSize((int) (27 * scale));
+		
+		titleScreen = new custString(resources, "Title Screen", (int) (100 * scale), (int) (173 * scale));
+		titleScreen.setSize((int) (27 * scale));
+		
+		highScores = new custString(resources, "level Select", (int) (100 * scale), (int) (207 * scale));
+		highScores.setColor(Color.GRAY, Color.BLACK);
+		highScores.setSize((int) (27 * scale));
+		
+		quit = new custString(resources, "Quit Game", (int) (100 * scale), (int) (240 * scale));
 		quit.setColor(Color.RED, Color.BLACK);
-		quit.setSize(40);
+		quit.setSize((int) (27 * scale));
 		
 		stringList = new custString[count];
 		stringList[0] = contGame;
 		stringList[1] = titleScreen;
-		stringList[2] = quit;
+		stringList[2] = highScores;
+		stringList[3] = quit;
 		
 		initialized = true;
 	}
+	
 	public GameStates onTouch(int x, int y)
 	{
 		if (contGame.fingertap(x, y))
 			return GameStates.Resume;
 		else if (titleScreen.fingertap(x, y))
 			return GameStates.TitleScreen;
-		else if(quit.fingertap(x, y))
+		else if (quit.fingertap(x, y))
 			return GameStates.Quit;
 		
 		return GameStates.Pause;

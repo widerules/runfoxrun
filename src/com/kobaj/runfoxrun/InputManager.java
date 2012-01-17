@@ -28,21 +28,21 @@ public class InputManager
 		y = new float[fingerCount];
 		
 		oldx = new float[fingerCount];
-		oldy= new float[fingerCount];
+		oldy = new float[fingerCount];
 		
 		deltax = new float[fingerCount];
 		deltay = new float[fingerCount];
 		
 		oldpressed = new boolean[fingerCount];
 		pressed = new boolean[fingerCount];
-	
+		
 		dpads = new boolean[KeyCodes.values().length];
 		olddpads = new boolean[KeyCodes.values().length];
 	}
 	
 	public void eventUpdateUp(int i, KeyEvent event)
-	{	
-		if(i == KeyEvent.KEYCODE_DPAD_CENTER)
+	{
+		if (i == KeyEvent.KEYCODE_DPAD_CENTER)
 		{
 			olddpads[KeyCodes.center.ordinal()] = true;
 			dpads[KeyCodes.center.ordinal()] = false;
@@ -71,7 +71,7 @@ public class InputManager
 	
 	public void eventUpdateDown(int i, KeyEvent event)
 	{
-		if(i == KeyEvent.KEYCODE_DPAD_CENTER)
+		if (i == KeyEvent.KEYCODE_DPAD_CENTER)
 		{
 			olddpads[KeyCodes.center.ordinal()] = false;
 			dpads[KeyCodes.center.ordinal()] = true;
@@ -97,89 +97,89 @@ public class InputManager
 			dpads[KeyCodes.down.ordinal()] = true;
 		}
 	}
-
+	
 	public void eventUpdate(MotionEvent event)
 	{
 		int action = event.getAction();
 		
 		int ptrId = event.getPointerId(0);
-        if(event.getPointerCount() > 1)
-            ptrId = (action & MotionEvent.ACTION_POINTER_ID_MASK) >> MotionEvent.ACTION_POINTER_ID_SHIFT;
-
-    	action = action & MotionEvent.ACTION_MASK;
-        if(action < 7 && action > 4)
-            action = action - 5;  
+		if (event.getPointerCount() > 1)
+			ptrId = (action & MotionEvent.ACTION_POINTER_ID_MASK) >> MotionEvent.ACTION_POINTER_ID_SHIFT;
 		
-		 if( action == MotionEvent.ACTION_DOWN )
-         {
-                 for( int i = 0; i < event.getPointerCount(); i++ )
-                 {
-                	 int id = event.getPointerId(i);
-                	 
-                	 x[id] = event.getX(i);
-                	 y[id] = event.getY(i);
-                 }                       
-                 
-                 oldpressed[ptrId] = false;
-                 pressed[ptrId] = true;
-         }
-         if( action == MotionEvent.ACTION_MOVE )
-         {                                                       
-                 for( int i = 0; i < event.getPointerCount(); i++ )
-                 {
-                	 int id = event.getPointerId(i);
-                	 
-                	 oldx[id] = x[id];
-                	 oldy[id] = y[id];
-                	 
-                	 x[id] = event.getX(i);
-                	 y[id] = event.getY(i);
-                	 
-                	 deltax[id] = x[id] - oldx[id];
-         			 deltay[id] = y[id] - oldy[id];
-                 }
-         }
-         if( action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL)
-         {
-             oldpressed[ptrId] = true;
-                 pressed[ptrId] = false;
-                 
-                 if( event.getPointerCount() == 1 )
-                         for( int i = 0; i < fingerCount; i++ )
-                                 pressed[i] = false;
-         }
+		action = action & MotionEvent.ACTION_MASK;
+		if (action < 7 && action > 4)
+			action = action - 5;
+		
+		if (action == MotionEvent.ACTION_DOWN)
+		{
+			for (int i = 0; i < event.getPointerCount(); i++)
+			{
+				int id = event.getPointerId(i);
+				
+				x[id] = event.getX(i);
+				y[id] = event.getY(i);
+			}
+			
+			oldpressed[ptrId] = false;
+			pressed[ptrId] = true;
+		}
+		if (action == MotionEvent.ACTION_MOVE)
+		{
+			for (int i = 0; i < event.getPointerCount(); i++)
+			{
+				int id = event.getPointerId(i);
+				
+				oldx[id] = x[id];
+				oldy[id] = y[id];
+				
+				x[id] = event.getX(i);
+				y[id] = event.getY(i);
+				
+				deltax[id] = x[id] - oldx[id];
+				deltay[id] = y[id] - oldy[id];
+			}
+		}
+		if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL)
+		{
+			oldpressed[ptrId] = true;
+			pressed[ptrId] = false;
+			
+			if (event.getPointerCount() == 1)
+				for (int i = 0; i < fingerCount; i++)
+					pressed[i] = false;
+		}
 	}
 	
 	public float getX(int index)
 	{
 		return x[index];
 	}
-
+	
 	public float getY(int index)
 	{
 		return y[index];
 	}
-
+	
 	public float getOldx(int index)
 	{
 		return oldx[index];
 	}
-
+	
 	public float getOldy(int index)
 	{
 		return oldy[index];
 	}
-
+	
 	public float getDeltax(int index)
 	{
 		return deltax[index];
 	}
-
+	
 	public float getDeltay(int index)
 	{
 		return deltay[index];
 	}
-
+	
 	public boolean getTouched(int index)
 	{
 		return pressed[index];
@@ -187,7 +187,7 @@ public class InputManager
 	
 	public boolean getKeyPressed(int index)
 	{
-		if(dpads[index] && !olddpads[index])
+		if (dpads[index] && !olddpads[index])
 		{
 			olddpads[index] = true;
 			return true;
@@ -198,7 +198,7 @@ public class InputManager
 	
 	public boolean getKeyReleased(int index)
 	{
-		if(!dpads[index] && olddpads[index])
+		if (!dpads[index] && olddpads[index])
 		{
 			olddpads[index] = false;
 			return true;
@@ -209,11 +209,11 @@ public class InputManager
 	
 	public boolean getPressed(int index)
 	{
-		if(pressed[index] && !oldpressed[index])
+		if (pressed[index] && !oldpressed[index])
 		{
 			oldpressed[index] = true;
 			
-			return true;	
+			return true;
 		}
 		
 		return false;
@@ -221,7 +221,7 @@ public class InputManager
 	
 	public boolean getReleased(int index)
 	{
-		if(!pressed[index] && oldpressed[index])
+		if (!pressed[index] && oldpressed[index])
 		{
 			oldpressed[index] = false;
 			return true;

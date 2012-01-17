@@ -22,12 +22,12 @@ public class SoundManager
 	
 	public boolean isAllLoaded()
 	{
-		//poor way of doing this
-		for(Iterator<Entry<Integer, SoundObject>> it = mSoundPoolMap.entrySet().iterator(); it.hasNext();)
+		// poor way of doing this
+		for (Iterator<Entry<Integer, SoundObject>> it = mSoundPoolMap.entrySet().iterator(); it.hasNext();)
 		{
-			Map.Entry<Integer, SoundObject> pairs = (Map.Entry<Integer, SoundObject>)it.next();
+			Map.Entry<Integer, SoundObject> pairs = (Map.Entry<Integer, SoundObject>) it.next();
 			
-			if(pairs.getValue().getLoad() == LoadStates.loading)
+			if (pairs.getValue().getLoad() == LoadStates.loading)
 				return false;
 		}
 		
@@ -36,14 +36,14 @@ public class SoundManager
 	
 	public LoadStates isLoaded(int index)
 	{
-		if(mSoundPoolMap.containsKey(index))
+		if (mSoundPoolMap.containsKey(index))
 		{
 			return mSoundPoolMap.get(index).getLoad();
 		}
 		else
 			return LoadStates.notStarted;
 	}
-
+	
 	public SoundManager(Context theContext)
 	{
 		fadeList = new ArrayList<SoundFade>();
@@ -51,48 +51,49 @@ public class SoundManager
 		mContext = theContext;
 		mSoundPool = new SoundPool(4, AudioManager.STREAM_MUSIC, 0);
 		mSoundPoolMap = new HashMap<Integer, SoundObject>();
-		mAudioManager = (AudioManager)mContext.getSystemService(Context.AUDIO_SERVICE);
+		mAudioManager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
 		
-		mSoundPool.setOnLoadCompleteListener(new OnLoadCompleteListener(){
-
+		mSoundPool.setOnLoadCompleteListener(new OnLoadCompleteListener()
+		{
+			
 			@Override
 			public void onLoadComplete(SoundPool soundPool, int sampleId, int status)
 			{
-				//poor way of doing this
-				for(Iterator<Entry<Integer, SoundObject>> it = mSoundPoolMap.entrySet().iterator(); it.hasNext();)
+				// poor way of doing this
+				for (Iterator<Entry<Integer, SoundObject>> it = mSoundPoolMap.entrySet().iterator(); it.hasNext();)
 				{
-					Map.Entry<Integer, SoundObject> pairs = (Map.Entry<Integer, SoundObject>)it.next();
-			        if(pairs.getValue().getSoundPoolint() == sampleId)
-			        {
-			        	pairs.getValue().setLoad(LoadStates.complete);
-			        }
+					Map.Entry<Integer, SoundObject> pairs = (Map.Entry<Integer, SoundObject>) it.next();
+					if (pairs.getValue().getSoundPoolint() == sampleId)
+					{
+						pairs.getValue().setLoad(LoadStates.complete);
+					}
 				}
-			}	
+			}
 		});
 	}
 	
 	public void onUpdate(float delta)
 	{
-		for(Iterator<SoundFade> it = fadeList.iterator(); it.hasNext();)
+		for (Iterator<SoundFade> it = fadeList.iterator(); it.hasNext();)
 		{
 			SoundFade temp = it.next();
 			
 			temp.onUpdate(delta);
 			
-			if(!temp.getValid())
+			if (!temp.getValid())
 			{
-				if(temp.getEndVolume() <= 0.1f)
+				if (temp.getEndVolume() <= 0.1f)
 				{
 					stopSound(temp.getIndex());
 				}
 				
-				it.remove();	
+				it.remove();
 			}
 			else
 			{
 				float volume = getCorrectedVolume(temp.getVolume());
-			
-				if(mSoundPoolMap.containsKey(temp.getIndex()))
+				
+				if (mSoundPoolMap.containsKey(temp.getIndex()))
 					mSoundPool.setVolume(mSoundPoolMap.get(temp.getIndex()).getSoundPoolint(), volume, volume);
 			}
 		}
@@ -102,12 +103,11 @@ public class SoundManager
 	{
 		fadeList.add(newFade);
 	}
-
+	
 	public void addSound(int index, int SoundID)
 	{
 		mSoundPoolMap.put(index, new SoundObject(index, mSoundPool.load(mContext, SoundID, 1)));
 	}
-	
 	
 	public void removeSound(int index)
 	{
@@ -127,17 +127,17 @@ public class SoundManager
 	
 	public void playSound(int index, float volume, int loop)
 	{
-		if( mSoundPoolMap.containsKey(index))
+		if (mSoundPoolMap.containsKey(index))
 		{
 			float streamVolume = getCorrectedVolume(volume);
 			
-			mSoundPool.play((Integer) mSoundPoolMap.get(index).getSoundPoolint(), streamVolume, streamVolume, 1, loop, 1f);	
+			mSoundPool.play((Integer) mSoundPoolMap.get(index).getSoundPoolint(), streamVolume, streamVolume, 1, loop, 1f);
 		}
 	}
 	
 	public void purge()
 	{
-		for(int i = 0; i < mSoundPoolMap.size(); i++)
+		for (int i = 0; i < mSoundPoolMap.size(); i++)
 			removeSound(i);
 	}
 	
@@ -153,7 +153,7 @@ public class SoundManager
 	
 	public void stopSound(int index)
 	{
-		if( mSoundPoolMap.containsKey(index))
+		if (mSoundPoolMap.containsKey(index))
 		{
 			mSoundPool.setLoop((Integer) mSoundPoolMap.get(index).getSoundPoolint(), 0);
 			

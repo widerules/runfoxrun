@@ -20,7 +20,7 @@ public class CustomThread implements Runnable
 		this.panel.onInitialize();
 	}
 	
-	public void start()	
+	public void start()
 	{
 		run = true;
 		thread = new Thread(this);
@@ -49,9 +49,9 @@ public class CustomThread implements Runnable
 					panel.onDraw(c);
 				}
 			}
-			catch(Exception e)
+			catch (Exception e)
 			{
-				//do nothing?
+				// do nothing?
 			}
 			finally
 			{

@@ -45,14 +45,6 @@ public class RunfoxrunActivity extends Activity
 		setContentView(game);
 	}
 	
-	/*@Override
-	public void onStop()
-	{
-		super.onStop();
-		wl.release();
-		game.onUserQuit();
-	}*/
-	
 	@Override
 	protected void onPause()
 	{

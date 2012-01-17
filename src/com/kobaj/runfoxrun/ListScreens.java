@@ -26,7 +26,7 @@ public abstract class ListScreens
 			if (imgBackdrop != null)
 			{
 				canvas.save();
-				canvas.rotate(-25, imgBackdrop.getWidth() / 2, imgBackdrop.getHeight() / 2);
+				canvas.rotate(-27, imgBackdrop.getWidth() / 2, imgBackdrop.getHeight() / 2);
 			}
 			
 			for (int i = 0; i < count; i++)

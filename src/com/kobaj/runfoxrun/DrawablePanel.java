@@ -8,7 +8,7 @@ import android.view.SurfaceView;
 
 //lower level panel that handles ugly surface changes that we don't want to see in our surface panel
 public abstract class DrawablePanel extends SurfaceView implements SurfaceHolder.Callback, ISurface
-{	
+{
 	private CustomThread thread;
 	
 	public DrawablePanel(Context context)
@@ -25,7 +25,7 @@ public abstract class DrawablePanel extends SurfaceView implements SurfaceHolder
 	
 	public void surfaceChanged(SurfaceHolder holder, int format, int width, int height)
 	{
-		//do nothing for now.
+		// do nothing for now.
 	}
 	
 	public void surfaceDestroyed(SurfaceHolder holder)
@@ -45,7 +45,7 @@ public abstract class DrawablePanel extends SurfaceView implements SurfaceHolder
 	
 	public void onDraw(Canvas canvas)
 	{
-		//reset everything.
+		// reset everything.
 		canvas.drawColor(Color.BLACK);
 	}
 }
