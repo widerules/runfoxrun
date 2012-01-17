@@ -65,6 +65,6 @@ public class FPSManager
 	
 	public float getDelta()
 	{
-		return Math.max(Math.min(calculateaverage(delta), 1000), 0);
+		return Math.max(Math.min(calculateaverage(delta), 100), 0);
 	}
 }
