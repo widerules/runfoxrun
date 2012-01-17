@@ -15,13 +15,15 @@ public class PauseScreen extends ListScreens
 		
 		//imgBackdrop = BitmapFactory.decodeResource(resources, identity);
 		
-		contGame = new custString("Continue", 100, 100);
-		contGame.setSize(35);
+		contGame = new custString("Continue", 150,210);
+		contGame.setSize(40);
 		
-		titleScreen = new custString("Title Screen", 100, 200);
+		titleScreen = new custString("Title Screen", 150, 260);
+		titleScreen.setSize(40);
 	
-		quit = new custString("Quit Game", 400, 400);
+		quit = new custString("Quit Game", 150, 360);
 		quit.setColor(Color.RED, Color.BLACK);
+		quit.setSize(40);
 		
 		stringList = new custString[count];
 		stringList[0] = contGame;

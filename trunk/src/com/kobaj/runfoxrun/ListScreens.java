@@ -17,15 +17,24 @@ public abstract class ListScreens
 	
 	public void onDraw(Canvas canvas)
 	{
-		if(initialized)
+		if (initialized)
 		{
-			if(imgBackdrop != null)
-				canvas.drawBitmap(imgBackdrop, 0, 0, null);
-		
-		//array yay :D
-		for(int i = 0; i < count; i++)
-			stringList[i].onDraw(canvas);
-		
+			if (imgBackdrop != null)
+				canvas.drawBitmap(imgBackdrop, -1, 1, null);
+			
+			// array yay :D
+			if (imgBackdrop != null)
+			{
+				canvas.save();
+				canvas.rotate(-25, imgBackdrop.getWidth() / 2, imgBackdrop.getHeight() / 2);
+			}
+			
+			for (int i = 0; i < count; i++)
+				stringList[i].onDraw(canvas);
+			
+			if (imgBackdrop != null)
+				canvas.restore();
+			
 		}
 	}
 }

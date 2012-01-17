@@ -36,6 +36,7 @@ public class ContinousScreen
 	
 	private int score = 0;
 	private custString scoreString;
+	private custString scoreWord;
 	
 	private SoundManager sm;
 	
@@ -54,11 +55,13 @@ public class ContinousScreen
 		
 		this.player = player;
 		
+		pm.setPlayer(player);
+		
 		hitList = new ArrayList<Sprite>();
 		
 		startLevel();
 		
-		initialSpeed = pm.getScrollRate();
+		initialSpeed =  -17.0f  / 100.0f;
 		player.setyPos(startHeight);
 		
 		background1 = new Sprite();
@@ -66,6 +69,7 @@ public class ContinousScreen
 		pm.addBackgroundPhys(background1);
 		
 		scoreString = new custString("", width - 180, 24);
+		scoreWord = new custString("Score: ", width - 250, 24);
 		
 		initialized = true;
 	}
@@ -82,7 +86,7 @@ public class ContinousScreen
 	        scoreString.setString(s.substring(s.length()-13)); // keep the rightmost 13 chars
 			
 	        //slowly get faster
-	        pm.setScrollRate(pm.getScrollRate() - delta / 1000000.0f);
+	        pm.setScrollRate(pm.getScrollRate() - delta / (1000000.0f - 5000.0f));
 			
 			//background logics
 			Sprite back = background1;
@@ -94,7 +98,6 @@ public class ContinousScreen
 			{
 				back.setxPos(0);
 			}
-			
 			
 			// get rid of old blocks
 			for (Iterator<Sprite> it = hitList.iterator(); it.hasNext();)
@@ -111,8 +114,6 @@ public class ContinousScreen
 			if (pm.getDeath())
 			{	
 				pm.reset();
-				
-				pm.setScrollProgress(1);
 				
 				player.setyPos(startHeight);
 				
@@ -138,8 +139,6 @@ public class ContinousScreen
 			Sprite last = hitList.get(hitList.size() - 1);
 			if (last.getxPos() + last.getWidth() < width)
 			{
-				int rand = random.nextInt(3);
-				
 				int x;
 				int y;
 				
@@ -172,20 +171,21 @@ public class ContinousScreen
 				int newFinalY = (int) (random.nextInt((int) (newY1 - newY2)) + newY2);
 				
 				y = height - newFinalY;
-				x = newX + width;
-				
+				x = newX + width;				
 				
 				Sprite temp = new Sprite();
 				
-				if (rand == 0)
+				int rand = random.nextInt(30);
+					
+				if (rand >= 0 && rand <= 12)
 				{
 					temp.onInitialize(LoadedResources.getGreen(mResources), x, y);
 				}
-				else if (rand == 1)
+				else if (rand > 12 && rand <= 25)
 				{
 					temp.onInitialize(LoadedResources.getRed(mResources), x, y);
 				}
-				else if (rand == 2)
+				else if (rand > 25)
 				{
 					temp.onInitialize(LoadedResources.getBlue(mResources), x, y);
 				}
@@ -231,6 +231,7 @@ public class ContinousScreen
 			
 			//score
 			scoreString.onDraw(canvas);
+			scoreWord.onDraw(canvas);
 		}
 	}
 	
