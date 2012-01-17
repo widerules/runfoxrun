@@ -47,8 +47,10 @@ public class HighScores
 		
 		Collections.sort(scores);
 		
-		if(scores.size() > maxscores)
-			scores.remove(scores.size() - 1);
+		while(scores.size() > maxscores)
+		{
+			scores.remove(0);
+		}
 	}
 	
 	public static ArrayList<Integer> getScores()

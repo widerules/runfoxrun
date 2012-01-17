@@ -154,7 +154,7 @@ public class SinglePlayScreen implements Runnable
 				if (levelNumber == 2)
 				{
 					mm.ChangeSongs(R.raw.quicken, new SoundFade(0, 1, 0, 3000), new SoundFade(0, 0, 1, 3000));
-					pm.setBackDiv(levelList.get(2 - 1).getLevelLength() / 1600.0f);
+					pm.setBackDiv((float)levelList.get(2 - 1).getLevelLength() / 1600.0f);
 				}
 				else if (levelNumber == 3)
 				{
@@ -351,7 +351,7 @@ public class SinglePlayScreen implements Runnable
 	public void run()
 	{
 		back = new Sprite();
-		back.onInitialize(LoadedResources.getBigBackGround(), 0, height - 480);
+		back.onInitialize(LoadedResources.getBigBackGround(), 0, height);
 		
 		progressBarIcon = LoadedResources.getIcon(resources);
 		// load dat bad guy

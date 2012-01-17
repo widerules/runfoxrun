@@ -67,9 +67,7 @@ public class ContinousScreen
 		player.setyPos(startHeight);
 		
 		background1 = new Sprite();
-		background1.onInitialize(LoadedResources.getBackground1(resources)); // should
-																				// be
-																				// different
+		background1.onInitialize(LoadedResources.getBackground1(resources), 0 , height);
 		pm.addBackgroundPhys(background1);
 		
 		scoreString = new custString(resources, "", width - (int)(120 * scale), (int)(16 * scale));
