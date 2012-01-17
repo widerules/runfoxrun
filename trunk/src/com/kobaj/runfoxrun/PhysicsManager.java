@@ -33,7 +33,7 @@ public class PhysicsManager
 	
 	public static float speedUp = 12.5f;
 	
-	private float backDiv = 10.0f;
+	private float backDiv = 10.5f;
 	
 	public void setBackDiv(float value)
 	{
@@ -66,11 +66,11 @@ public class PhysicsManager
 	
 	public void setBackDrop(float value)
 	{
-		for (Iterator<Sprite> it = backgroundables.iterator(); it.hasNext();)
+		/*for (Iterator<Sprite> it = backgroundables.iterator(); it.hasNext();)
 		{
 			Sprite temp = it.next();
 			temp.setxPos(temp.getxPos() + scrollProgress / backDiv - value / backDiv);
-		}
+		}*/
 	}
 	
 	public void setScrollProgress(float value, boolean resetBackToo)

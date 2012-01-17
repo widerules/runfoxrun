@@ -98,6 +98,8 @@ public class SinglePlayScreen implements Runnable
 		this.mm = mm;
 		
 		this.player = player;
+		pm.setPlayer(player);
+		pm.setScrollRate(-17.0f / 100.0f);
 		
 		this.resources = resources;
 		
@@ -149,13 +151,12 @@ public class SinglePlayScreen implements Runnable
 				
 				HighScores.setLevel(levelNumber);
 				
-				pm.setBackDiv(10.0f);
-				back.setxPos(-1600 * (levelNumber - 1));
+				pm.setBackDiv(((float)levelList.get(levelNumber - 1).getLevelLength()) / (1600.0f));
+				//back.setxPos(-1600 * (levelNumber - 1));
 				
 				if (levelNumber == 2)
 				{
 					mm.ChangeSongs(R.raw.quicken, new SoundFade(0, 1, 0, 3000), new SoundFade(0, 0, 1, 3000));
-					pm.setBackDiv((float)levelList.get(2 - 1).getLevelLength() / 1600.0f);
 				}
 				else if (levelNumber == 3)
 				{
@@ -165,6 +166,8 @@ public class SinglePlayScreen implements Runnable
 				{
 					mm.ChangeSongs(R.raw.blackdiamond, new SoundFade(0, 1, 0, 3000), new SoundFade(0, 0, 1, 3000));
 					pm.setScrollRate((float) (pm.getScrollRate() - .025));
+					
+					pm.setBackDiv(((float)levelList.get(levelNumber - 1).getLevelLength()) / (1600.0f - (float)(width)));
 				}
 				
 				pm.setScrollProgress(0, false);
@@ -246,7 +249,7 @@ public class SinglePlayScreen implements Runnable
 			badGuy.onUpdate(delta);
 			
 			// handle death;
-			/*if (pm.getDeath())
+			if (pm.getDeath())
 			{
 				pm.levelReset();
 				resetBad = true;
@@ -254,7 +257,7 @@ public class SinglePlayScreen implements Runnable
 					sm.playSound(3, .25f);
 				else
 					sm.playSound(3, .10f);
-			}*/
+			}
 			
 			// set me collections
 			collectionText.setString("x " + String.valueOf(collectionScore));
@@ -382,6 +385,8 @@ public class SinglePlayScreen implements Runnable
 		mm.ChangeSongs(R.raw.pulse);
 		mm.addFade(new SoundFade(0, 0, 1, 3000));
 		mm.play(0);
+		
+		pm.setBackDiv(((float)levelList.get(levelNumber - 1).getLevelLength()) / (1600.0f));
 		
 		initialized = true;
 		
