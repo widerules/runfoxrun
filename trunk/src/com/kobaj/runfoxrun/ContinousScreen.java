@@ -38,6 +38,7 @@ public class ContinousScreen
 	private int score = 0;
 	private custString scoreString;
 	private custString scoreWord;
+	private custString highScoreWord;
 	
 	private SoundManager sm;
 	
@@ -63,10 +64,9 @@ public class ContinousScreen
 		mResources = resources;
 		
 		this.player = player;
-		
 		setPlayerPos();
-		
 		pm.setPlayer(player);
+		player.setPaintColorFilter(255);
 		
 		hitList = new ArrayList<Sprite>();
 		
@@ -87,7 +87,30 @@ public class ContinousScreen
 		scoreString = new custString(resources, "", width - (int)(120 * scale), (int)(16 * scale));
 		scoreWord = new custString(resources, "Score: ", width - (int)(167 * scale), (int)(16 * scale));
 		
+		highScoreWord = new custString(resources,"",
+				width - (int)(165 * scale), (int)(33 * scale));
+		setHigh();
+		
 		initialized = true;
+	}
+	
+	public int getScore()
+	{
+		return score;
+	}
+	
+	private void setHigh()
+	{
+		highScoreWord.setString( "High: " + addZero(HighScores.getHighScore()));
+	}
+	
+	private String addZero(int value)
+	{
+		String s = "000000000000" + String.valueOf(value); // twelve zeros
+		// prepended
+		return s.substring(s.length() - 13); // keep the
+			// rightmost
+			// 13 chars
 	}
 	
 	public void onUpdate(float delta)
@@ -98,11 +121,7 @@ public class ContinousScreen
 			
 			// score
 			score += 1.0f * delta / 10.0f;
-			String s = "000000000000" + String.valueOf(score); // twelve zeros
-																// prepended
-			scoreString.setString(s.substring(s.length() - 13)); // keep the
-																	// rightmost
-																	// 13 chars
+			scoreString.setString(addZero(score));
 			
 			// slowly get faster
 			pm.setScrollRate(pm.getScrollRate() - delta / (1000000.0f - 5000.0f));
@@ -141,6 +160,8 @@ public class ContinousScreen
 				sm.playSound(3);
 				
 				HighScores.addScore(score);
+				
+				setHigh();
 				
 				score = 0;
 			}
@@ -241,6 +262,7 @@ public class ContinousScreen
 			// score
 			scoreString.onDraw(canvas);
 			scoreWord.onDraw(canvas);
+			highScoreWord.onDraw(canvas);
 		}
 	}
 	

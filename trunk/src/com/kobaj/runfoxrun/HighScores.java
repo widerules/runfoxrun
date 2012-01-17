@@ -57,4 +57,10 @@ public class HighScores
 	{
 		return scores;
 	}
+
+	public static int getHighScore()
+	{
+		int value = scores.get(scores.size() - 1);
+		return value;
+	}
 }

@@ -255,7 +255,12 @@ public class SurfacePanel extends DrawablePanel
 				newState = ps.onTouch((int) im.getX(i), (int) im.getY(i));
 				
 				if (newState != GameStates.Pause)
+				{
+					if(oldState == GameStates.Continous)
+						HighScores.addScore(cous.getScore());
+					
 					break;
+				}
 			}
 		}
 		
