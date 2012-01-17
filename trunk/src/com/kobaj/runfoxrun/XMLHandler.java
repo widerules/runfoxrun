@@ -2,6 +2,7 @@ package com.kobaj.runfoxrun;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -14,12 +15,11 @@ import android.os.Environment;
 import android.util.Log;
 
 public class XMLHandler
-{	
+{
 	public static <T> boolean writeSerialFile(T writeable, String fileName)
 	{
 		if (hasStorage(true))
 		{
-			
 			// write
 			Serializer serial = new Persister();
 			
@@ -75,12 +75,38 @@ public class XMLHandler
 	// TODO implement.
 	public static <T> T readSerialFile(String fileName, Class<? extends T> type)
 	{
+		T finalReturn = null;
+		Serializer serial = new Persister();
+		
 		if (hasStorage(false))
 		{
+			File sdCard = Environment.getExternalStorageDirectory();
+			File dir = new File(sdCard.getAbsolutePath() + "/rfr");
 			
+			File sdcardFile = new File(dir, fileName + ".xml");
+			try
+			{
+				if (sdcardFile.exists())
+				{
+					byte[] temp = ioStremtoByteArray(new FileInputStream(sdcardFile));
+					String temp2 = new String(temp, "UTF-8");
+					try
+					{
+						finalReturn = serial.read(type, temp2);
+					}
+					catch (Exception e)
+					{
+						Log.e("JAKOBERR", e.toString());
+					}	
+				}
+			}
+			catch (IOException e)
+			{
+				Log.e("JAKOBERR", e.toString());
+			}
 		}
 		
-		return null;
+		return finalReturn;
 	}
 	
 	public static <T> T readSerialFile(Resources resources, int identity, Class<? extends T> type)

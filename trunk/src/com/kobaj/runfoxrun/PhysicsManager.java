@@ -33,6 +33,13 @@ public class PhysicsManager
 	
 	public static float speedUp = 12.5f;
 	
+	private float backDiv = 10.0f;
+	
+	public void setBackDiv(float value)
+	{
+		backDiv = value;
+	}
+	
 	public void jump()
 	{
 		if (touching)
@@ -57,7 +64,7 @@ public class PhysicsManager
 		return scrollProgress;
 	}
 	
-	public void setScrollProgress(float value)
+	public void setScrollProgress(float value, boolean resetBackToo)
 	{
 		for (Iterator<Sprite> it = interactables.iterator(); it.hasNext();)
 		{
@@ -65,14 +72,12 @@ public class PhysicsManager
 			temp.setxPos(temp.getxPos() + scrollProgress - value);
 		}
 		
-		// in a perfect world I would add a boolean to see if the user wants to
-		// reset the background.
-		// here I will just pretend he does not.
-		/*
-		 * for(Iterator<Sprite> it = backgroundables.iterator(); it.hasNext();)
-		 * { Sprite temp = it.next(); temp.setxPos(temp.getxPos() -
-		 * scrollProgress / 10.0f - value / 10.0f); }
-		 */
+		if (resetBackToo)
+			for (Iterator<Sprite> it = backgroundables.iterator(); it.hasNext();)
+			{
+				Sprite temp = it.next();
+				temp.setxPos(temp.getxPos() + scrollProgress / backDiv - value / backDiv);
+			}
 		
 		scrollProgress = value;
 	}
@@ -162,27 +167,27 @@ public class PhysicsManager
 		for (Iterator<Sprite> i = backgroundables.iterator(); i.hasNext();)
 		{
 			Sprite element = i.next();
-			element.setxPos((element.getxPos() + amount / 10.0f));
+			element.setxPos((element.getxPos() + amount / backDiv));
 		}
 		
-		if(set)
-		if (physObj.getyPos() > height)
-		{
-			if(!reverse)
-			death = true;
-		}
+		if (set)
+			if (physObj.getyPos() > height)
+			{
+				if (!reverse)
+					death = true;
+			}
 		
-		if(set)
-		if (userVel > 0 && userVelOld <= 0)
-		{
-			physObj.setAnimation(CharStates.LevelOut);
-		}
+		if (set)
+			if (userVel > 0 && userVelOld <= 0)
+			{
+				physObj.setAnimation(CharStates.LevelOut);
+			}
 		
-		if(set)
-		if (userVel == 0 && (userVelOld != 0))
-		{
-			physObj.setAnimation(CharStates.GoingDown);
-		}
+		if (set)
+			if (userVel == 0 && (userVelOld != 0))
+			{
+				physObj.setAnimation(CharStates.GoingDown);
+			}
 		
 	}
 	
@@ -201,13 +206,13 @@ public class PhysicsManager
 		
 		if (death)
 		{
-			if(!reverse)
-			this.death = true;
+			if (!reverse)
+				this.death = true;
 		}
 		else if (Math.abs(amount) >= checkamount)
 		{
-			if(!reverse)
-			this.death = true;
+			if (!reverse)
+				this.death = true;
 		}
 		else if (Math.abs(amount) > 0) // bit relaxed
 		{
@@ -228,7 +233,8 @@ public class PhysicsManager
 			{
 				physRect physObjPhysRect = e.next();
 				
-				int amount = collisionDetec(elementPhysRect.getCollRect(), physObjPhysRect.getCollRect());
+				boolean[] value = { false };
+				int amount = collisionDetec(elementPhysRect.getCollRect(), physObjPhysRect.getCollRect(), value);
 				
 				if (element.getCollectable() == CollectableStates.collectable && amount != 0)
 				{
@@ -244,7 +250,7 @@ public class PhysicsManager
 		}
 	}
 	
-	private int collisionDetec(Rect obj1, Rect obj2)
+	private int collisionDetec(Rect obj1, Rect obj2, boolean[] value)
 	{
 		Rect collision = new Rect();
 		

@@ -57,7 +57,7 @@ public class Animation
 	
 	public int getRecMS()
 	{
-		if(recMS == -1)
+		if (recMS == -1)
 		{
 			recMS = (int) ((1.0f / recFPS) * 1000);
 		}

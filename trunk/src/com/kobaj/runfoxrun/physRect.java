@@ -25,16 +25,13 @@ public class physRect
 	
 	private Rect collRect;
 	
-	public physRect(@Attribute(name = "top") int top,
-			@Attribute(name = "bottom") int bottom,
-			@Attribute(name = "right") int right,
-			@Attribute(name = "left") int left,
+	public physRect(@Attribute(name = "top") int top, @Attribute(name = "bottom") int bottom, @Attribute(name = "right") int right, @Attribute(name = "left") int left,
 			@Element(name = "hurts") boolean hurts)
 	{
-		/*this.top = top;
-		this.right = right;
-		this.left = left;
-		this.bottom = bottom;*/
+		/*
+		 * this.top = top; this.right = right; this.left = left; this.bottom =
+		 * bottom;
+		 */
 		this.hurts = hurts;
 		
 		collRect = new Rect(left, top, right, bottom);
@@ -55,7 +52,7 @@ public class physRect
 	{
 		return collRect;
 	}
-
+	
 	public void shiftRect(int x, int y)
 	{
 		collRect.top -= y;
@@ -64,10 +61,10 @@ public class physRect
 		collRect.right -= x;
 	}
 	
-	//top, right, bottom, left
+	// top, right, bottom, left
 	public void setRect(float top, float right, float bottom, float left)
 	{
-		//left, top, right, bottom;
-		collRect.set((int)left, (int)top, (int)right, (int)bottom);
+		// left, top, right, bottom;
+		collRect.set((int) left, (int) top, (int) right, (int) bottom);
 	}
 }

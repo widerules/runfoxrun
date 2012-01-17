@@ -27,7 +27,7 @@ public class LoadedResources
 	private static Bitmap smallBuilding;
 	private static Bitmap smallTree;
 	private static Bitmap tree;
-	private static Bitmap weed; 
+	private static Bitmap weed;
 	
 	private static Bitmap deadtree;
 	
@@ -49,7 +49,7 @@ public class LoadedResources
 		
 		badguy = BitmapFactory.decodeResource(resources, R.drawable.smoke);
 		
-		icon = BitmapFactory.decodeResource(resources,  R.drawable.icon);
+		icon = BitmapFactory.decodeResource(resources, R.drawable.icon);
 		
 		star = BitmapFactory.decodeResource(resources, R.drawable.star);
 		
@@ -93,137 +93,137 @@ public class LoadedResources
 	static Sprite TREe;
 	static Sprite WEEd;
 	static Sprite DEAdTree;
-
+	
 	public static Bitmap getStar(Resources resources)
 	{
-		if(loaded)
+		if (loaded)
 			return star;
 		
 		load(resources);
-			return star;
+		return star;
 	}
 	
 	public static Bitmap getBadGuy(Resources resources)
 	{
-		if(loaded)
+		if (loaded)
 			return badguy;
 		
 		load(resources);
-			return badguy;
+		return badguy;
 	}
 	
 	public static Bitmap getIcon(Resources resources)
 	{
-		if(loaded)
+		if (loaded)
 			return icon;
 		
 		load(resources);
-			return icon;
+		return icon;
 	}
 	
 	public static Bitmap getBackground1(Resources resources)
 	{
-		if(loaded)
+		if (loaded)
 			return background1;
 		
 		load(resources);
-			return background1;
-	}	
+		return background1;
+	}
 	
 	public static Bitmap getGreen(Resources resources)
 	{
-		if(loaded)
+		if (loaded)
 			return green;
 		
 		load(resources);
-			return green;
+		return green;
 	}
 	
 	public static Bitmap getBlue(Resources resources)
 	{
-		if(loaded)
+		if (loaded)
 			return blue;
 		
 		load(resources);
-			return blue;
+		return blue;
 	}
 	
 	public static Bitmap getRed(Resources resources)
 	{
-		if(loaded)
+		if (loaded)
 			return red;
 		
 		load(resources);
-			return red;
+		return red;
 	}
 	
-	//screw that resource crap
-
+	// screw that resource crap
+	
 	public static Bitmap getBigBackGround()
 	{
 		return bigBackGround;
 	}
-
+	
 	public static Bitmap getBigBuilding()
 	{
 		return bigBuilding;
 	}
-
+	
 	public static Bitmap getBigVine()
 	{
 		return bigVine;
 	}
-
+	
 	public static Bitmap getGrass()
 	{
 		return grass;
 	}
-
+	
 	public static Bitmap getLittleVine()
 	{
 		return littleVine;
 	}
-
+	
 	public static Bitmap getSandFlat()
 	{
 		return sandFlat;
 	}
-
+	
 	public static Bitmap getSandHole()
 	{
 		return sandHole;
 	}
-
+	
 	public static Bitmap getSandHoleLeft()
 	{
 		return sandHoleLeft;
 	}
-
+	
 	public static Bitmap getSandHoleRight()
 	{
 		return sandHoleRight;
 	}
-
+	
 	public static Bitmap getSmallBuilding()
 	{
 		return smallBuilding;
 	}
-
+	
 	public static Bitmap getSmallTree()
 	{
 		return smallTree;
 	}
-
+	
 	public static Bitmap getTree()
 	{
 		return tree;
 	}
-
+	
 	public static Bitmap getWeed()
 	{
 		return weed;
 	}
-
+	
 	public static Bitmap getFoxTwo()
 	{
 		return foxTwo;
@@ -243,37 +243,37 @@ public class LoadedResources
 	{
 		return black;
 	}
-
+	
 	public static Sprite getBIGVine()
 	{
 		return BIGVine;
 	}
-
+	
 	public static Sprite getLITtleVine()
 	{
 		return LITtleVine;
 	}
-
+	
 	public static Sprite getSANdHole()
 	{
 		return SANdHole;
 	}
-
+	
 	public static Sprite getSMAllTree()
 	{
 		return SMAllTree;
 	}
-
+	
 	public static Sprite getTREe()
 	{
 		return TREe;
 	}
-
+	
 	public static Sprite getWEEd()
 	{
 		return WEEd;
 	}
-
+	
 	public static Sprite getDEAdTree()
 	{
 		return DEAdTree;

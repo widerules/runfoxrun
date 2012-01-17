@@ -43,8 +43,13 @@ public class Sprite
 	
 	private Paint myPaint = new Paint();
 	
-	//wish I had extended my sprite classes correctly...too late now
+	// wish I had extended my sprite classes correctly...too late now
 	private SoundManager sm;
+	
+	public void setMMandSM(SoundManager SM)
+	{
+		this.sm = SM;
+	}
 	
 	public CollectableStates getCollectable()
 	{
@@ -53,11 +58,15 @@ public class Sprite
 	
 	public void setCollectable(CollectableStates collect)
 	{
-		if(collect == CollectableStates.collected)
-			if(sm != null)
+		if (collect == CollectableStates.collected)
+		{
+			if (sm != null)
 				sm.playSound(2, 1, 0);
-		
-		this.collectable = collect;
+			
+			collectable = CollectableStates.collected;
+		}
+		else
+			this.collectable = CollectableStates.collectable;
 	}
 	
 	public boolean getInitialized()
@@ -76,7 +85,7 @@ public class Sprite
 	}
 	
 	public ArrayList<physRect> getPhysRect()
-	{	
+	{
 		return physRectList;
 	}
 	
@@ -104,15 +113,15 @@ public class Sprite
 	
 	private void updatesRect()
 	{
-		int deltaY = dest.top - (int)yPos;
-		int deltaX = dest.left - (int)xPos;
+		int deltaY = dest.top - (int) yPos;
+		int deltaX = dest.left - (int) xPos;
 		
-		dest.top = (int)yPos;
-		dest.bottom = (int)(yPos + height);
-		dest.left = (int)xPos;
-		dest.right = (int)(xPos + width);
+		dest.top = (int) yPos;
+		dest.bottom = (int) (yPos + height);
+		dest.left = (int) xPos;
+		dest.right = (int) (xPos + width);
 		
-		for(int i = 0; i < physRectList.size(); i++)
+		for (int i = 0; i < physRectList.size(); i++)
 		{
 			physRectList.get(i).shiftRect((int) deltaX, (int) deltaY);
 		}
@@ -123,7 +132,7 @@ public class Sprite
 		sRectangle.top = currentSetAnimation.getyStartPos();
 		sRectangle.bottom = sRectangle.top + height;
 		sRectangle.left = ((currentFrame - 1) * width) + currentSetAnimation.getxStartPos();
-		sRectangle.right = sRectangle.left + width;	
+		sRectangle.right = sRectangle.left + width;
 	}
 	
 	public void onInitialize(Bitmap img, int xPos, int yPos, int width, int height)
@@ -137,9 +146,9 @@ public class Sprite
 		frameTimer = 0;
 		
 		// load das image
-		this.img = img; 
+		this.img = img;
 		
-		if(this.width == -1)
+		if (this.width == -1)
 		{
 			this.width = img.getWidth();
 			this.height = img.getHeight();
@@ -154,15 +163,16 @@ public class Sprite
 		setAnimation(CharStates.Sitting);
 		
 		dest = new Rect(xPos, yPos, xPos + this.width, yPos + this.height);
-		sRectangle = new Rect(((currentFrame - 1) * this.width) + currentSetAnimation.getxStartPos(), currentSetAnimation.getyStartPos(), ((currentFrame - 1) * this.width) + currentSetAnimation.getxStartPos() + this.width, currentSetAnimation.getyStartPos() + this.height);
+		sRectangle = new Rect(((currentFrame - 1) * this.width) + currentSetAnimation.getxStartPos(), currentSetAnimation.getyStartPos(), ((currentFrame - 1) * this.width)
+				+ currentSetAnimation.getxStartPos() + this.width, currentSetAnimation.getyStartPos() + this.height);
 		
-		if(physRectList == null || physRectList.isEmpty())
+		if (physRectList == null || physRectList.isEmpty())
 		{
 			physRectList = new ArrayList<physRect>();
 			physRectList.add(new physRect(new Rect(dest.left, dest.top, dest.right, dest.bottom), false));
 		}
 		else
-			for(Iterator<physRect> it = physRectList.iterator(); it.hasNext();)
+			for (Iterator<physRect> it = physRectList.iterator(); it.hasNext();)
 			{
 				physRect rect = it.next();
 				
@@ -230,33 +240,32 @@ public class Sprite
 				
 				currentFrame += 1;
 				
-				if(this.currentSetAnimation.getName().equalsIgnoreCase(CharStates.Running.name()))
+				if (this.currentSetAnimation.getName().equalsIgnoreCase(CharStates.Running.name()))
 				{
-					if(currentFrame == 1 || currentFrame == 3)
+					if (currentFrame == 1 || currentFrame == 3)
 					{
-						if(sm != null)
-							sm.playSound(1, .75f); //footsteps
+						if (sm != null)
+							sm.playSound(1, .75f); // footsteps
 					}
 				}
 				
-				
 				if (currentFrame > currentSetAnimation.getFrameCount())
 				{
-					if(currentSetAnimation.getName().equalsIgnoreCase(CharStates.Jump.name()))
+					if (currentSetAnimation.getName().equalsIgnoreCase(CharStates.Jump.name()))
 					{
 						this.setAnimation(CharStates.Fallingup);
 					}
-					else if(currentSetAnimation.getName().equalsIgnoreCase(CharStates.GoingDown.name()))
+					else if (currentSetAnimation.getName().equalsIgnoreCase(CharStates.GoingDown.name()))
 					{
 						this.setAnimation(CharStates.Running);
-						if(sm != null)
-						sm.playSound(5, .75f); //landing
+						if (sm != null)
+							sm.playSound(5, .75f); // landing
 					}
-					else if(currentSetAnimation.getName().equalsIgnoreCase(CharStates.Collapse.name()))
+					else if (currentSetAnimation.getName().equalsIgnoreCase(CharStates.Collapse.name()))
 					{
 						this.setAnimation(CharStates.Collapsed);
 					}
-						
+					
 					currentFrame = 1;
 				}
 				
@@ -275,15 +284,15 @@ public class Sprite
 	{
 		Rect rect1 = new Rect(scrollingPositionX, scrollingPositionY, scrollingPositionX + canvas.getWidth(), scrollingPositionY + canvas.getHeight());
 		Rect rect2 = new Rect(0, 0, canvas.getWidth(), canvas.getHeight());
-
-		if(initialized)
+		
+		if (initialized)
 			canvas.drawBitmap(img, rect1, rect2, myPaint);
 	}
 	
 	public void setAnimation(CharStates state)
 	{
 		if (animationList.size() != 1)
-		{	
+		{
 			for (int i = 0; i < animationList.size(); i++)
 			{
 				if (animationList.get(i).getName().equalsIgnoreCase(state.name()))
@@ -293,8 +302,8 @@ public class Sprite
 					frameTimer = 0;
 					currentFrame = 1;
 					
-					//probably a poor way of handeling this
-					if(initialized)
+					// probably a poor way of handeling this
+					if (initialized)
 						updateoRect();
 				}
 			}
@@ -313,7 +322,7 @@ public class Sprite
 		playing = true;
 	}
 	
-	//teeeeechnically not needed.
+	// teeeeechnically not needed.
 	public void onCleanup()
 	{
 		img.recycle();
@@ -321,7 +330,7 @@ public class Sprite
 		
 		animationList.clear();
 	}
-
+	
 	public void setPaintColorFilter(int alpha)
 	{
 		myPaint.setAlpha(alpha);
