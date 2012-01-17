@@ -100,6 +100,7 @@ public class SinglePlayScreen implements Runnable
 		this.player = player;
 		pm.setPlayer(player);
 		pm.setScrollRate(-17.0f / 100.0f);
+		player.setPaintColorFilter(255);
 		
 		this.resources = resources;
 		
