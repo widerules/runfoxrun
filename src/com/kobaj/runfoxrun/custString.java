@@ -2,6 +2,7 @@ package com.kobaj.runfoxrun;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
@@ -24,6 +25,8 @@ public class custString
 	
 	private Paint textPaint = new Paint();
 	private Paint strokePaint = new Paint();
+	
+	private Matrix rotationMatrix;
 	
 	public custString(String string, int x, int y)
 	{
@@ -52,6 +55,8 @@ public class custString
 	    rect = new Rect();
 	    
 	    generateMembers();
+	    
+	    rotationMatrix = new Matrix();
 	}
 	
 	private void generateMembers()
@@ -122,10 +127,20 @@ public class custString
 	
 	public boolean fingertap(int x, int y)
 	{
-		if(rect.contains(x, y))
+		float[] src = {x,y};
+		float[] dst = new float[2];
+		
+		rotationMatrix.mapPoints(dst, src);
+		
+		if(rect.contains((int)dst[0], (int)dst[1]))
 			return true;
 		
 		return false;
+	}
+
+	public void setRotation(float i, int xp, int yp)
+	{	
+	    rotationMatrix.setRotate(i, xp, yp);
 	}
 	
 }

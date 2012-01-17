@@ -24,21 +24,25 @@ public class TitleScreen extends ListScreens
 		
 		imgBackdrop = BitmapFactory.decodeResource(resources, identity);
 		
-		newGame = new custString("New Game", 100, 100);
+		newGame = new custString("New Game", 150, 210);
 		newGame.setColor(Color.WHITE, Color.BLACK);
-		newGame.setSize(55);
+		newGame.setSize(40);
+		newGame.setRotation(20, imgBackdrop.getWidth() / 2, imgBackdrop.getHeight() / 2);
 		
-		continousGame = new custString("Endless Game", 100, 200);
+		continousGame = new custString("Endless Game", 150, 260);
 		continousGame.setColor(Color.WHITE, Color.BLACK);
-		continousGame.setSize(55);
+		continousGame.setSize(40);
+		continousGame.setRotation(20, imgBackdrop.getWidth() / 2, imgBackdrop.getHeight() / 2);
 		
-		highScores = new custString("High Scores", 100, 300);
+		highScores = new custString("High Scores", 150, 310);
 		highScores.setColor(Color.GRAY, Color.BLACK);
-		highScores.setSize(55);
+		highScores.setSize(40);
+		highScores.setRotation(20, imgBackdrop.getWidth() / 2, imgBackdrop.getHeight() / 2);
 		
-		quit = new custString("Quit Game", 400, 400);
+		quit = new custString("Quit Game", 150, 360);
 		quit.setColor(Color.RED, Color.BLACK);
-		quit.setSize(55);
+		quit.setSize(40);
+		quit.setRotation(20, imgBackdrop.getWidth() / 2, imgBackdrop.getHeight() / 2);
 		
 		stringList = new custString[count];
 		stringList[0] = newGame;

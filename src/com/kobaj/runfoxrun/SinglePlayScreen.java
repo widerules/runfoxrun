@@ -37,7 +37,7 @@ public class SinglePlayScreen implements Runnable
 	
 	private boolean initialized = false;
 	
-	private int levelNumber = 1;
+	private int levelNumber = 4;
 	
 	//top level
 	private Bitmap progressBarIcon;
