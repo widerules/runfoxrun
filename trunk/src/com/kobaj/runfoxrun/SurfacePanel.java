@@ -258,8 +258,6 @@ public class SurfacePanel extends DrawablePanel
 				{
 					if(oldState == GameStates.Continous)
 						HighScores.addScore(cous.getScore());
-					if(oldState == GameStates.SinglePlay)
-						sp.Release();
 					
 					break;
 				}
@@ -272,6 +270,9 @@ public class SurfacePanel extends DrawablePanel
 		}
 		else if (newState == GameStates.TitleScreen)
 		{
+			if(oldState == GameStates.SinglePlay)
+				sp.Release();
+			
 			oldState = GameStates.Pause;
 			currentState = GameStates.TitleScreen;
 			mm.addFade(new SoundFade(0, 1, 0, 3000));

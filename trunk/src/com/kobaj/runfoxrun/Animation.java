@@ -27,6 +27,8 @@ public class Animation
 	{
 		this.id = id;
 		this.name = name;
+		
+		onInitialize();
 	}
 	
 	public Animation(int id, String name, int xStartPos, int yStartPos, int frameCount, int recFPS)
@@ -38,6 +40,30 @@ public class Animation
 		this.yStartPos = yStartPos;
 		this.frameCount = frameCount;
 		this.recFPS = recFPS;
+		
+		onInitialize();
+	}
+	
+	private void onInitialize()
+	{
+		if(name.equalsIgnoreCase(CharStates.Running.name()))
+			id = CharStates.Running.ordinal();
+		if(name.equalsIgnoreCase(CharStates.Collapse.name()))
+			id = CharStates.Collapse.ordinal();
+		if(name.equalsIgnoreCase(CharStates.Collapsed.name()))
+			id = CharStates.Collapsed.ordinal();
+		if(name.equalsIgnoreCase(CharStates.Fallingup.name()))
+			id = CharStates.Fallingup.ordinal();
+		if(name.equalsIgnoreCase(CharStates.GoingDown.name()))
+			id = CharStates.GoingDown.ordinal();
+		if(name.equalsIgnoreCase(CharStates.Jump.name()))
+			id = CharStates.Jump.ordinal();
+		if(name.equalsIgnoreCase(CharStates.LevelOut.name()))
+			id = CharStates.LevelOut.ordinal();
+		if(name.equalsIgnoreCase(CharStates.Sitting.name()))
+			id = CharStates.Sitting.ordinal();
+		if(name.equalsIgnoreCase(CharStates.Standing.name()))
+			id = CharStates.Standing.ordinal();
 	}
 	
 	public int getxStartPos()
@@ -70,10 +96,10 @@ public class Animation
 		return recFPS;
 	}
 	
-	public String getName()
+	/*public String getName()
 	{
 		return name;
-	}
+	}*/
 	
 	public int getId()
 	{

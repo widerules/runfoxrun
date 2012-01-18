@@ -34,6 +34,7 @@ public class SinglePlayScreen implements Runnable
 	private Sprite player;
 	private Sprite badGuy;
 	private Sprite back;
+	private Sprite back2;
 	
 	private boolean initialized = false;
 	
@@ -113,6 +114,7 @@ public class SinglePlayScreen implements Runnable
 	{
 		if (initialized)
 		{
+			
 			// badguy movement
 			if (resetBad)
 				if (badGuy.getxPos() + badGuy.getWidth() > 0)
@@ -157,14 +159,19 @@ public class SinglePlayScreen implements Runnable
 				
 				if (levelNumber == 2)
 				{
+					back.onCleanup();
+					back.onInitialize(LoadedResources.getBackgroundTHREE(resources), (int)(back2.getxPos() + back2.getWidth()), height - 480, 1600, 480);
 					mm.ChangeSongs(R.raw.quicken, new SoundFade(0, 1, 0, 3000), new SoundFade(0, 0, 1, 3000));
 				}
 				else if (levelNumber == 3)
 				{
+					back2.onCleanup();
+					back2.onInitialize(LoadedResources.getBackgroundFOUR(resources), (int)(back.getxPos() + back.getWidth()), height - 480, 1600, 480);
 					mm.ChangeSongs(R.raw.aegissprint, new SoundFade(0, 1, 0, 3000), new SoundFade(0, 0, 1, 3000));
 				}
 				else if (levelNumber == 4)
 				{
+					back.onCleanup();
 					mm.ChangeSongs(R.raw.blackdiamond, new SoundFade(0, 1, 0, 3000), new SoundFade(0, 0, 1, 3000));
 					pm.setScrollRate((float) (pm.getScrollRate() - .025));
 					
@@ -179,7 +186,7 @@ public class SinglePlayScreen implements Runnable
 				sceneDead = true;
 			else if (levelNumber == 3 && pm.getScrollProgress() >= 16000 - width + 100 && pm.getScrollProgress() < 16000 - width + 100 + pm.getScrollDelta() * delta)
 			{
-				if (player.getCurAnimation().equalsIgnoreCase(CharStates.Running.name()))
+				if (player.getCurAnimation() == (CharStates.Running.ordinal()))
 				{
 					pm.unsetPlayer();
 					pm.addPhys(player);
@@ -200,7 +207,7 @@ public class SinglePlayScreen implements Runnable
 			}
 			else if (levelNumber == 4 && pm.getScrollProgress() >= 16000 - width - 25)
 			{
-				if (player.getCurAnimation().equalsIgnoreCase(CharStates.Running.name()))
+				if (player.getCurAnimation() == (CharStates.Running.ordinal()))
 				{
 					pm.setScrollRate(0);
 					player.setAnimation(CharStates.Standing);
@@ -288,6 +295,7 @@ public class SinglePlayScreen implements Runnable
 		{
 			// background
 			back.onDraw(canvas);
+			back2.onDraw(canvas);
 			
 			// interaction layer
 			for (Iterator<Sprite> it = hitList.iterator(); it.hasNext();)
@@ -335,13 +343,17 @@ public class SinglePlayScreen implements Runnable
 	public void Release()
 	{
 		back.Release();
+		back2.Release();
 	}
 	
 	@Override
 	public void run()
 	{
 		back = new Sprite();
-		back.onInitialize(LoadedResources.getBigBackGround(resources), 0, height - 480, 6400, 480);
+		back.onInitialize(LoadedResources.getBackgroundONE(resources), 0, height - 480, 1600, 480);
+		
+		back2 = new Sprite();
+		back2.onInitialize(LoadedResources.getBackgroundTWO(resources), back.getWidth(), height - 480, 1600, 480);
 		
 		progressBarIcon = LoadedResources.getIcon(resources);
 		// load dat bad guy
@@ -387,6 +399,7 @@ public class SinglePlayScreen implements Runnable
 		setPlayerPos();
 		
 		pm.addBackgroundPhys(back);
+		pm.addBackgroundPhys(back2);
 		
 		mm.ChangeSongs(R.raw.pulse);
 		mm.addFade(new SoundFade(0, 0, 1, 3000));

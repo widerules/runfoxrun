@@ -53,8 +53,7 @@ public class Sprite
 	
 	public void Release()
 	{
-		img.recycle();
-		img = null;
+		this.onCleanup();
 	}
 	
 	public CollectableStates getCollectable()
@@ -154,7 +153,7 @@ public class Sprite
 		// load das image
 		this.img = img;
 		
-		if (this.width == -1)
+		if (width == -1)
 		{
 			this.width = img.getWidth();
 			this.height = img.getHeight();
@@ -226,9 +225,9 @@ public class Sprite
 		onInitialize(resources, identity, 0, 0, -1, -1);
 	}
 	
-	public String getCurAnimation()
+	public int getCurAnimation()
 	{
-		return this.currentSetAnimation.getName();
+		return this.currentSetAnimation.getId();
 	}
 	
 	public void onUpdate(float delta)
@@ -246,7 +245,7 @@ public class Sprite
 				
 				currentFrame += 1;
 				
-				if (this.currentSetAnimation.getName().equalsIgnoreCase(CharStates.Running.name()))
+				if (this.currentSetAnimation.getId() == CharStates.Running.ordinal())
 				{
 					if (currentFrame == 1 || currentFrame == 3)
 					{
@@ -257,17 +256,17 @@ public class Sprite
 				
 				if (currentFrame > currentSetAnimation.getFrameCount())
 				{
-					if (currentSetAnimation.getName().equalsIgnoreCase(CharStates.Jump.name()))
+					if (currentSetAnimation.getId() == CharStates.Jump.ordinal())
 					{
 						this.setAnimation(CharStates.Fallingup);
 					}
-					else if (currentSetAnimation.getName().equalsIgnoreCase(CharStates.GoingDown.name()))
+					else if (currentSetAnimation.getId() == CharStates.GoingDown.ordinal())
 					{
 						this.setAnimation(CharStates.Running);
 						if (sm != null)
 							sm.playSound(5, .75f); // landing
 					}
-					else if (currentSetAnimation.getName().equalsIgnoreCase(CharStates.Collapse.name()))
+					else if (currentSetAnimation.getId() == CharStates.Collapse.ordinal())
 					{
 						this.setAnimation(CharStates.Collapsed);
 					}
@@ -283,7 +282,8 @@ public class Sprite
 	public void onDraw(Canvas canvas)
 	{
 		if (initialized)
-			canvas.drawBitmap(img, sRectangle, dest, myPaint);
+			if(img != null)
+				canvas.drawBitmap(img, sRectangle, dest, myPaint);
 	}
 	
 	public void onDraw(Canvas canvas, int scrollingPositionX, int scrollingPositionY)
@@ -301,7 +301,7 @@ public class Sprite
 		{
 			for (int i = 0; i < animationList.size(); i++)
 			{
-				if (animationList.get(i).getName().equalsIgnoreCase(state.name()))
+				if (animationList.get(i).getId() == state.ordinal())
 				{
 					currentSetAnimation = animationList.get(i);
 					
@@ -331,7 +331,9 @@ public class Sprite
 	// teeeeechnically not needed.
 	public void onCleanup()
 	{
-		img.recycle();
+		if(img != null)
+			img.recycle();
+		
 		img = null;
 		
 		animationList.clear();

@@ -211,12 +211,24 @@ public class LoadedResources
 		return red;
 	}
 	
-	// screw that resource crap
-	
-	public static Bitmap getBigBackGround(Resources resources)
+	public static Bitmap getBackgroundONE(Resources resources)
 	{ 
-		return BitmapFactory.decodeResource(resources, R.drawable.giantbackdrop, bfOptions);
+		return BitmapFactory.decodeResource(resources, R.drawable.backdropone, bfOptions);
 	}
+	public static Bitmap getBackgroundTWO(Resources resources)
+	{ 
+		return BitmapFactory.decodeResource(resources, R.drawable.backdroptwo, bfOptions);
+	}
+	public static Bitmap getBackgroundTHREE(Resources resources)
+	{ 
+		return BitmapFactory.decodeResource(resources, R.drawable.backdropthree, bfOptions);
+	}
+	public static Bitmap getBackgroundFOUR(Resources resources)
+	{ 
+		return BitmapFactory.decodeResource(resources, R.drawable.backdropfour, bfOptions);
+	}
+	
+	// screw that resource crap
 	
 	public static Bitmap getBigBuilding()
 	{
