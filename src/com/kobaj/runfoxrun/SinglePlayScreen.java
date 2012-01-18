@@ -332,11 +332,16 @@ public class SinglePlayScreen implements Runnable
 		thread.start();
 	}
 	
+	public void Release()
+	{
+		back.Release();
+	}
+	
 	@Override
 	public void run()
 	{
 		back = new Sprite();
-		back.onInitialize(LoadedResources.getBigBackGround(), 0, height - 480, 6400, 480);
+		back.onInitialize(LoadedResources.getBigBackGround(resources), 0, height - 480, 6400, 480);
 		
 		progressBarIcon = LoadedResources.getIcon(resources);
 		// load dat bad guy

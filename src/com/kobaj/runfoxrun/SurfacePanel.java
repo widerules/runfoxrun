@@ -116,7 +116,7 @@ public class SurfacePanel extends DrawablePanel
 		ps.onInitialize(getResources(), R.drawable.titlescreen);
 		
 		pm.setPlayer(mainFox);
-		mainFox.onInitialize(getResources(), sm, R.drawable.foxmain, (int) (width / 3.0f), -100, 82, 54);
+		mainFox.onInitialize(LoadedResources.getMainFox(), sm, (int) (width / 3.0f), -100, 82, 54);
 		mainFox.setAnimation(CharStates.Running);
 		
 		smSetup();
@@ -258,6 +258,8 @@ public class SurfacePanel extends DrawablePanel
 				{
 					if(oldState == GameStates.Continous)
 						HighScores.addScore(cous.getScore());
+					if(oldState == GameStates.SinglePlay)
+						sp.Release();
 					
 					break;
 				}
