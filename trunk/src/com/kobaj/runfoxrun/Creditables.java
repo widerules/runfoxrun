@@ -37,7 +37,7 @@ public class Creditables
 		temp.add("Music");
 		temp.add("Sound engineer and QA");
 		temp.add("Title Screen Art");
-		temp.add("In the making of Run Fox Run!");
+		temp.add("in the making of this game!");
 		
 		ArrayList<String> temp2 = new ArrayList<String>();
 		

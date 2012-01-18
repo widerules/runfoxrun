@@ -51,6 +51,12 @@ public class Sprite
 		this.sm = SM;
 	}
 	
+	public void Release()
+	{
+		img.recycle();
+		img = null;
+	}
+	
 	public CollectableStates getCollectable()
 	{
 		return collectable;
