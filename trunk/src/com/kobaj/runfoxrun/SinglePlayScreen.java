@@ -29,7 +29,7 @@ public class SinglePlayScreen implements Runnable
 	private Resources resources;
 	
 	private int collectionScore = 0;
-	private custString collectionText;
+	private custInt collectionText;
 	
 	private Sprite player;
 	private Sprite badGuy;
@@ -57,6 +57,8 @@ public class SinglePlayScreen implements Runnable
 	private float credits = 0;
 	
 	private float scale;
+	
+	private Sprite temp;
 	
 	public void setMMandSM(SoundManager SM, MusicManager MM)
 	{
@@ -265,16 +267,18 @@ public class SinglePlayScreen implements Runnable
 					sm.playSound(3, .25f);
 				else
 					sm.playSound(3, .10f);
+				
+				System.gc();
 			}
 			
 			// set me collections
-			collectionText.setString("x " + String.valueOf(collectionScore));
+			collectionText.setInt(collectionScore);
 			collectionScoreIcon.onUpdate(delta);
 			
 			// gotta loop through and find the collected elements
 			for (Iterator<Sprite> it = collectionList.iterator(); it.hasNext();)
 			{
-				Sprite temp = it.next();
+				temp = it.next();
 				temp.onUpdate(delta);
 				if (temp.getCollectable() == CollectableStates.collected)
 				{
@@ -300,7 +304,7 @@ public class SinglePlayScreen implements Runnable
 			// interaction layer
 			for (Iterator<Sprite> it = hitList.iterator(); it.hasNext();)
 			{
-				Sprite temp = it.next();
+				temp = it.next();
 				
 				int spritePosx = (int) temp.getxPos();
 				int spriteWidth = (int) temp.getWidth();
@@ -331,8 +335,6 @@ public class SinglePlayScreen implements Runnable
 				myCredits.onDraw(canvas);
 		}
 	}
-	
-	Paint deleteme = new Paint();
 	
 	private void start()
 	{
@@ -369,7 +371,7 @@ public class SinglePlayScreen implements Runnable
 		
 		bitmapPaint = new Paint();
 		
-		collectionText = new custString(resources, "", width - (int) (37 * scale), (int) (16 * scale));
+		collectionText = new custInt(resources, 0, 2, width - (int) (37 * scale), (int) (16 * scale));
 		collectionScoreIcon = XMLHandler.readSerialFile(resources, R.raw.star, Sprite.class);
 		collectionScoreIcon.onInitialize(LoadedResources.getStar(resources), width - (int) (57 * scale), (int) (3 * scale), 25, 24);
 		

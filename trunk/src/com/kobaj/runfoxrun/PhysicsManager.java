@@ -130,6 +130,7 @@ public class PhysicsManager
 		return scrollValue;
 	}
 	
+	private Sprite element;
 	public void onUpdate(float delta)
 	{
 		userVelOld = userVel;
@@ -160,7 +161,7 @@ public class PhysicsManager
 		// try to iterate only once
 		for (Iterator<Sprite> i = interactables.iterator(); i.hasNext();)
 		{
-			Sprite element = i.next();
+			element = i.next();
 			{
 				if (set)
 				{
@@ -175,7 +176,7 @@ public class PhysicsManager
 		// backgrounds
 		for (Iterator<Sprite> i = backgroundables.iterator(); i.hasNext();)
 		{
-			Sprite element = i.next();
+			element = i.next();
 			element.setxPos((element.getxPos() + amount / backDiv));
 		}
 		
@@ -232,15 +233,17 @@ public class PhysicsManager
 		}
 	}
 	
+	private physRect elementPhysRect;
+	private physRect physObjPhysRect;
 	private void checkForCollisions(Sprite element)
 	{
 		OuterLoop:
 		for (Iterator<physRect> i = element.getPhysRect().iterator(); i.hasNext();)
 		{
-			physRect elementPhysRect = i.next();
+			elementPhysRect = i.next();
 			for (Iterator<physRect> e = physObj.getPhysRect().iterator(); e.hasNext();)
 			{
-				physRect physObjPhysRect = e.next();
+				physObjPhysRect = e.next();
 				
 				boolean[] value = { false };
 				int amount = collisionDetec(elementPhysRect.getCollRect(), physObjPhysRect.getCollRect(), value);
@@ -259,10 +262,10 @@ public class PhysicsManager
 		}
 	}
 	
+	private Rect collision = new Rect();
 	private int collisionDetec(Rect obj1, Rect obj2, boolean[] value)
 	{
-		Rect collision = new Rect();
-		
+		collision.set(0, 0, 0, 0);
 		if (collision.setIntersect(obj1, obj2))
 		{
 			if (collision.top < obj1.top)

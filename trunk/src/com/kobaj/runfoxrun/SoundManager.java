@@ -72,11 +72,13 @@ public class SoundManager
 		});
 	}
 	
+	
+	private SoundFade temp;
 	public void onUpdate(float delta)
 	{
 		for (Iterator<SoundFade> it = fadeList.iterator(); it.hasNext();)
 		{
-			SoundFade temp = it.next();
+			temp = it.next();
 			
 			temp.onUpdate(delta);
 			

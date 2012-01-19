@@ -13,10 +13,10 @@ import android.graphics.Typeface;
 public class custString
 {
 	private StringBuilder string;
-	private Path stringPath;
+	protected Path stringPath;
 	
-	private int x;
-	private int y;
+	protected int x;
+	protected int y;
 	
 	private Rect rect;
 	private int mainColor = Color.WHITE;
@@ -24,7 +24,7 @@ public class custString
 	
 	private int size = 24;
 	
-	private Paint textPaint = new Paint();
+	protected Paint textPaint = new Paint();
 	private Paint strokePaint = new Paint();
 	
 	private Matrix rotationMatrix;
@@ -93,11 +93,11 @@ public class custString
 		generateMembers();
 	}
 	
-	public void concat(String string)
+	/*public void concat(String string)
 	{
 		this.string.append(string);
 		generateMembers();
-	}
+	}*/
 	
 	public void setSize(int size)
 	{
@@ -118,7 +118,7 @@ public class custString
 		generateMembers();
 	}
 	
-	public void setString(String string)
+	/*public void setString(String string)
 	{
 		this.string.delete(0, this.string.length());
 		this.string.append(string);
@@ -128,7 +128,7 @@ public class custString
 	public String getString()
 	{
 		return string.toString();
-	}
+	}*/
 	
 	public boolean fingertap(int x, int y)
 	{

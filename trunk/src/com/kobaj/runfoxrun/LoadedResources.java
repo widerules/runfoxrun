@@ -41,44 +41,53 @@ public class LoadedResources
 	
 	private static Bitmap mainFox;
 	
+	private static Bitmap titleScreen;
+	
 	private static boolean loaded = false;
 	
 	private static BitmapFactory.Options bfOptions = new BitmapFactory.Options();
+	private static BitmapFactory.Options bfOpts = new BitmapFactory.Options();
+	
 	
 	public static void load(Resources resources)
 	{
+		System.gc();
+		
+		bfOpts.inPurgeable = true;
+		
 		bfOptions.inPurgeable=true;    
 		bfOptions.inPreferredConfig = Bitmap.Config.RGB_565;
 		 
 		background1 = BitmapFactory.decodeResource(resources, R.drawable.background1, bfOptions);
+		titleScreen = BitmapFactory.decodeResource(resources, R.drawable.titlescreen, bfOptions);
 		
-		red = BitmapFactory.decodeResource(resources, R.drawable.red);
-		green = BitmapFactory.decodeResource(resources, R.drawable.green);
-		blue = BitmapFactory.decodeResource(resources, R.drawable.blue);
+		red = BitmapFactory.decodeResource(resources, R.drawable.red, bfOptions);
+		green = BitmapFactory.decodeResource(resources, R.drawable.green, bfOptions);
+		blue = BitmapFactory.decodeResource(resources, R.drawable.blue, bfOptions);
 		
-		badguy = BitmapFactory.decodeResource(resources, R.drawable.smoke);
+		badguy = BitmapFactory.decodeResource(resources, R.drawable.smoke , bfOpts);
 		
-		icon = BitmapFactory.decodeResource(resources, R.drawable.icon);
+		icon = BitmapFactory.decodeResource(resources, R.drawable.icon , bfOpts);
 		
-		star = BitmapFactory.decodeResource(resources, R.drawable.star);
+		star = BitmapFactory.decodeResource(resources, R.drawable.star , bfOpts);
 		
-		bigBuilding = BitmapFactory.decodeResource(resources, R.drawable.bigbuilding);
-		bigVine = BitmapFactory.decodeResource(resources, R.drawable.bigvine);
-		grass = BitmapFactory.decodeResource(resources, R.drawable.grass);
-		littleVine = BitmapFactory.decodeResource(resources, R.drawable.littlevine);
-		sandFlat = BitmapFactory.decodeResource(resources, R.drawable.sandflat);
-		sandHole = BitmapFactory.decodeResource(resources, R.drawable.sandhole);
-		sandHoleLeft = BitmapFactory.decodeResource(resources, R.drawable.sandholeleft);
-		sandHoleRight = BitmapFactory.decodeResource(resources, R.drawable.sandholeright);
-		smallBuilding = BitmapFactory.decodeResource(resources, R.drawable.smallbuilding);
-		smallTree = BitmapFactory.decodeResource(resources, R.drawable.smalltree);
-		tree = BitmapFactory.decodeResource(resources, R.drawable.tree);
-		weed = BitmapFactory.decodeResource(resources, R.drawable.weed);
-		foxTwo = BitmapFactory.decodeResource(resources, R.drawable.fox2);
-		level3ground = BitmapFactory.decodeResource(resources, R.drawable.level3ground);
-		deadtree = BitmapFactory.decodeResource(resources, R.drawable.deadtree);	
-		black = BitmapFactory.decodeResource(resources, R.drawable.black);
-		mainFox = BitmapFactory.decodeResource(resources, R.drawable.foxmain);
+		bigBuilding = BitmapFactory.decodeResource(resources, R.drawable.bigbuilding , bfOpts);
+		bigVine = BitmapFactory.decodeResource(resources, R.drawable.bigvine , bfOpts);
+		grass = BitmapFactory.decodeResource(resources, R.drawable.grass , bfOpts);
+		littleVine = BitmapFactory.decodeResource(resources, R.drawable.littlevine , bfOpts);
+		sandFlat = BitmapFactory.decodeResource(resources, R.drawable.sandflat , bfOpts);
+		sandHole = BitmapFactory.decodeResource(resources, R.drawable.sandhole , bfOpts);
+		sandHoleLeft = BitmapFactory.decodeResource(resources, R.drawable.sandholeleft , bfOpts);
+		sandHoleRight = BitmapFactory.decodeResource(resources, R.drawable.sandholeright , bfOpts);
+		smallBuilding = BitmapFactory.decodeResource(resources, R.drawable.smallbuilding , bfOpts);
+		smallTree = BitmapFactory.decodeResource(resources, R.drawable.smalltree , bfOpts);
+		tree = BitmapFactory.decodeResource(resources, R.drawable.tree , bfOpts);
+		weed = BitmapFactory.decodeResource(resources, R.drawable.weed , bfOpts);
+		foxTwo = BitmapFactory.decodeResource(resources, R.drawable.fox2 , bfOpts);
+		level3ground = BitmapFactory.decodeResource(resources, R.drawable.level3ground , bfOpts);
+		deadtree = BitmapFactory.decodeResource(resources, R.drawable.deadtree , bfOpts);	
+		black = BitmapFactory.decodeResource(resources, R.drawable.black , bfOptions);
+		mainFox = BitmapFactory.decodeResource(resources, R.drawable.foxmain , bfOpts);
 		
 		BIGVine = XMLHandler.readSerialFile(resources, R.raw.bigvine, Sprite.class);
 		LITtleVine = XMLHandler.readSerialFile(resources, R.raw.littlevine, Sprite.class);
@@ -87,6 +96,8 @@ public class LoadedResources
 		TREe = XMLHandler.readSerialFile(resources, R.raw.tree, Sprite.class);
 		WEEd = XMLHandler.readSerialFile(resources, R.raw.weed, Sprite.class);
 		DEAdTree = XMLHandler.readSerialFile(resources, R.raw.deadtree, Sprite.class);
+		
+		System.gc();
 		
 		loaded = true;
 	}
@@ -146,6 +157,11 @@ public class LoadedResources
 	static Sprite TREe;
 	static Sprite WEEd;
 	static Sprite DEAdTree;
+	
+	public static Bitmap getTitle(Resources resources)
+	{
+		return titleScreen;
+	}
 	
 	public static Bitmap getMainFox()
 	{

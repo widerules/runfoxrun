@@ -75,6 +75,7 @@ public class SurfacePanel extends DrawablePanel
 		
 		mm = new MusicManager(context, R.raw.pulse);
 		mm.setLooping(true);
+		mm.addFade(new SoundFade(0, 0, 1, 3000));
 		mm.play(0);
 		
 		currentState = GameStates.Loading;
@@ -107,13 +108,13 @@ public class SurfacePanel extends DrawablePanel
 		// originally in constructor
 		mainFox = XMLHandler.readSerialFile(getResources(), R.raw.foxmain, Sprite.class);
 		loadingStar = XMLHandler.readSerialFile(getResources(), R.raw.star, Sprite.class);
-		
+
 		LoadedResources.load(getResources());
-		
+
 		loadingStar.onInitialize(LoadedResources.getStar(getResources()), width / 2 - 12, height / 2, 25, 24);
 		
 		ts.onInitialize(getResources(), R.drawable.titlescreen, mm);
-		ps.onInitialize(getResources(), R.drawable.titlescreen);
+		ps.onInitialize(getResources(), 0);
 		
 		pm.setPlayer(mainFox);
 		mainFox.onInitialize(LoadedResources.getMainFox(), sm, (int) (width / 3.0f), -100, 82, 54);
@@ -275,7 +276,8 @@ public class SurfacePanel extends DrawablePanel
 			
 			oldState = GameStates.Pause;
 			currentState = GameStates.TitleScreen;
-			mm.addFade(new SoundFade(0, 1, 0, 3000));
+			//mm.addFade(new SoundFade(0, 1, 0, 3000));
+			mm.ChangeSongs(R.raw.pulse, new SoundFade(0, 1, 0, 3000), new SoundFade(0, 0, 1, 3000));
 		}
 		else if (newState == GameStates.Resume)
 		{

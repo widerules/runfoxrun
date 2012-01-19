@@ -16,8 +16,6 @@ public class PauseScreen extends ListScreens
 		
 		count = 4;
 		
-		// imgBackdrop = BitmapFactory.decodeResource(resources, identity);
-		
 		contGame = new custString(resources, "Continue", (int) (100 * scale), (int) (140 * scale));
 		contGame.setSize((int) (27 * scale));
 		

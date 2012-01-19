@@ -57,7 +57,7 @@ public class MusicManager
 					thisFade = nextFade;
 					nextFade = null;
 					ChangeSongs(nextSong);
-					play();
+					play(0);
 					nextSong = -1;
 				}
 				else if (thisFade.getEndVolume() <= 0.01)
@@ -83,6 +83,8 @@ public class MusicManager
 		mAudioManager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
 		
 		mp = new MediaPlayer();
+		
+		setVolume(0);
 		
 		mp.setOnPreparedListener(new OnPreparedListener()
 		{
@@ -139,8 +141,8 @@ public class MusicManager
 		{
 			mp = MediaPlayer.create(mContext, value);
 		}
-		
-		thisState = MusicStates.stopped;
+
+		thisState = MusicStates.playing;//.stopped;
 		
 		currentSong = value;
 		
