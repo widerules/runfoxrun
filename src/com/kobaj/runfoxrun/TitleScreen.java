@@ -1,7 +1,6 @@
 package com.kobaj.runfoxrun;
 
 import android.content.res.Resources;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 
 public class TitleScreen extends ListScreens
@@ -13,8 +12,8 @@ public class TitleScreen extends ListScreens
 	private custString continousGame;
 	private custString highScores;
 	
-	public float titleScreenSoundTime = 30001;
-	public int titleScreenCurrentSong = 0;
+	public float titleScreenSoundTime = 0;
+	public int titleScreenCurrentSong = 1;
 	
 	// Get the screen's density scale
 	float scale;
@@ -29,10 +28,12 @@ public class TitleScreen extends ListScreens
 		this.scale = resources.getDisplayMetrics().density;
 		
 		this.mm = mm;
+		//mm.addFade(new SoundFade(0, 0, 1, 3000));
+		//mm.play(0);
 		
 		count = 4;
 		
-		imgBackdrop = BitmapFactory.decodeResource(resources, identity);
+		imgBackdrop = LoadedResources.getTitle(resources);
 		
 		newGame = new custString(resources, "New Game", (int) (100 * scale), (int) (140 * scale));
 		newGame.setColor(Color.WHITE, Color.BLACK);

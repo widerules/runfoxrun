@@ -36,11 +36,14 @@ public class ContinousScreen
 	private final int restartCount = 6;
 	
 	private int score = 0;
-	private custString scoreString;
+	private custInt scoreString;
 	private custString scoreWord;
-	private custString highScoreWord;
+	private custInt highScore;
+	private custString highScoreWords;
 	
 	private SoundManager sm;
+	
+	private Sprite temp;
 	
 	public ContinousScreen(int width, int height)
 	{
@@ -77,19 +80,20 @@ public class ContinousScreen
 		player.setyPos(startHeight);
 		
 		background1 = new Sprite();
-		background1.onInitialize(LoadedResources.getBackground1(resources), 0 , height - LoadedResources.getBackground1(resources).getHeight(), LoadedResources.getBackground1(resources).getWidth(), LoadedResources.getBackground1(resources).getHeight());
+		background1.onInitialize(LoadedResources.getBackground1(resources), 0, height - LoadedResources.getBackground1(resources).getHeight(), LoadedResources.getBackground1(resources).getWidth(),
+				LoadedResources.getBackground1(resources).getHeight());
 		pm.addBackgroundPhys(background1);
 		
 		background2 = new Sprite();
-		background2.onInitialize(LoadedResources.getBackground1(resources), background1.getWidth(), height - LoadedResources.getBackground1(resources).getHeight(), LoadedResources.getBackground1(resources).getWidth(), LoadedResources.getBackground1(resources).getHeight());
+		background2.onInitialize(LoadedResources.getBackground1(resources), background1.getWidth(), height - LoadedResources.getBackground1(resources).getHeight(),
+				LoadedResources.getBackground1(resources).getWidth(), LoadedResources.getBackground1(resources).getHeight());
 		pm.addBackgroundPhys(background2);
 		
-		scoreString = new custString(resources, "", width - (int)(120 * scale), (int)(16 * scale));
-		scoreWord = new custString(resources, "Score: ", width - (int)(167 * scale), (int)(16 * scale));
+		scoreString = new custInt(resources, 0, width - (int) (120 * scale), (int) (16 * scale));
+		scoreWord = new custString(resources, "Score: ", width - (int) (167 * scale), (int) (16 * scale));
 		
-		highScoreWord = new custString(resources,"",
-				width - (int)(165 * scale), (int)(33 * scale));
-		setHigh();
+		highScoreWords = new custString(resources, "High:", width - (int) (167 * scale), (int) (33 * scale));
+		highScore = new custInt(resources, HighScores.getHighScore(), width - (int) (120 * scale), (int) (33 * scale));
 		
 		initialized = true;
 	}
@@ -99,19 +103,11 @@ public class ContinousScreen
 		return score;
 	}
 	
-	private void setHigh()
-	{
-		highScoreWord.setString( "High: " + addZero(HighScores.getHighScore()));
-	}
-	
-	private String addZero(int value)
-	{
-		String s = "000000000000" + String.valueOf(value); // twelve zeros
-		// prepended
-		return s.substring(s.length() - 13); // keep the
-			// rightmost
-			// 13 chars
-	}
+	/*
+	 * private String addZero(int value) { String s = "000000000000" +
+	 * String.valueOf(value); // twelve zeros // prepended return
+	 * s.substring(s.length() - 13); // keep the // rightmost // 13 chars }
+	 */
 	
 	public void onUpdate(float delta)
 	{
@@ -121,26 +117,27 @@ public class ContinousScreen
 			
 			// score
 			score += 1.0f * delta / 10.0f;
-			scoreString.setString(addZero(score));
+			scoreString.setInt(score);
 			
 			// slowly get faster
 			pm.setScrollRate(pm.getScrollRate() - delta / (1000000.0f - 5000.0f));
 			
 			// background logics
-			if(background1.getxPos() + background1.getWidth() <= 0)
+			if (background1.getxPos() + background1.getWidth() <= 0)
 				background1.setxPos(background2.getxPos() + background2.getWidth());
 			
-			if(background2.getxPos() + background2.getWidth() <= 0)
+			if (background2.getxPos() + background2.getWidth() <= 0)
 				background2.setxPos(background1.getxPos() + background1.getWidth());
 			
 			// get rid of old blocks
+			
 			for (Iterator<Sprite> it = hitList.iterator(); it.hasNext();)
 			{
-				Sprite temp = it.next();
+				temp = it.next();
 				if (temp.getxPos() + temp.getWidth() < 0)
 				{
 					pm.removePhys(temp);
-					it.remove();
+					//it.remove();
 				}
 			}
 			
@@ -161,7 +158,7 @@ public class ContinousScreen
 				
 				HighScores.addScore(score);
 				
-				setHigh();
+				highScore.setInt(HighScores.getHighScore());
 				
 				score = 0;
 			}
@@ -174,15 +171,17 @@ public class ContinousScreen
 			}
 			
 			// load in new blocks
-			Sprite last = hitList.get(hitList.size() - 1);
-			if (last.getxPos() + last.getWidth() < width)
+			if (hitList.get(hitList.size() - 1).getxPos() + hitList.get(hitList.size() - 1).getWidth() < width)
 			{
 				int x;
 				int y;
 				
 				// first we want to know how far in the future we can code
-				double prevY = (height - last.getyPos()); // get this in real
-															// world corridnates
+				double prevY = (height - hitList.get(hitList.size() - 1).getyPos()); // get
+																						// this
+																						// in
+																						// real
+				// world corridnates
 				
 				float newY1;
 				float newY2;
@@ -212,7 +211,7 @@ public class ContinousScreen
 				y = height - newFinalY;
 				x = newX + width;
 				
-				Sprite temp = new Sprite();
+				temp = new Sprite();
 				
 				int rand = random.nextInt(30);
 				
@@ -262,7 +261,8 @@ public class ContinousScreen
 			// score
 			scoreString.onDraw(canvas);
 			scoreWord.onDraw(canvas);
-			highScoreWord.onDraw(canvas);
+			highScoreWords.onDraw(canvas);
+			highScore.onDraw(canvas);
 		}
 	}
 	
@@ -287,13 +287,16 @@ public class ContinousScreen
 		// get rid of forward blocks
 		for (Iterator<Sprite> it = hitList.iterator(); it.hasNext();)
 		{
-			Sprite temp = it.next();
-			if (temp.getxPos() > width)
+			temp = it.next();
+			if (temp.getxPos() > width || temp.getxPos() + temp.getWidth() < 0)
 			{
 				pm.removePhys(temp);
+				// pm.removePhys(temp);
 				it.remove();
 			}
 		}
+		
+		System.gc();
 		
 		int e = 0;
 		for (; e < restartCount; e++)

@@ -140,52 +140,84 @@ public class Sprite
 		sRectangle.right = sRectangle.left + width;
 	}
 	
-	public void onInitialize(Bitmap img, int xPos, int yPos, int width, int height)
+	public void reInitialize(Bitmap img, int xPos, int yPos)
 	{
-		this.xPos = xPos;
-		this.yPos = yPos;
-		this.width = width;
-		this.height = height;
+		if(!initialized)
+		{
+			onInitialize(img, xPos, yPos, -1, -1);
+			return;
+		}
 		
-		currentFrame = 1;
-		frameTimer = 0;
-		
-		// load das image
 		this.img = img;
+        this.width = img.getWidth();
+        this.height = img.getHeight();
+        
+        this.xPos = xPos;
+        this.yPos = yPos;
+        
+		int deltaY = dest.top - (int) yPos;
+		int deltaX = dest.left - (int) xPos;
 		
-		if (width == -1)
+		dest.top = (int) yPos;
+		dest.bottom = (int) (yPos + height);
+		dest.left = (int) xPos;
+		dest.right = (int) (xPos + width);
+		
+		for (int i = 0; i < physRectList.size(); i++)
 		{
-			this.width = img.getWidth();
-			this.height = img.getHeight();
+			physRectList.get(i).shiftRect((int) deltaX, (int) deltaY);
+			physRectList.get(i).setRect(physRectList.get(i).getCollRect().top, physRectList.get(i).getCollRect().left + width, physRectList.get(i).getCollRect().top + height, physRectList.get(i).getCollRect().left);
 		}
-		
-		if (animationList == null || animationList.isEmpty())
-		{
-			animationList = new ArrayList<Animation>();
-			animationList.add(new Animation(0, "stopped", 0, 0, 1, 0));
-		}
-		
-		setAnimation(CharStates.Sitting);
-		
-		dest = new Rect(xPos, yPos, xPos + this.width, yPos + this.height);
-		sRectangle = new Rect(((currentFrame - 1) * this.width) + currentSetAnimation.getxStartPos(), currentSetAnimation.getyStartPos(), ((currentFrame - 1) * this.width)
-				+ currentSetAnimation.getxStartPos() + this.width, currentSetAnimation.getyStartPos() + this.height);
-		
-		if (physRectList == null || physRectList.isEmpty())
-		{
-			physRectList = new ArrayList<physRect>();
-			physRectList.add(new physRect(new Rect(dest.left, dest.top, dest.right, dest.bottom), false));
-		}
-		else
-			for (Iterator<physRect> it = physRectList.iterator(); it.hasNext();)
-			{
-				physRect rect = it.next();
-				
-				rect.shiftRect(-xPos, -yPos);
-			}
-		
-		initialized = true;
+        
+        updateoRect();
 	}
+	
+	 public void onInitialize(Bitmap img, int xPos, int yPos, int width, int height)
+     {
+             this.xPos = xPos;
+             this.yPos = yPos;
+             this.width = width;
+             this.height = height;
+             
+             currentFrame = 1;
+             frameTimer = 0;
+             
+             // load das image
+             this.img = img;
+             
+             if (width == -1)
+             {
+                     this.width = img.getWidth();
+                     this.height = img.getHeight();
+             }
+             
+             if (animationList == null || animationList.isEmpty())
+             {
+                     animationList = new ArrayList<Animation>();
+                     animationList.add(new Animation(0, "stopped", 0, 0, 1, 0));
+             }
+             
+             setAnimation(CharStates.Sitting);
+             
+             dest = new Rect(xPos, yPos, xPos + this.width, yPos + this.height);
+             sRectangle = new Rect(((currentFrame - 1) * this.width) + currentSetAnimation.getxStartPos(), currentSetAnimation.getyStartPos(), ((currentFrame - 1) * this.width)
+                             + currentSetAnimation.getxStartPos() + this.width, currentSetAnimation.getyStartPos() + this.height);
+             
+             if (physRectList == null || physRectList.isEmpty())
+             {
+                     physRectList = new ArrayList<physRect>();
+                     physRectList.add(new physRect(new Rect(dest.left, dest.top, dest.right, dest.bottom), false));
+             }
+             else
+                     for (Iterator<physRect> it = physRectList.iterator(); it.hasNext();)
+                     {
+                             physRect rect = it.next();
+                             
+                             rect.shiftRect(-xPos, -yPos);
+                     }
+             
+             initialized = true;
+     }
 	
 	public void onInitialize(Bitmap img, int xPos, int yPos)
 	{
