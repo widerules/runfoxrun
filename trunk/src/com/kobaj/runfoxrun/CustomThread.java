@@ -27,6 +27,17 @@ public class CustomThread implements Runnable
 		thread.start();
 	}
 	
+	public void restart()
+	{
+		if(thread != null)
+		{
+			run = true;
+			thread.start();
+		}
+		else
+			throw new Exception("Cannot restart, thread not specified");
+	}
+	
 	public void stop()
 	{
 		run = false;
