@@ -30,10 +30,15 @@ public class RunfoxrunActivity extends Activity
 	private PowerManager.WakeLock wl;
 	private SurfacePanel game;
 	
+	//saving state
+	private SharedPreferences mPrefs;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
+		
+		SharedPreferences mPrefs = getSharedPreferences();
 		
 		PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
 		wl = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK, "DoNotDimScreen");
@@ -51,6 +56,10 @@ public class RunfoxrunActivity extends Activity
 	{
 		super.onPause();
 		wl.release();
+		
+		SharedPreferences.Editor ed = mPrefs.edit();
+        ed.putInt("view_mode", mCurViewMode);
+        ed.commit();
 		
 		game.onScreenPause();
 	}
