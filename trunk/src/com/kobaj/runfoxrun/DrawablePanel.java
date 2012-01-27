@@ -43,6 +43,14 @@ public abstract class DrawablePanel extends SurfaceView implements SurfaceHolder
 		thread.start();
 	}
 	
+	public void restartThread()
+	{
+		if(thread != null)
+		{
+			thread.restart();
+		}
+	}
+	
 	public void onDraw(Canvas canvas)
 	{
 		// reset everything.

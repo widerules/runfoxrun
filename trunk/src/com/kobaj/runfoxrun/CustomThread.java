@@ -16,8 +16,6 @@ public class CustomThread implements Runnable
 	{
 		this.surfaceHolder = surfaceHolder;
 		this.panel = panel;
-		
-		this.panel.onInitialize();
 	}
 	
 	public void start()
@@ -29,13 +27,7 @@ public class CustomThread implements Runnable
 	
 	public void restart()
 	{
-		if(thread != null)
-		{
-			run = true;
-			thread.start();
-		}
-		else
-			throw new Exception("Cannot restart, thread not specified");
+		run = true;
 	}
 	
 	public void stop()
@@ -47,8 +39,10 @@ public class CustomThread implements Runnable
 	public void run()
 	{
 		Canvas c;
-		while (run)
+		while (true)
 		{
+			if(run)
+			{
 			c = null;
 			panel.onUpdate(System.currentTimeMillis());
 			
@@ -70,6 +64,18 @@ public class CustomThread implements Runnable
 				{
 					surfaceHolder.unlockCanvasAndPost(c);
 				}
+			}
+			}
+			else
+			{
+				 try 
+				 { 
+					 Thread.sleep(500); 
+				 } 
+				 catch (InterruptedException ie) 
+				 {
+					 
+				 } 
 			}
 		}
 	}

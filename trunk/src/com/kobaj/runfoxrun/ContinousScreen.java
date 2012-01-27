@@ -98,16 +98,15 @@ public class ContinousScreen
 		initialized = true;
 	}
 	
+	public boolean getInitialized()
+	{
+		return initialized;
+	}
+	
 	public int getScore()
 	{
 		return score;
 	}
-	
-	/*
-	 * private String addZero(int value) { String s = "000000000000" +
-	 * String.valueOf(value); // twelve zeros // prepended return
-	 * s.substring(s.length() - 13); // keep the // rightmost // 13 chars }
-	 */
 	
 	public void onUpdate(float delta)
 	{

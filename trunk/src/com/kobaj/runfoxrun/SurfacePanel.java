@@ -1,6 +1,7 @@
 package com.kobaj.runfoxrun;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -43,13 +44,9 @@ public class SurfacePanel extends DrawablePanel
 	
 	private HighScores highScores;
 	
-	// stat holding
-	@SuppressWarnings("unused")
-	private int currentSong;
 	@SuppressWarnings("unused")
 	private Context context;
 	
-	@SuppressWarnings("unused")
 	private boolean initialized = false;
 	
 	// construct our objects
@@ -347,20 +344,6 @@ public class SurfacePanel extends DrawablePanel
 		// sm.purge();
 	}
 	
-	public void onScreenPause()
-	{
-		// when the game is paused by outside shit.
-		this.oldState = this.currentState;
-		this.currentState = GameStates.Pause;
-		mm.stop();
-		currentSong = mm.getCurrentSong();
-		mm.release();
-		sm.pauseAll();
-		sm.release();
-		XMLHandler.writeSerialFile(highScores, "highscores");
-		System.exit(0);
-	}
-	
 	public void onUserPause()
 	{
 		if(this.currentState != GameStates.TitleScreen)
@@ -370,20 +353,93 @@ public class SurfacePanel extends DrawablePanel
 		}
 	}
 	
-	public void onScreenResume()
+	public void onScreenPause(SharedPreferences.Editor ed)
 	{
-		// should really have gotten this working >.<
+		// when the game is paused by outside shit.
+		if(currentState != GameStates.Pause)
+		{
+			this.oldState = this.currentState;
+			this.currentState = GameStates.Pause;
+		}
+		
+		mm.stop();
+		int currentSong = mm.getCurrentSong();
+		XMLHandler.writeSerialFile(highScores, "highscores");
+		
+		ed.putInt("currentSong", currentSong);
+		ed.putInt("oldState", this.oldState.ordinal());
+		ed.putInt("SPLevel", sp.getCurrentLevel());
+		
+		this.stopThread();
+		//System.exit(0);
+	}
+	
+	public void onScreenResume(SharedPreferences ed)
+	{
+		//set the states first
+		//hand loading and title and others
+		//play through entire loaded game level 1
+		//fix sm
+		
+		int lastscreen = ed.getInt("oldState", GameStates.TitleScreen.ordinal());
+
+		this.smSetup();
+		
+		if(lastscreen == GameStates.SinglePlay.ordinal())
+		{			
+			if(!sp.getInitialized())
+			{
+				sp.setLevel(ed.getInt("SPLevel", 1));
+				sp.onInitialize(getResources(), im, pm, sm, mm, R.raw.level, mainFox);
+				
+				oldState = GameStates.SinglePlay;
+				currentState = GameStates.Loading;
+				mm.stop();
+			}		
+			else
+			{
+				oldState = GameStates.SinglePlay;
+				currentState = GameStates.Pause;
+				mm.ChangeSongs(ed.getInt("currentSong",R.raw.pulse), null, new SoundFade(0, 0, 1, 3000));
+				mm.play(0);
+			}
+		}
+		else if( lastscreen == GameStates.Continous.ordinal())
+		{
+			if(!cous.getInitialized())
+				cous.onInitialize(getResources(), im, pm, sm, mainFox);
+			
+			currentState = GameStates.Pause;
+			oldState = GameStates.Continous;
+			
+			mm.ChangeSongs(R.raw.catchinglightning, null, new SoundFade(0, 0, 1, 3000));
+			mm.play(0);
+		}
+		else 
+		{
+			currentState = GameStates.TitleScreen;
+		}	
+		
+		this.restartThread();
+	}
+	
+	public void onScreenQuit(SharedPreferences.Editor ed)
+	{
+		//still gotta save stuff
+		
+		sm.release();
+		mm.release();
 	}
 	
 	public void onUserQuit()
 	{
-		// probably save stuff before actually quitting.
-		sm.release();
+		RunfoxrunActivity.ed.clear();
+		RunfoxrunActivity.ed.commit();
+		
 		mm.stop();
-		mm.release();
 		stopThread();
 		XMLHandler.writeSerialFile(highScores, "highscores");
-		System.exit(0);
+		System.exit(0);//does NOT call onScreenQuit
 	}
 	
 }

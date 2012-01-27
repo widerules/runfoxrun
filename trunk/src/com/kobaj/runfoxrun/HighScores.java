@@ -33,7 +33,8 @@ public class HighScores
 
 	public static void setLevel(int level)
 	{
-		obtLevel = level;
+		if(level > obtLevel)
+			obtLevel = level;
 	}
 	
 	public static int getLevel()
