@@ -16,6 +16,7 @@ package com.kobaj.runfoxrun;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.PowerManager;
@@ -31,14 +32,16 @@ public class RunfoxrunActivity extends Activity
 	private SurfacePanel game;
 	
 	//saving state
-	private SharedPreferences mPrefs;
+	public static SharedPreferences mPrefs;
+	public static SharedPreferences.Editor ed;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
 		
-		SharedPreferences mPrefs = getSharedPreferences();
+		mPrefs = getSharedPreferences("com.kobaj.runfoxrun_prefs", 0);
+		ed = mPrefs.edit();
 		
 		PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
 		wl = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK, "DoNotDimScreen");
@@ -46,6 +49,7 @@ public class RunfoxrunActivity extends Activity
 		setVolumeControlStream(AudioManager.STREAM_MUSIC);
 		
 		game = new SurfacePanel(this);
+		game.onInitialize();
 		
 		// last
 		setContentView(game);
@@ -57,11 +61,8 @@ public class RunfoxrunActivity extends Activity
 		super.onPause();
 		wl.release();
 		
-		SharedPreferences.Editor ed = mPrefs.edit();
-        ed.putInt("view_mode", mCurViewMode);
-        ed.commit();
-		
-		game.onScreenPause();
+		game.onScreenPause(ed);
+		ed.commit();
 	}
 	
 	@Override
@@ -70,7 +71,16 @@ public class RunfoxrunActivity extends Activity
 		super.onResume();
 		wl.acquire();
 		
-		game.onScreenResume();
+		game.onScreenResume(mPrefs);
+	}
+	
+	@Override
+	protected void onDestroy()
+	{
+		super.onDestroy();
+		
+		game.onScreenQuit(ed);
+		ed.commit();
 	}
 	
 	@Override

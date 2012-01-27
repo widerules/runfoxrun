@@ -4,13 +4,6 @@
     package="com.kobaj.runfoxrun"
     android:versionCode="4"
     android:versionName="1.3" >
-    
-        <supports-screens 
-                      android:smallScreens="false"
-                      android:normalScreens="false"
-                      android:largeScreens="true"
-                      android:xlargeScreens="true"
-                      android:requiresSmallestWidthDp="800"/>
 
     <uses-sdk android:minSdkVersion="8" />
 

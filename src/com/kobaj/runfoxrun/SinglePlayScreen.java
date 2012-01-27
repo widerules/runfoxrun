@@ -60,6 +60,22 @@ public class SinglePlayScreen implements Runnable
 	
 	private Sprite temp;
 	
+	public int getCurrentLevel()
+	{
+		return levelNumber;
+	}
+	
+	public void setLevel(int level)
+	{
+		if(level < levelNumber)
+			return;
+		
+		if(level != 1)
+		{
+			this.levelNumber = level;
+		}
+	}
+	
 	public void setMMandSM(SoundManager SM, MusicManager MM)
 	{
 		this.sm = SM;
@@ -298,8 +314,10 @@ public class SinglePlayScreen implements Runnable
 		if (initialized)
 		{
 			// background
-			back.onDraw(canvas);
-			back2.onDraw(canvas);
+			if(back != null)
+				back.onDraw(canvas);
+			if(back2 != null)
+				back2.onDraw(canvas);
 			
 			// interaction layer
 			for (Iterator<Sprite> it = hitList.iterator(); it.hasNext();)
@@ -352,10 +370,26 @@ public class SinglePlayScreen implements Runnable
 	public void run()
 	{
 		back = new Sprite();
-		back.onInitialize(LoadedResources.getBackgroundONE(resources), 0, height - 480, 1600, 480);
-		
 		back2 = new Sprite();
-		back2.onInitialize(LoadedResources.getBackgroundTWO(resources), back.getWidth(), height - 480, 1600, 480);
+		if(levelNumber == 1)
+		{
+			back.onInitialize(LoadedResources.getBackgroundONE(resources), 0, height - 480, 1600, 480);
+			back2.onInitialize(LoadedResources.getBackgroundTWO(resources), back.getWidth(), height - 480, 1600, 480);
+		}
+		if(levelNumber == 2)
+		{
+			back2.onInitialize(LoadedResources.getBackgroundTWO(resources), 0, height - 480, 1600, 480);
+			back.onInitialize(LoadedResources.getBackgroundTHREE(resources), back2.getWidth(), height - 480, 1600, 480);
+		}
+		if(levelNumber == 3)
+		{
+			back.onInitialize(LoadedResources.getBackgroundTHREE(resources), 0, height - 480, 1600, 480);
+			back2.onInitialize(LoadedResources.getBackgroundFOUR(resources), back.getWidth(), height - 480, 1600, 480);
+		}
+		if(levelNumber == 4)
+		{
+			back2.onInitialize(LoadedResources.getBackgroundFOUR(resources), 0, height - 480, 1600, 480);
+		}
 		
 		progressBarIcon = LoadedResources.getIcon(resources);
 		// load dat bad guy
@@ -403,7 +437,15 @@ public class SinglePlayScreen implements Runnable
 		pm.addBackgroundPhys(back);
 		pm.addBackgroundPhys(back2);
 		
-		mm.ChangeSongs(R.raw.pulse);
+		//should not be doing this
+		if(levelNumber == 1)
+			mm.ChangeSongs(R.raw.pulse);
+		if(levelNumber == 2)
+			mm.ChangeSongs(R.raw.quicken);
+		if(levelNumber == 3)
+			mm.ChangeSongs(R.raw.aegissprint);
+		if(levelNumber == 4)
+			mm.ChangeSongs(R.raw.blackdiamond);
 		mm.addFade(new SoundFade(0, 0, 1, 3000));
 		mm.play(0);
 		
