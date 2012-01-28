@@ -19,8 +19,11 @@ public abstract class DrawablePanel extends SurfaceView implements SurfaceHolder
 	
 	public void surfaceCreated(SurfaceHolder holder)
 	{
-		thread = new CustomThread(getHolder(), this);
-		thread.start();
+		if(thread == null)
+		{
+			thread = new CustomThread(getHolder(), this);
+			thread.start();
+		}
 	}
 	
 	public void surfaceChanged(SurfaceHolder holder, int format, int width, int height)
