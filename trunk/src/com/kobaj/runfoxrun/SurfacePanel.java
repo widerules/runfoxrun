@@ -99,6 +99,7 @@ public class SurfacePanel extends DrawablePanel
 	{
 		// really silly way of doing this
 		highScores = XMLHandler.readSerialFile("highscores", HighScores.class);
+		
 		if (highScores == null)
 			highScores = new HighScores();
 		

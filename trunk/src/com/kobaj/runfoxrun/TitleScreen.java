@@ -45,7 +45,7 @@ public class TitleScreen extends ListScreens
 		continousGame.setSize((int) (27 * scale));
 		continousGame.setRotation(27, imgBackdrop.getWidth() / 2, imgBackdrop.getHeight() / 2);
 		
-		highScores = new custString(resources, "High Scores", (int) (100 * scale), (int) (207 * scale));
+		highScores = new custString(resources, "Map Maker", (int) (100 * scale), (int) (207 * scale));
 		highScores.setColor(Color.GRAY, Color.BLACK);
 		highScores.setSize((int) (27 * scale));
 		highScores.setRotation(27, imgBackdrop.getWidth() / 2, imgBackdrop.getHeight() / 2);

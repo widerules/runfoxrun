@@ -30,7 +30,8 @@ public abstract class ListScreens
 			}
 			
 			for (int i = 0; i < count; i++)
-				stringList[i].onDraw(canvas);
+				if(stringList[i] != null)
+					stringList[i].onDraw(canvas);
 			
 			if (imgBackdrop != null)
 				canvas.restore();
