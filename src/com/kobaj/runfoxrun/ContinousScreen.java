@@ -31,7 +31,7 @@ public class ContinousScreen
 	private boolean diedRecently = false;
 	
 	private final int startHeight = -100;
-	private final int speedUp = 10;
+	private float speedUp = 10;
 	private float initialSpeed;
 	private final int restartCount = 6;
 	
@@ -44,6 +44,8 @@ public class ContinousScreen
 	private SoundManager sm;
 	
 	private Sprite temp;
+	
+	float scale;
 	
 	public ContinousScreen(int width, int height)
 	{
@@ -59,7 +61,7 @@ public class ContinousScreen
 	
 	public void onInitialize(Resources resources, InputManager im, PhysicsManager pm, SoundManager sm, Sprite player)
 	{
-		float scale = resources.getDisplayMetrics().density;
+		scale = resources.getDisplayMetrics().density;
 		
 		this.im = im;
 		this.pm = pm;
@@ -75,7 +77,8 @@ public class ContinousScreen
 		
 		startLevel();
 		
-		initialSpeed = -17.0f / 100.0f;
+		initialSpeed = SurfacePanel.scrollRate;
+		speedUp = (speedUp / 1.5f * SurfacePanel.scale);
 		pm.setScrollRate(initialSpeed);
 		player.setyPos(startHeight);
 		
@@ -115,7 +118,7 @@ public class ContinousScreen
 			// everything below this line
 			
 			// score
-			score += 1.0f * delta / 10.0f;
+			score += (1.0f * delta / 10.0f) / 1.5f * scale;
 			scoreString.setInt(score);
 			
 			// slowly get faster
@@ -163,7 +166,7 @@ public class ContinousScreen
 			}
 			
 			// still handling death
-			if (player.getyPos() > 0 && diedRecently)
+			if (player.getyPos() > height - this.background1.getHeight() && diedRecently)
 			{
 				diedRecently = false;
 				pm.setScrollRate(initialSpeed);
@@ -207,8 +210,8 @@ public class ContinousScreen
 				
 				int newFinalY = (int) (random.nextInt((int) (newY1 - newY2)) + newY2);
 				
-				y = height - newFinalY;
-				x = newX + width;
+				y = (int) (height - newFinalY / 1.5f * scale);
+				x = (int) (newX / 1.5f * scale + width);
 				
 				temp = new Sprite();
 				
@@ -272,7 +275,7 @@ public class ContinousScreen
 		
 		for (int i = 0; i < hitList.size(); i++)
 		{
-			hitList.get(i).onInitialize(mResources, R.drawable.green, i * 180, height - 10); // TODO
+			hitList.get(i).onInitialize(mResources, R.drawable.green, (int) (i * 180.0f / 1.5f * scale), height - 10); // TODO
 																								// fix
 																								// this
 																								// shit.
@@ -307,7 +310,7 @@ public class ContinousScreen
 		{
 			if (!hitList.get(i).getInitialized())
 			{
-				hitList.get(i).onInitialize(LoadedResources.getGreen(mResources), (e * 180) + width + 1, height - 10);
+				hitList.get(i).onInitialize(LoadedResources.getGreen(mResources), (int) ((e * 180.0f / 1.5f * scale) + width + 1), height - 10);
 				this.pm.addPhys(hitList.get(i));
 				
 				e--;

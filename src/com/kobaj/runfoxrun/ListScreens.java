@@ -15,7 +15,7 @@ public abstract class ListScreens
 	
 	public abstract void onInitialize(Resources rescoures, int identity);
 	
-	public void onDraw(Canvas canvas)
+	public void onDraw(Canvas canvas, GameStates current)
 	{
 		if (initialized)
 		{
@@ -31,7 +31,12 @@ public abstract class ListScreens
 			
 			for (int i = 0; i < count; i++)
 				if(stringList[i] != null)
-					stringList[i].onDraw(canvas);
+					if(current == GameStates.Continous && i == 2)
+					{
+						
+					}
+					else
+						stringList[i].onDraw(canvas);
 			
 			if (imgBackdrop != null)
 				canvas.restore();

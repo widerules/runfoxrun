@@ -6,40 +6,52 @@ import org.simpleframework.xml.Element;
 public class Animation
 {
 	@Element
-	private int xStartPos;
-	@Element
-	private int yStartPos;
-	@Element
 	private int frameCount;
 	@Element
 	private int recFPS;
 	
 	private int recMS = -1;
+
+	private int mxStartPos;
+	private int myStartPos;
+	
 	
 	// these two technically go hand in hand.
 	@Attribute
 	private String name;
 	@Attribute
 	private int id;
+	@SuppressWarnings("unused")
+	@Attribute
+	private int xstartpos;
+	@SuppressWarnings("unused")
+	@Attribute
+	private int ystartpos;
 	
 	@SuppressWarnings("unused")
-	private Animation(@Attribute(name = "id") int id, @Attribute(name = "name") String name)
+	private Animation(@Attribute(name = "id") int id,
+			@Attribute(name = "name") String name,
+			@Attribute(name = "xstartpos") int xstartpos,
+			@Attribute(name = "ystartpos") int ystartpos)
 	{
 		this.id = id;
 		this.name = name;
+		
+		this.mxStartPos = (int) (xstartpos / 1.5f * SurfacePanel.scale);
+		this.myStartPos = (int) (ystartpos / 1.5f * SurfacePanel.scale);
 		
 		onInitialize();
 	}
 	
-	public Animation(int id, String name, int xStartPos, int yStartPos, int frameCount, int recFPS)
+	public Animation(int id, String name)
 	{
 		this.id = id;
 		this.name = name;
 		
-		this.xStartPos = xStartPos;
-		this.yStartPos = yStartPos;
-		this.frameCount = frameCount;
-		this.recFPS = recFPS;
+		this.mxStartPos = 0;
+		this.myStartPos = 0;
+		this.frameCount = 1;
+		this.recFPS = 0;
 		
 		onInitialize();
 	}
@@ -68,12 +80,12 @@ public class Animation
 	
 	public int getxStartPos()
 	{
-		return xStartPos;
+		return mxStartPos;
 	}
 	
 	public int getyStartPos()
 	{
-		return yStartPos;
+		return myStartPos;
 	}
 	
 	public int getFrameCount()

@@ -28,13 +28,9 @@ public class physRect
 	public physRect(@Attribute(name = "top") int top, @Attribute(name = "bottom") int bottom, @Attribute(name = "right") int right, @Attribute(name = "left") int left,
 			@Element(name = "hurts") boolean hurts)
 	{
-		/*
-		 * this.top = top; this.right = right; this.left = left; this.bottom =
-		 * bottom;
-		 */
 		this.hurts = hurts;
 		
-		collRect = new Rect(left, top, right, bottom);
+		collRect = new Rect((int) (left / 1.5f * SurfacePanel.scale), (int) (top/ 1.5f * SurfacePanel.scale), (int) (right / 1.5f * SurfacePanel.scale), (int) (bottom / 1.5f * SurfacePanel.scale));
 	}
 	
 	public physRect(Rect rect, boolean hurts)

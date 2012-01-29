@@ -28,8 +28,6 @@ public class TitleScreen extends ListScreens
 		this.scale = resources.getDisplayMetrics().density;
 		
 		this.mm = mm;
-		//mm.addFade(new SoundFade(0, 0, 1, 3000));
-		//mm.play(0);
 		
 		count = 4;
 		

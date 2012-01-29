@@ -38,7 +38,7 @@ public class SinglePlayScreen implements Runnable
 	
 	private boolean initialized = false;
 	
-	private int levelNumber = 1;
+	private int levelNumber = 4;
 	
 	// top level
 	private Bitmap progressBarIcon;
@@ -118,7 +118,7 @@ public class SinglePlayScreen implements Runnable
 		
 		this.player = player;
 		pm.setPlayer(player);
-		pm.setScrollRate(-17.0f / 100.0f);
+		pm.setScrollRate(SurfacePanel.scrollRate);
 		player.setPaintColorFilter(255);
 		
 		this.resources = resources;
@@ -140,7 +140,7 @@ public class SinglePlayScreen implements Runnable
 				else
 					resetBad = false;
 			
-			if (pm.getScrollProgress() >= 800)
+			if (pm.getScrollProgress() >= (800.0f / 1.5f * scale))
 				if (badGuy.getxPos() < 0 && !resetBad)
 				{
 					badGuy.setxPos(badGuy.getxPos() + delta / 5f);
@@ -163,7 +163,7 @@ public class SinglePlayScreen implements Runnable
 			
 			// handle next level;
 			// probably could have done this a bit better.
-			if (pm.getScrollProgress() >= levelList.get(levelNumber - 1).getLevelLength())
+			if (pm.getScrollProgress() >= (levelList.get(levelNumber - 1).getLevelLength()) / 1.5f * SurfacePanel.scale)
 			{
 				hitList.clear();
 				pm.nextLevel();
@@ -172,37 +172,38 @@ public class SinglePlayScreen implements Runnable
 				
 				HighScores.setLevel(levelNumber);
 				
-				pm.setBackDiv(((float)levelList.get(levelNumber - 1).getLevelLength()) / (1600.0f));
+				pm.setBackDiv(((((float)levelList.get(levelNumber - 1).getLevelLength()) / (1600.0f))));
 				//back.setxPos(-1600 * (levelNumber - 1));
 				
 				if (levelNumber == 2)
 				{
 					back.onCleanup();
-					back.onInitialize(LoadedResources.getBackgroundTHREE(resources), (int)(back2.getxPos() + back2.getWidth()), height - 480, 1600, 480);
+					back.onInitialize(LoadedResources.getBackgroundTHREE(resources), (int)((back2.getxPos() + back2.getWidth())), (int) (height - (480.0f / 1.5f * scale)), (int)(1600.0f / 1.5f * scale), (int)(480.0f / 1.5f * scale));
 					mm.ChangeSongs(R.raw.quicken, new SoundFade(0, 1, 0, 3000), new SoundFade(0, 0, 1, 3000));
 				}
 				else if (levelNumber == 3)
 				{
 					back2.onCleanup();
-					back2.onInitialize(LoadedResources.getBackgroundFOUR(resources), (int)(back.getxPos() + back.getWidth()), height - 480, 1600, 480);
+					back2.onInitialize(LoadedResources.getBackgroundFOUR(resources), (int)((back.getxPos() + back.getWidth())), (int) (height - (480.0f / 1.5f * scale)), (int)(1600.0f / 1.5f * scale), (int)(480.0f / 1.5f * scale));
 					mm.ChangeSongs(R.raw.aegissprint, new SoundFade(0, 1, 0, 3000), new SoundFade(0, 0, 1, 3000));
 				}
 				else if (levelNumber == 4)
 				{
 					back.onCleanup();
+					back.onInitialize(LoadedResources.getBackgroundFIVE(resources), (int)((back2.getxPos() + back2.getWidth())), (int) (height - (480.0f / 1.5f * scale)), (int)(1600.0f / 1.5f * scale), (int)(480.0f / 1.5f * scale));
 					mm.ChangeSongs(R.raw.blackdiamond, new SoundFade(0, 1, 0, 3000), new SoundFade(0, 0, 1, 3000));
-					pm.setScrollRate((float) (pm.getScrollRate() - .025));
+					pm.setScrollRate((float) (pm.getScrollRate() - (.025f / 1.5f * scale)));
 					
-					pm.setBackDiv(((float)levelList.get(levelNumber - 1).getLevelLength()) / (1600.0f - (float)(width)));
+					//pm.setBackDiv(((float)levelList.get(levelNumber - 1).getLevelLength()) / (1600.0f - (float)(width)));
 				}
 				
 				pm.setScrollProgress(0, false);
 				
 				grabHitList(levelNumber);
 			}
-			else if (levelNumber == 3 && pm.getScrollProgress() >= 16000 - width - 200 && pm.getScrollProgress() < 16000 - width - 200 + pm.getScrollDelta() * delta)
+			else if (levelNumber == 3 && pm.getScrollProgress() >= 16000.0f / 1.5f * scale - width - 200.0f / 1.5f * scale && pm.getScrollProgress() < 16000.0f / 1.5f * scale - width - 200.0f / 1.5f * scale + pm.getScrollDelta() * delta)
 				sceneDead = true;
-			else if (levelNumber == 3 && pm.getScrollProgress() >= 16000 - width + 100 && pm.getScrollProgress() < 16000 - width + 100 + pm.getScrollDelta() * delta)
+			else if (levelNumber == 3 && pm.getScrollProgress() >= 16000.0f / 1.5f * scale - width + 100.0f / 1.5f * scale && pm.getScrollProgress() < 16000.0f / 1.5f * scale - width + 100.0f / 1.5f * scale + pm.getScrollDelta() * delta)
 			{
 				if (player.getCurAnimation() == (CharStates.Running.ordinal()))
 				{
@@ -211,7 +212,7 @@ public class SinglePlayScreen implements Runnable
 					player.setAnimation(CharStates.Collapse);
 				}
 			}
-			else if (levelNumber == 4 && sceneDead && pm.getScrollProgress() >= 200)
+			else if (levelNumber == 4 && sceneDead && pm.getScrollProgress() >= 200.0f / 1.5f * scale)
 			{
 				sceneDead = false;
 				pm.setPlayer(player);
@@ -219,11 +220,11 @@ public class SinglePlayScreen implements Runnable
 				this.setPlayerPos();
 				badGuy.setyPos(-height - badGuy.getHeight() - 10);
 			}
-			else if (levelNumber == 4 && pm.getScrollProgress() >= 16000 - width - 250 && pm.getScrollProgress() < 16000 - width - 200 + pm.getScrollDelta() * delta && credits == 0)
+			else if (levelNumber == 4 && pm.getScrollProgress() >= 16000.0f / 1.5f * scale - width - 250.0f / 1.5f * scale && pm.getScrollProgress() < 16000.0f / 1.5f * scale - width - 200.0f / 1.5f * scale + pm.getScrollDelta() * delta && credits == 0)
 			{
 				credits += delta;
 			}
-			else if (levelNumber == 4 && pm.getScrollProgress() >= 16000 - width - 25)
+			else if (levelNumber == 4 && pm.getScrollProgress() >= 16000.0f / 1.5f * scale - width - 25.0f / 1.5f * scale)
 			{
 				if (player.getCurAnimation() == (CharStates.Running.ordinal()))
 				{
@@ -262,7 +263,10 @@ public class SinglePlayScreen implements Runnable
 					myCredits.onUpdate(delta);
 				}
 				else
+				{
+					mm.ChangeSongs(R.raw.pulse, new SoundFade(0, 1, 0, 3000), new SoundFade(0, 0, 1, 3000));
 					return false;
+				}
 				
 				player.setyPos(-height - player.getHeight() - 25);
 				player.setPaintColorFilter(0);
@@ -340,10 +344,14 @@ public class SinglePlayScreen implements Runnable
 				badGuy.onDraw(canvas);
 			
 			// overlay (I should really not be doing math/logic here >.<
-			canvas.drawLine(pad, 20, width - pad, 20, linePaint);
-			canvas.drawLine(pad, 15, pad, 27, linePaint);
-			canvas.drawLine(width - pad, 15, width - pad, 27, linePaint);
-			canvas.drawBitmap(progressBarIcon, linInterp(800, levelList.get(levelNumber - 1).getLevelLength() + 400, pm.getScrollProgress(), pad, width - pad), 0, bitmapPaint);
+			canvas.drawLine(pad, 20.0f / 1.5f * scale, width - pad, 20.0f / 1.5f * scale, linePaint);
+			canvas.drawLine(pad, 15.0f / 1.5f * scale, pad, 27.0f / 1.5f * scale, linePaint);
+			canvas.drawLine(width - pad, 15.0f / 1.5f * scale, width - pad, 27.0f / 1.5f * scale, linePaint);
+			canvas.drawBitmap(progressBarIcon, linInterp(width / 1.5f * scale, 
+					levelList.get(levelNumber - 1).getLevelLength() / 1.5f * scale, 
+					pm.getScrollProgress(), 
+					pad, 
+					width - pad), 0, bitmapPaint);
 			
 			// more overlay
 			collectionScoreIcon.onDraw(canvas);
@@ -352,6 +360,21 @@ public class SinglePlayScreen implements Runnable
 			if (credits > 15000)
 				myCredits.onDraw(canvas);
 		}
+	}
+	
+	// really should make my own Math class...
+	private float linInterp(float minX, float maxX, float value, float minY, float maxY)
+	{
+		if (minX == maxX)
+			return minY;
+		
+		if(value < minX)
+			return minY;
+		
+		if(value > maxX)
+			return maxY;
+		
+		return minY * (value - maxX) / (minX - maxX) + maxY * (value - minX) / (maxX - minX);
 	}
 	
 	private void start()
@@ -373,28 +396,29 @@ public class SinglePlayScreen implements Runnable
 		back2 = new Sprite();
 		if(levelNumber == 1)
 		{
-			back.onInitialize(LoadedResources.getBackgroundONE(resources), 0, height - 480, 1600, 480);
-			back2.onInitialize(LoadedResources.getBackgroundTWO(resources), back.getWidth(), height - 480, 1600, 480);
+			back.onInitialize(LoadedResources.getBackgroundONE(resources), 0, height - LoadedResources.getBackgroundONE(resources).getHeight(), LoadedResources.getBackgroundONE(resources).getWidth(), LoadedResources.getBackgroundONE(resources).getHeight());
+			back2.onInitialize(LoadedResources.getBackgroundTWO(resources), back.getWidth(), height - LoadedResources.getBackgroundTWO(resources).getHeight(), LoadedResources.getBackgroundTWO(resources).getWidth(), LoadedResources.getBackgroundTWO(resources).getHeight());
 		}
 		if(levelNumber == 2)
 		{
-			back2.onInitialize(LoadedResources.getBackgroundTWO(resources), 0, height - 480, 1600, 480);
-			back.onInitialize(LoadedResources.getBackgroundTHREE(resources), back2.getWidth(), height - 480, 1600, 480);
+			back2.onInitialize(LoadedResources.getBackgroundTWO(resources), 0, height - LoadedResources.getBackgroundTWO(resources).getHeight(), LoadedResources.getBackgroundTWO(resources).getWidth(), LoadedResources.getBackgroundTWO(resources).getHeight());
+			back.onInitialize(LoadedResources.getBackgroundTHREE(resources), back2.getWidth(), height - LoadedResources.getBackgroundTHREE(resources).getHeight(), LoadedResources.getBackgroundTHREE(resources).getWidth(), LoadedResources.getBackgroundTHREE(resources).getHeight());
 		}
 		if(levelNumber == 3)
 		{
-			back.onInitialize(LoadedResources.getBackgroundTHREE(resources), 0, height - 480, 1600, 480);
-			back2.onInitialize(LoadedResources.getBackgroundFOUR(resources), back.getWidth(), height - 480, 1600, 480);
+			back.onInitialize(LoadedResources.getBackgroundTHREE(resources), 0, height - LoadedResources.getBackgroundTHREE(resources).getHeight(), LoadedResources.getBackgroundTHREE(resources).getWidth(), LoadedResources.getBackgroundTHREE(resources).getHeight());
+			back2.onInitialize(LoadedResources.getBackgroundFOUR(resources), back.getWidth(), height - LoadedResources.getBackgroundFOUR(resources).getHeight(), LoadedResources.getBackgroundFOUR(resources).getWidth(), LoadedResources.getBackgroundFOUR(resources).getHeight());
 		}
 		if(levelNumber == 4)
 		{
-			back2.onInitialize(LoadedResources.getBackgroundFOUR(resources), 0, height - 480, 1600, 480);
+			back2.onInitialize(LoadedResources.getBackgroundFOUR(resources), 0, height - LoadedResources.getBackgroundFOUR(resources).getHeight(), LoadedResources.getBackgroundFOUR(resources).getWidth(), LoadedResources.getBackgroundFOUR(resources).getHeight());
+			back.onInitialize(LoadedResources.getBackgroundFIVE(resources), back2.getWidth(), height - LoadedResources.getBackgroundFIVE(resources).getHeight(), LoadedResources.getBackgroundFIVE(resources).getWidth(), LoadedResources.getBackgroundFIVE(resources).getHeight());
 		}
 		
 		progressBarIcon = LoadedResources.getIcon(resources);
 		// load dat bad guy
 		this.badGuy = XMLHandler.readSerialFile(resources, R.raw.smoke, Sprite.class);
-		badGuy.onInitialize(LoadedResources.getBadGuy(resources), -165, height - 470, 164, 470);
+		badGuy.onInitialize(LoadedResources.getBadGuy(resources), (int)(-165.0f / 1.5f * scale), (int)(height - (470.0f / 1.5f * scale)), (int)(164.0f / 1.5f * scale), (int)(470.0f / 1.5f * scale));
 		
 		collectionScore = 0;
 		
@@ -407,7 +431,7 @@ public class SinglePlayScreen implements Runnable
 		
 		collectionText = new custInt(resources, 0, 2, width - (int) (37 * scale), (int) (16 * scale));
 		collectionScoreIcon = XMLHandler.readSerialFile(resources, R.raw.star, Sprite.class);
-		collectionScoreIcon.onInitialize(LoadedResources.getStar(resources), width - (int) (57 * scale), (int) (3 * scale), 25, 24);
+		collectionScoreIcon.onInitialize(LoadedResources.getStar(resources), width - (int) (57 * scale), (int) (3 * scale), (int)(25.0f / 1.5f * scale), (int)(24.0f / 1.5f * scale));
 		
 		// load in the level
 		levelList.add(XMLHandler.readSerialFile(resources, R.raw.level, Level.class));
@@ -451,18 +475,13 @@ public class SinglePlayScreen implements Runnable
 		
 		pm.setBackDiv(((float)levelList.get(levelNumber - 1).getLevelLength()) / (1600.0f));
 		
+		//and a very specialized
+		if(levelNumber == 4)
+			badGuy.setyPos(-height - badGuy.getHeight() - 10);
+		
+		pm.setScrollProgress(14500 / 1.5f * SurfacePanel.scale, true);
+		
 		initialized = true;
-		
-		// pm.setScrollProgress(14800);
-	}
-	
-	// really should make my own Math class...
-	private float linInterp(float minX, float maxX, float value, float minY, float maxY)
-	{
-		if (minX == maxX)
-			return minY;
-		
-		return minY * (value - maxX) / (minX - maxX) + maxY * (value - minX) / (maxX - minX);
 	}
 	
 	private void grabHitList(int levelNumber)

@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
+import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
 
@@ -31,7 +32,7 @@ public class SurfacePanel extends DrawablePanel
 	private PauseScreen ps;
 	private SinglePlayScreen sp;
 	
-	public static final float scrollRate = -17.0f / 100.0f;
+	public static float scrollRate = -17.0f / 100.0f;
 	
 	// semi arbitrary
 	private Paint textPaint = new Paint();
@@ -40,23 +41,22 @@ public class SurfacePanel extends DrawablePanel
 	// might be changed to an image
 	private custString pauseText;
 	
-	private float scale;
+	public static float scale;
 	
 	private HighScores highScores;
 	
 	@SuppressWarnings("unused")
 	private Context context;
-	
-	private boolean initialized = false;
-	
+
 	// construct our objects
 	public SurfacePanel(Context context)
 	{
 		super(context);
 		
 		this.context = context;
+		SurfacePanel.scale = getResources().getDisplayMetrics().density;
 		
-		this.scale = getResources().getDisplayMetrics().density;
+		scrollRate = (-17.0f / 100.0f) / 1.5f * scale;
 		
 		Display display = ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
 		width = display.getWidth();
@@ -109,18 +109,16 @@ public class SurfacePanel extends DrawablePanel
 
 		LoadedResources.load(getResources());
 
-		loadingStar.onInitialize(LoadedResources.getStar(getResources()), width / 2 - 12, height / 2, 25, 24);
+		loadingStar.onInitialize(LoadedResources.getStar(getResources()), width / 2 - 12, height / 2, (int)(25.0f / 1.5f * scale), (int)(24.0f  / 1.5f * scale));
 		
 		ts.onInitialize(getResources(), R.drawable.titlescreen, mm);
 		ps.onInitialize(getResources(), 0);
 		
 		pm.setPlayer(mainFox);
-		mainFox.onInitialize(LoadedResources.getMainFox(), sm, (int) (width / 3.0f), -100, 82, 54);
+		mainFox.onInitialize(LoadedResources.getMainFox(), sm, (int) (width / 3.0f), -100, (int)(82.0f / 1.5f * scale), (int)(54.0f / 1.5f * scale));
 		mainFox.setAnimation(CharStates.Running);
 		
 		smSetup();
-		
-		initialized = true;
 	}
 	
 	private void smSetup()
@@ -170,7 +168,7 @@ public class SurfacePanel extends DrawablePanel
 		super.onDraw(canvas);
 		
 		if (currentState == GameStates.TitleScreen)
-			ts.onDraw(canvas);
+			ts.onDraw(canvas, currentState);
 		else if (currentState == GameStates.SinglePlay)
 		{
 			// BigAnimate.onDraw(canvas); now handled inside single play
@@ -186,13 +184,13 @@ public class SurfacePanel extends DrawablePanel
 		else if (currentState == GameStates.Pause && oldState == GameStates.SinglePlay)
 		{
 			sp.onDraw(canvas);
-			ps.onDraw(canvas);
+			ps.onDraw(canvas, GameStates.SinglePlay);
 		}
 		else if (currentState == GameStates.Pause && oldState == GameStates.Continous)
 		{
 			cous.onDraw(canvas);
 			mainFox.onDraw(canvas);
-			ps.onDraw(canvas);
+			ps.onDraw(canvas, GameStates.Continous);
 		}
 		else if (currentState == GameStates.Loading)
 			onDrawLoadingScreen(canvas);
@@ -223,7 +221,7 @@ public class SurfacePanel extends DrawablePanel
 	private void onDrawLoadingScreen(Canvas canvas)
 	{
 		loadingStar.onDraw(canvas);
-		canvas.drawText("Loading...", width / 2 - textPaint.measureText("Loading...") / 2, height / 2 + 25 + 24, textPaint);
+		canvas.drawText("Loading...", width / 2 - textPaint.measureText("Loading...") / 2, height / 2 + (25.0f / 1.5f * scale) + (24.0f / 1.5f * scale), textPaint);
 	}
 	
 	private void checkForUserPause()
@@ -347,17 +345,22 @@ public class SurfacePanel extends DrawablePanel
 	
 	public void onUserPause()
 	{
-		if(this.currentState != GameStates.TitleScreen)
+		if(this.currentState != GameStates.TitleScreen && this.currentState != GameStates.Loading && this.currentState != GameStates.Pause)
 		{
 			this.oldState = this.currentState;
 			this.currentState = GameStates.Pause;
+		}
+		else if(this.currentState == GameStates.Pause)
+		{
+			this.currentState = this.oldState;
+			this.oldState = GameStates.Pause;
 		}
 	}
 	
 	public void onScreenPause(SharedPreferences.Editor ed)
 	{
 		// when the game is paused by outside shit.
-		if(currentState != GameStates.Pause)
+		if(currentState != GameStates.Pause && currentState != GameStates.Loading)
 		{
 			this.oldState = this.currentState;
 			this.currentState = GameStates.Pause;
@@ -372,7 +375,6 @@ public class SurfacePanel extends DrawablePanel
 		ed.putInt("SPLevel", sp.getCurrentLevel());
 		
 		this.stopThread();
-		//System.exit(0);
 	}
 	
 	public void onScreenResume(SharedPreferences ed)
@@ -419,9 +421,18 @@ public class SurfacePanel extends DrawablePanel
 		else 
 		{
 			currentState = GameStates.TitleScreen;
+			mm.ChangeSongs(ed.getInt("currentSong",R.raw.pulse), null, new SoundFade(0, 0, 1, 3000));
+			mm.play(0);
 		}	
 		
+		try
+		{
 		this.restartThread();
+		}
+		catch (Exception e)
+		{
+			Log.e("JAKOBERR", e.toString());
+		}
 	}
 	
 	public void onScreenQuit(SharedPreferences.Editor ed)

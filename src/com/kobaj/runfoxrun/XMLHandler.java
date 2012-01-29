@@ -71,8 +71,7 @@ public class XMLHandler
 		}
 		return false;
 	}
-	
-	// TODO implement.
+
 	public static <T> T readSerialFile(String fileName, Class<? extends T> type)
 	{
 		T finalReturn = null;

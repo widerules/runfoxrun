@@ -48,19 +48,23 @@ public class Creditables
 		temp2.add("Raymond Griffith");
 		temp2.add("Thanks to anyone who helped");
 		
-		Paint tempPaint = new Paint();
-		
 		for (String it : temp)
-			Titles.add(new custString(resources, it, (int) (width / 2 - tempPaint.measureText(it)), height / 2 + 20));
+			Titles.add(new custString(resources, it, 0, 0));
 		
 		for (String it : temp2)
-			Name.add(new custString(resources, it, (int) (width / 2 - tempPaint.measureText(it)), height / 2 - 20));
+			Name.add(new custString(resources, it, 0, 0));
 		
 		for (custString it : Titles)
+		{
 			it.setColor(Color.TRANSPARENT, Color.TRANSPARENT);
+			it.setPosition((int)(width / 2.0f - it.measureit() / 2f), (int) (height / 2f + 20.0f / 1.5f * SurfacePanel.scale));
+		}
 		
 		for (custString it : Name)
+		{
 			it.setColor(Color.TRANSPARENT, Color.TRANSPARENT);
+			it.setPosition((int)(width / 2.0f - it.measureit() / 2f), (int) (height / 2f - 20.0f / 1.5f * SurfacePanel.scale));	
+		}
 	}
 	
 	// really should make my own STATIC Math class...

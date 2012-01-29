@@ -29,6 +29,11 @@ public class custString
 	
 	private Matrix rotationMatrix;
 	
+	public float measureit()
+	{
+		return strokePaint.measureText(string.toString());
+	}
+	
 	public custString(Resources resources, String string, int x, int y)
 	{
 		float scale = resources.getDisplayMetrics().density;
