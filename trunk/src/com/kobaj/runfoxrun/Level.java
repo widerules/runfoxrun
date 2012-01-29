@@ -149,7 +149,7 @@ public class Level
 			else if (tempLevelObject.getName().equalsIgnoreCase("star"))
 			{
 				Sprite temp = XMLHandler.readSerialFile(resources, R.raw.star, Sprite.class);
-				temp.onInitialize(LoadedResources.getStar(resources), sm, tempLevelObject.getxLoc(), tempLevelObject.getyLoc() - 24, 25, 24);
+				temp.onInitialize(LoadedResources.getStar(resources), sm, tempLevelObject.getxLoc(), tempLevelObject.getyLoc() - (int)(24.0f  / 1.5f * SurfacePanel.scale),  (int)(25.0f / 1.5f * SurfacePanel.scale), (int)(24.0f  / 1.5f * SurfacePanel.scale));
 				temp.setCollectable(CollectableStates.collectable);
 				levelSpriteList.add(temp);
 			}
@@ -185,7 +185,10 @@ public class Level
 					physRect physRectTemp = iter.next();
 					Rect collRect = physRectTemp.getCollRect();
 					temp.getPhysRect().add(
-							new physRect(collRect.top + (int) temp.getyPos(), collRect.bottom + (int) temp.getyPos(), collRect.right + (int) temp.getxPos(), collRect.left + (int) temp.getxPos(),
+							new physRect(new Rect(collRect.left + (int) temp.getxPos(),
+									collRect.top + (int) temp.getyPos(),
+									collRect.right + (int) temp.getxPos(),
+									collRect.bottom + (int) temp.getyPos()),
 									physRectTemp.getHurts()));
 				}
 				levelSpriteList.add(temp);
@@ -208,7 +211,10 @@ public class Level
 					physRect physRectTemp = iter.next();
 					Rect collRect = physRectTemp.getCollRect();
 					temp.getPhysRect().add(
-							new physRect(collRect.top + (int) temp.getyPos(), collRect.bottom + (int) temp.getyPos(), collRect.right + (int) temp.getxPos(), collRect.left + (int) temp.getxPos(),
+							new physRect(new Rect(collRect.left + (int) temp.getxPos(),
+									collRect.top + (int) temp.getyPos(),
+									collRect.right + (int) temp.getxPos(),
+									collRect.bottom + (int) temp.getyPos()),
 									physRectTemp.getHurts()));
 				}
 				levelSpriteList.add(temp);
@@ -224,7 +230,10 @@ public class Level
 					physRect physRectTemp = iter.next();
 					Rect collRect = physRectTemp.getCollRect();
 					temp.getPhysRect().add(
-							new physRect(collRect.top + (int) temp.getyPos(), collRect.bottom + (int) temp.getyPos(), collRect.right + (int) temp.getxPos(), collRect.left + (int) temp.getxPos(),
+							new physRect(new Rect(collRect.left + (int) temp.getxPos(),
+									collRect.top + (int) temp.getyPos(),
+									collRect.right + (int) temp.getxPos(),
+									collRect.bottom + (int) temp.getyPos()),
 									physRectTemp.getHurts()));
 				}
 				levelSpriteList.add(temp);
@@ -254,7 +263,10 @@ public class Level
 					physRect physRectTemp = iter.next();
 					Rect collRect = physRectTemp.getCollRect();
 					temp.getPhysRect().add(
-							new physRect(collRect.top + (int) temp.getyPos(), collRect.bottom + (int) temp.getyPos(), collRect.right + (int) temp.getxPos(), collRect.left + (int) temp.getxPos(),
+							new physRect(new Rect(collRect.left + (int) temp.getxPos(),
+									collRect.top + (int) temp.getyPos(),
+									collRect.right + (int) temp.getxPos(),
+									collRect.bottom + (int) temp.getyPos()),
 									physRectTemp.getHurts()));
 				}
 				levelSpriteList.add(temp);
@@ -270,7 +282,10 @@ public class Level
 					physRect physRectTemp = iter.next();
 					Rect collRect = physRectTemp.getCollRect();
 					temp.getPhysRect().add(
-							new physRect(collRect.top + (int) temp.getyPos(), collRect.bottom + (int) temp.getyPos(), collRect.right + (int) temp.getxPos(), collRect.left + (int) temp.getxPos(),
+							new physRect(new Rect(collRect.left + (int) temp.getxPos(),
+									collRect.top + (int) temp.getyPos(),
+									collRect.right + (int) temp.getxPos(),
+									collRect.bottom + (int) temp.getyPos()),
 									physRectTemp.getHurts()));
 				}
 				levelSpriteList.add(temp);
@@ -286,7 +301,10 @@ public class Level
 					physRect physRectTemp = iter.next();
 					Rect collRect = physRectTemp.getCollRect();
 					temp.getPhysRect().add(
-							new physRect(collRect.top + (int) temp.getyPos(), collRect.bottom + (int) temp.getyPos(), collRect.right + (int) temp.getxPos(), collRect.left + (int) temp.getxPos(),
+							new physRect(new Rect(collRect.left + (int) temp.getxPos(),
+									collRect.top + (int) temp.getyPos(),
+									collRect.right + (int) temp.getxPos(),
+									collRect.bottom + (int) temp.getyPos()),
 									physRectTemp.getHurts()));
 				}
 				levelSpriteList.add(temp);
@@ -309,7 +327,10 @@ public class Level
 					physRect physRectTemp = iter.next();
 					Rect collRect = physRectTemp.getCollRect();
 					temp.getPhysRect().add(
-							new physRect(collRect.top + (int) temp.getyPos(), collRect.bottom + (int) temp.getyPos(), collRect.right + (int) temp.getxPos(), collRect.left + (int) temp.getxPos(),
+							new physRect(new Rect(collRect.left + (int) temp.getxPos(),
+									collRect.top + (int) temp.getyPos(),
+									collRect.right + (int) temp.getxPos(),
+									collRect.bottom + (int) temp.getyPos()),
 									physRectTemp.getHurts()));
 				}
 				levelSpriteList.add(temp);
@@ -325,7 +346,7 @@ public class Level
 			else if (tempLevelObject.getName().equalsIgnoreCase("foxtwo"))
 			{
 				Sprite temp = XMLHandler.readSerialFile(resources, R.raw.foxmain, Sprite.class);
-				temp.onInitialize(LoadedResources.getFoxTwo(), tempLevelObject.getxLoc(), tempLevelObject.getyLoc() - 54, 82, 54);
+				temp.onInitialize(LoadedResources.getFoxTwo(), tempLevelObject.getxLoc(), (int) (tempLevelObject.getyLoc() - 54.0f / 1.5f * SurfacePanel.scale), (int)(82.0f / 1.5f * SurfacePanel.scale), (int)(54.0f / 1.5f * SurfacePanel.scale));
 				temp.setAnimation(CharStates.Sitting);
 				temp.setCollectable(CollectableStates.collectable);
 				levelSpriteList.add(temp);

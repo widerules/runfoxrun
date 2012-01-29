@@ -194,7 +194,7 @@ public class Sprite
              if (animationList == null || animationList.isEmpty())
              {
                      animationList = new ArrayList<Animation>();
-                     animationList.add(new Animation(0, "stopped", 0, 0, 1, 0));
+                     animationList.add(new Animation(0, "stopped"));
              }
              
              setAnimation(CharStates.Sitting);

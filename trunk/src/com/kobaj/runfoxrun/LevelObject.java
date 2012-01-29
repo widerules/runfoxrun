@@ -20,8 +20,8 @@ public class LevelObject
 	public LevelObject(@Attribute(name = "name") String name, @Attribute(name = "xLoc") int x, @Attribute(name = "yLoc") int y)
 	{
 		this.name = name;
-		this.xLoc = x;
-		this.yLoc = y;
+		this.xLoc = (int) (x / 1.5f * SurfacePanel.scale);
+		this.yLoc = (int) (y / 1.5f * SurfacePanel.scale);
 	}
 	
 	public String getName()

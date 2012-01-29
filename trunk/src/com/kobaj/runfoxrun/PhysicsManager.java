@@ -17,8 +17,8 @@ public class PhysicsManager
 	
 	private HashSet<Sprite> backgroundables;
 	
-	public final float jumpFloat = -3.0f / 10.0f;
-	public final float userAcc = 30f / 100000.0f;
+	public float jumpFloat = -3.0f / 10.0f;
+	public float userAcc = 30f / 100000.0f;
 	private float userVel = 0;
 	private float userVelOld = 0;
 	
@@ -63,16 +63,7 @@ public class PhysicsManager
 	{
 		return scrollProgress;
 	}
-	
-	public void setBackDrop(float value)
-	{
-		/*for (Iterator<Sprite> it = backgroundables.iterator(); it.hasNext();)
-		{
-			Sprite temp = it.next();
-			temp.setxPos(temp.getxPos() + scrollProgress / backDiv - value / backDiv);
-		}*/
-	}
-	
+
 	public void setScrollProgress(float value, boolean resetBackToo)
 	{
 		for (Iterator<Sprite> it = interactables.iterator(); it.hasNext();)
@@ -98,6 +89,10 @@ public class PhysicsManager
 		
 		interactables = new HashSet<Sprite>();
 		backgroundables = new HashSet<Sprite>();
+		
+		jumpFloat = jumpFloat / 1.5f * SurfacePanel.scale;
+		userAcc = userAcc / 1.5f * SurfacePanel.scale;
+		speedUp = speedUp / 1.5f * SurfacePanel.scale;
 	}
 	
 	public void removePhys(Sprite input)

@@ -3,8 +3,6 @@ package com.kobaj.runfoxrun;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.Debug;
-import android.util.Log;
 
 public class LoadedResources
 {
@@ -102,54 +100,6 @@ public class LoadedResources
 		loaded = true;
 	}
 	
-	private static Bitmap readBig(Resources resources, int ID)
-	{
-		long mMaxVmHeap     = Runtime.getRuntime().maxMemory()/1024;
-		long mMaxNativeHeap = 16*1024;
-		if (mMaxVmHeap == 16*1024)
-		     mMaxNativeHeap = 16*1024;
-		else if (mMaxVmHeap == 24*1024)
-		     mMaxNativeHeap = 24*1024;
-		else
-			Log.w("woops", "Unrecognized VM heap size = " + mMaxVmHeap);
-
-		 //Decode image size
-        BitmapFactory.Options o = new BitmapFactory.Options();
-        o.inJustDecodeBounds = true;
-        BitmapFactory.decodeResource(resources, ID, o);
-        
-        int bitmapWidth = o.outWidth;
-        int bitmapHeight = o.outHeight;
-        int targetBpp = 4;
-        int heapPad = 3*1024*1024;
-
-		long sizeReqd = bitmapWidth * bitmapHeight * targetBpp  / 8;
-		long allocNativeHeap = Debug.getNativeHeapAllocatedSize();
-		long freeheap = Debug.getNativeHeapFreeSize();
-		
-		int reqSize = 0;
-		while((mMaxNativeHeap - heapPad - allocNativeHeap) / bitmapWidth - bitmapHeight > 0)
-		{
-			reqSize++;
-			bitmapWidth = (int) (bitmapWidth / 2.0f);
-			bitmapHeight = (int) (bitmapHeight / 2.0f);
-		}
-		
-		double maximumHeap = Debug.getNativeHeapSize() / (1024*1024);
-		
-		if(maximumHeap < 3.5)
-			reqSize = 1;
-		
-		 //Find the correct scale value. It should be the power of 2.
-        int scale = (int) Math.pow(2, reqSize);
-
-        //Decode with inSampleSize
-        BitmapFactory.Options o2 = new BitmapFactory.Options();
-        o2.inSampleSize=scale;
-
-		return BitmapFactory.decodeResource(resources, ID, o2);
-	}
-	
 	static Sprite BIGVine;
 	static Sprite LITtleVine;
 	static Sprite SANdHole;
@@ -242,6 +192,10 @@ public class LoadedResources
 	public static Bitmap getBackgroundFOUR(Resources resources)
 	{ 
 		return BitmapFactory.decodeResource(resources, R.drawable.backdropfour, bfOptions);
+	}
+	public static Bitmap getBackgroundFIVE(Resources resources)
+	{ 
+		return BitmapFactory.decodeResource(resources, R.drawable.backdropfive, bfOptions);
 	}
 	
 	// screw that resource crap
