@@ -6,6 +6,7 @@ import java.util.Random;
 
 import android.content.res.Resources;
 import android.graphics.Canvas;
+import android.graphics.Paint;
 
 public class ContinousScreen
 {
@@ -13,7 +14,7 @@ public class ContinousScreen
 	private Sprite background1;
 	private Sprite background2;
 	
-	private Resources mResources;
+	private Resources resources;
 	
 	private InputManager im;
 	private PhysicsManager pm;
@@ -30,7 +31,6 @@ public class ContinousScreen
 	
 	private boolean diedRecently = false;
 	
-	private final int startHeight = -100;
 	private float speedUp = 10;
 	private float initialSpeed;
 	private final int restartCount = 6;
@@ -45,6 +45,8 @@ public class ContinousScreen
 	
 	private Sprite temp;
 	
+	private Paint bitmapPaint;
+	
 	float scale;
 	
 	public ContinousScreen(int width, int height)
@@ -56,17 +58,19 @@ public class ContinousScreen
 	private void setPlayerPos()
 	{
 		player.setxPos((int) (width / 3.0f));
-		player.setyPos(startHeight);
+		player.setyPos(SurfacePanel.startHeight);
 	}
 	
 	public void onInitialize(Resources resources, InputManager im, PhysicsManager pm, SoundManager sm, Sprite player)
 	{
-		scale = resources.getDisplayMetrics().density;
+		scale = SurfacePanel.scale;
 		
 		this.im = im;
 		this.pm = pm;
 		this.sm = sm;
-		mResources = resources;
+		this.resources = resources;
+		
+		bitmapPaint = new Paint();
 		
 		this.player = player;
 		setPlayerPos();
@@ -78,9 +82,8 @@ public class ContinousScreen
 		startLevel();
 		
 		initialSpeed = SurfacePanel.scrollRate;
-		speedUp = (speedUp / 1.5f * SurfacePanel.scale);
 		pm.setScrollRate(initialSpeed);
-		player.setyPos(startHeight);
+		setPlayerPos();
 		
 		background1 = new Sprite();
 		background1.onInitialize(LoadedResources.getBackground1(resources), 0, height - LoadedResources.getBackground1(resources).getHeight(), LoadedResources.getBackground1(resources).getWidth(),
@@ -219,15 +222,15 @@ public class ContinousScreen
 				
 				if (rand >= 0 && rand <= 12)
 				{
-					temp.onInitialize(LoadedResources.getGreen(mResources), x, y);
+					temp.onInitialize(LoadedResources.getGreen(resources), x, y);
 				}
 				else if (rand > 12 && rand <= 25)
 				{
-					temp.onInitialize(LoadedResources.getRed(mResources), x, y);
+					temp.onInitialize(LoadedResources.getRed(resources), x, y);
 				}
 				else if (rand > 25)
 				{
-					temp.onInitialize(LoadedResources.getBlue(mResources), x, y);
+					temp.onInitialize(LoadedResources.getBlue(resources), x, y);
 				}
 				
 				hitList.add(temp);
@@ -260,6 +263,13 @@ public class ContinousScreen
 					hitList.get(i).onDraw(canvas);
 			}
 			
+			//little fox
+			player.onDraw(canvas);
+			
+			//black box
+			if(height - LoadedResources.getBackground1(resources).getHeight() > 0)
+				canvas.drawRect(0, 0, width, height - LoadedResources.getBackground1(resources).getHeight(), bitmapPaint);
+			
 			// score
 			scoreString.onDraw(canvas);
 			scoreWord.onDraw(canvas);
@@ -275,7 +285,7 @@ public class ContinousScreen
 		
 		for (int i = 0; i < hitList.size(); i++)
 		{
-			hitList.get(i).onInitialize(mResources, R.drawable.green, (int) (i * 180.0f / 1.5f * scale), height - 10); // TODO
+			hitList.get(i).onInitialize(resources, R.drawable.green, (int) (i * 180.0f / 1.5f * scale), height - 10); // TODO
 																								// fix
 																								// this
 																								// shit.
@@ -310,7 +320,7 @@ public class ContinousScreen
 		{
 			if (!hitList.get(i).getInitialized())
 			{
-				hitList.get(i).onInitialize(LoadedResources.getGreen(mResources), (int) ((e * 180.0f / 1.5f * scale) + width + 1), height - 10);
+				hitList.get(i).onInitialize(LoadedResources.getGreen(resources), (int) ((e * 180.0f / 1.5f * scale) + width + 1), height - 10);
 				this.pm.addPhys(hitList.get(i));
 				
 				e--;

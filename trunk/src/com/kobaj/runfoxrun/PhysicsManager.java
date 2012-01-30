@@ -140,7 +140,9 @@ public class PhysicsManager
 				physObj.setyPos((physObj.getyPos() + (userVel * delta)));
 			}
 			else
-				physObj.setyPos(-100);
+			{
+				physObj.setyPos(SurfacePanel.startHeight);
+			}
 		
 		float amount = scrollValue * delta; // arbitrary
 		

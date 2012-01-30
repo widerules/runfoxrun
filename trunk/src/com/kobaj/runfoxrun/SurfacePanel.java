@@ -42,6 +42,7 @@ public class SurfacePanel extends DrawablePanel
 	private custString pauseText;
 	
 	public static float scale;
+	public static float startHeight;
 	
 	private HighScores highScores;
 	
@@ -118,6 +119,8 @@ public class SurfacePanel extends DrawablePanel
 		mainFox.onInitialize(LoadedResources.getMainFox(), sm, (int) (width / 3.0f), -100, (int)(82.0f / 1.5f * scale), (int)(54.0f / 1.5f * scale));
 		mainFox.setAnimation(CharStates.Running);
 		
+		startHeight = height - LoadedResources.getBackground1(getResources()).getHeight() - 100f / 1.5f * SurfacePanel.scale;
+		
 		smSetup();
 	}
 	
@@ -189,7 +192,6 @@ public class SurfacePanel extends DrawablePanel
 		else if (currentState == GameStates.Pause && oldState == GameStates.Continous)
 		{
 			cous.onDraw(canvas);
-			mainFox.onDraw(canvas);
 			ps.onDraw(canvas, GameStates.Continous);
 		}
 		else if (currentState == GameStates.Loading)

@@ -36,7 +36,7 @@ public class custString
 	
 	public custString(Resources resources, String string, int x, int y)
 	{
-		float scale = resources.getDisplayMetrics().density;
+		float scale = SurfacePanel.scale;
 		
 		size = (int) (16 * scale);
 		
