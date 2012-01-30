@@ -28,7 +28,7 @@ public class SinglePlayScreen implements Runnable
 	private MusicManager mm;
 	private Resources resources;
 	
-	private int collectionScore = 0;
+	private int collectionScore = 3;
 	private custInt collectionText;
 	
 	private Sprite player;
@@ -38,7 +38,7 @@ public class SinglePlayScreen implements Runnable
 	
 	private boolean initialized = false;
 	
-	private int levelNumber = 4;
+	private int levelNumber = 1;
 	
 	// top level
 	private Bitmap progressBarIcon;
@@ -55,6 +55,8 @@ public class SinglePlayScreen implements Runnable
 	public boolean resetBad = false;
 	
 	private float credits = 0;
+	private float gameOver = 0;
+	private custString gameOverString;
 	
 	private float scale;
 	
@@ -90,7 +92,8 @@ public class SinglePlayScreen implements Runnable
 	private void setPlayerPos()
 	{
 		player.setxPos((int) (width / 3.0f));
-		player.setyPos(levelList.get(levelNumber - 1).getPlayerStartY());
+		//TODO set this one
+		player.setyPos(SurfacePanel.startHeight);
 	}
 	
 	public SinglePlayScreen(int width, int height)
@@ -109,7 +112,7 @@ public class SinglePlayScreen implements Runnable
 	
 	public void onInitialize(Resources resources, InputManager im, PhysicsManager pm, SoundManager sm, MusicManager mm, int level, Sprite player)
 	{
-		this.scale = resources.getDisplayMetrics().density;
+		this.scale = SurfacePanel.scale;
 		
 		this.im = im;
 		this.pm = pm;
@@ -124,6 +127,9 @@ public class SinglePlayScreen implements Runnable
 		this.resources = resources;
 		
 		myCredits = new Creditables(resources, width, height);
+	
+		gameOverString = new custString(resources, "Game Over", 0, 0);
+		gameOverString.setPosition((int)(width / 2.0f - gameOverString.measureit() / 2.0f), (int)(height / 2.0f));
 		
 		start();
 	}
@@ -239,6 +245,14 @@ public class SinglePlayScreen implements Runnable
 			if (credits > 0)
 				credits += delta;
 			
+			if(gameOver > 0)
+				gameOver += delta;
+			
+			if(gameOver > 10000)
+			{
+				return false;
+			}
+			
 			// credits;
 			if (credits > 10000 && credits < 15000)
 			{
@@ -289,6 +303,11 @@ public class SinglePlayScreen implements Runnable
 					sm.playSound(3, .10f);
 				
 				System.gc();
+				
+				collectionScore -= 1;
+				
+				if(collectionScore < 0)
+					gameOver++;
 			}
 			
 			// set me collections
@@ -302,7 +321,7 @@ public class SinglePlayScreen implements Runnable
 				temp.onUpdate(delta);
 				if (temp.getCollectable() == CollectableStates.collected)
 				{
-					collectionScore++;
+					collectionScore += 3;
 					it.remove();
 					hitList.remove(temp);
 					pm.removePhys(temp);
@@ -343,6 +362,10 @@ public class SinglePlayScreen implements Runnable
 			if (badGuy.getyPos() > 0)
 				badGuy.onDraw(canvas);
 			
+			//black box
+			if(height - LoadedResources.getBackground1(resources).getHeight() > 0)
+				canvas.drawRect(0, 0, width, height - LoadedResources.getBackground1(resources).getHeight(), bitmapPaint);
+			
 			// overlay (I should really not be doing math/logic here >.<
 			canvas.drawLine(pad, 20.0f / 1.5f * scale, width - pad, 20.0f / 1.5f * scale, linePaint);
 			canvas.drawLine(pad, 15.0f / 1.5f * scale, pad, 27.0f / 1.5f * scale, linePaint);
@@ -351,7 +374,7 @@ public class SinglePlayScreen implements Runnable
 					levelList.get(levelNumber - 1).getLevelLength() / 1.5f * scale, 
 					pm.getScrollProgress(), 
 					pad, 
-					width - pad), 0, bitmapPaint);
+					width - pad - progressBarIcon.getWidth()), 0, bitmapPaint);
 			
 			// more overlay
 			collectionScoreIcon.onDraw(canvas);
@@ -359,6 +382,10 @@ public class SinglePlayScreen implements Runnable
 			
 			if (credits > 15000)
 				myCredits.onDraw(canvas);
+			
+			if(gameOver > 0)
+				gameOverString.onDraw(canvas);
+			
 		}
 	}
 	
@@ -420,8 +447,6 @@ public class SinglePlayScreen implements Runnable
 		this.badGuy = XMLHandler.readSerialFile(resources, R.raw.smoke, Sprite.class);
 		badGuy.onInitialize(LoadedResources.getBadGuy(resources), (int)(-165.0f / 1.5f * scale), (int)(height - (470.0f / 1.5f * scale)), (int)(164.0f / 1.5f * scale), (int)(470.0f / 1.5f * scale));
 		
-		collectionScore = 0;
-		
 		linePaint = new Paint();
 		linePaint.setColor(Color.WHITE);
 		linePaint.setStrokeWidth(1);
@@ -479,7 +504,7 @@ public class SinglePlayScreen implements Runnable
 		if(levelNumber == 4)
 			badGuy.setyPos(-height - badGuy.getHeight() - 10);
 		
-		pm.setScrollProgress(14500 / 1.5f * SurfacePanel.scale, true);
+		//pm.setScrollProgress(14500 / 1.5f * SurfacePanel.scale, true);
 		
 		initialized = true;
 	}

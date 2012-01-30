@@ -12,7 +12,7 @@ public class PauseScreen extends ListScreens
 	
 	public void onInitialize(Resources resources, int identity)
 	{
-		float scale = resources.getDisplayMetrics().density;
+		float scale = SurfacePanel.scale;
 		
 		count = 4;
 		

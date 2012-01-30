@@ -25,7 +25,7 @@ public class TitleScreen extends ListScreens
 	
 	public void onInitialize(Resources resources, int identity, MusicManager mm)
 	{
-		this.scale = resources.getDisplayMetrics().density;
+		this.scale = SurfacePanel.scale;
 		
 		this.mm = mm;
 		
