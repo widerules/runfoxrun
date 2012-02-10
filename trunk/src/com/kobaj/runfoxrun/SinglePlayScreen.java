@@ -45,6 +45,7 @@ public class SinglePlayScreen implements Runnable
 	private Sprite collectionScoreIcon;
 	private Paint linePaint;
 	private Paint bitmapPaint;
+	private Paint blackPaint;
 	
 	private boolean sceneDead = false;
 	
@@ -141,7 +142,7 @@ public class SinglePlayScreen implements Runnable
 			
 			// badguy movement
 			if (resetBad)
-				if (badGuy.getxPos() + badGuy.getWidth() > 0)
+				if (badGuy.getxPos() + badGuy.getWidth() > 0 - 20)
 					badGuy.setxPos((badGuy.getxPos() - delta / 5.0f));
 				else
 					resetBad = false;
@@ -246,7 +247,16 @@ public class SinglePlayScreen implements Runnable
 				credits += delta;
 			
 			if(gameOver > 0)
+			{
+				int multiplier = (int) this.linInterp(0, 1000, gameOver, 0, 255);
+				blackPaint.setAlpha(multiplier);
 				gameOver += delta;
+				if(player.getCurAnimation() == (CharStates.Running.ordinal()))
+				{
+					pm.unsetPlayer();
+					pm.levelReset();
+				}
+			}
 			
 			if(gameOver > 10000)
 			{
@@ -321,7 +331,7 @@ public class SinglePlayScreen implements Runnable
 				temp.onUpdate(delta);
 				if (temp.getCollectable() == CollectableStates.collected)
 				{
-					collectionScore += 3;
+					collectionScore += 1;
 					it.remove();
 					hitList.remove(temp);
 					pm.removePhys(temp);
@@ -355,12 +365,15 @@ public class SinglePlayScreen implements Runnable
 				}
 			}
 			
-			// character
-			player.onDraw(canvas);
-			
 			// bad guy
 			if (badGuy.getyPos() > 0)
 				badGuy.onDraw(canvas);
+			
+			if(gameOver > 0)
+				canvas.drawRect(0, 0, width, height, blackPaint);
+			
+			// character
+			player.onDraw(canvas);
 			
 			//black box
 			if(height - LoadedResources.getBackground1(resources).getHeight() > 0)
@@ -453,6 +466,9 @@ public class SinglePlayScreen implements Runnable
 		linePaint.setShadowLayer(1, 0, 0, Color.BLACK);
 		
 		bitmapPaint = new Paint();
+		
+		blackPaint = new Paint();
+		blackPaint.setARGB(0, 0, 0, 0);
 		
 		collectionText = new custInt(resources, 0, 2, width - (int) (37 * scale), (int) (16 * scale));
 		collectionScoreIcon = XMLHandler.readSerialFile(resources, R.raw.star, Sprite.class);

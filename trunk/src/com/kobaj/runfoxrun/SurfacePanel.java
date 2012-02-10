@@ -54,8 +54,19 @@ public class SurfacePanel extends DrawablePanel
 	{
 		super(context);
 		
+		LoadedResources.preLoad();
+		
 		this.context = context;
 		SurfacePanel.scale = getResources().getDisplayMetrics().density;
+		
+		//fix dat scale
+		int tempwidth = LoadedResources.getBackgroundONE(getResources()).getWidth();
+		if(tempwidth == 1072)
+			SurfacePanel.scale = 1.0f;
+		else if(tempwidth == 800)
+			SurfacePanel.scale = .75f;
+		else
+			SurfacePanel.scale = 1.5f;
 		
 		scrollRate = (-17.0f / 100.0f) / 1.5f * scale;
 		
@@ -84,8 +95,8 @@ public class SurfacePanel extends DrawablePanel
 		ps = new PauseScreen();
 		sp = new SinglePlayScreen(width, height);
 		
-		pauseText = new custString(getResources(), "PAUSE", (int) (5 * scale), (int) (20 * scale));
-		pauseText.setSize((int) (21 * scale));
+		pauseText = new custString(getResources(), "PAUSE", (int) (6 * scale), (int) (22 * scale));
+		pauseText.setSize((int) (20 * scale));
 		
 		// semi arbitrary
 		textPaint.setColor(Color.WHITE);
@@ -110,7 +121,7 @@ public class SurfacePanel extends DrawablePanel
 
 		LoadedResources.load(getResources());
 
-		loadingStar.onInitialize(LoadedResources.getStar(getResources()), width / 2 - 12, height / 2, (int)(25.0f / 1.5f * scale), (int)(24.0f  / 1.5f * scale));
+		loadingStar.onInitialize(LoadedResources.getStar(getResources()), (int) (width / 2 - (25.0f / 1.5f * scale) / 2.0f), height / 2, (int)(25.0f / 1.5f * scale), (int)(24.0f  / 1.5f * scale));
 		
 		ts.onInitialize(getResources(), R.drawable.titlescreen, mm);
 		ps.onInitialize(getResources(), 0);
