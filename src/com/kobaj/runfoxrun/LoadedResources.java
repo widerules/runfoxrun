@@ -46,15 +46,25 @@ public class LoadedResources
 	private static BitmapFactory.Options bfOptions = new BitmapFactory.Options();
 	private static BitmapFactory.Options bfOpts = new BitmapFactory.Options();
 	
+	public static void preLoad()
+	{
+		bfOpts.inPurgeable = true;
+		bfOpts.inScaled = false;
+		bfOpts.inSampleSize = 1;
+		//bfOpts.inDensity = 0;
+		//bfOpts.inTargetDensity = 0;
+		
+		bfOptions.inPurgeable=true;
+		bfOptions.inScaled = false;
+		bfOptions.inSampleSize = 1;
+		//bfOptions.inDensity = 0;
+		//bfOptions.inTargetDensity = 0;
+		bfOptions.inPreferredConfig = Bitmap.Config.RGB_565;
+	}
 	
 	public static void load(Resources resources)
 	{
 		System.gc();
-		
-		bfOpts.inPurgeable = true;
-		
-		bfOptions.inPurgeable=true;    
-		bfOptions.inPreferredConfig = Bitmap.Config.RGB_565;
 		 
 		background1 = BitmapFactory.decodeResource(resources, R.drawable.background1, bfOptions);
 		titleScreen = BitmapFactory.decodeResource(resources, R.drawable.titlescreen, bfOptions);
@@ -100,13 +110,13 @@ public class LoadedResources
 		loaded = true;
 	}
 	
-	static Sprite BIGVine;
-	static Sprite LITtleVine;
-	static Sprite SANdHole;
-	static Sprite SMAllTree;
-	static Sprite TREe;
-	static Sprite WEEd;
-	static Sprite DEAdTree;
+	private static Sprite BIGVine;
+	private static Sprite LITtleVine;
+	private static Sprite SANdHole;
+	private static Sprite SMAllTree;
+	private static Sprite TREe;
+	private static Sprite WEEd;
+	private static Sprite DEAdTree;
 	
 	public static Bitmap getTitle(Resources resources)
 	{
