@@ -16,6 +16,29 @@ import android.util.Log;
 
 public class XMLHandler
 {
+	public static String[] getFileList()
+	{
+		if(hasStorage(true))
+		{
+			File sdCard = Environment.getExternalStorageDirectory();
+			File dir = new File(sdCard.getAbsolutePath() + "/rfr");
+			dir.mkdirs();
+			
+			File[] sdDirList = dir.listFiles();
+			
+			String[] temp = new String[sdDirList.length];
+			
+			for(int i = sdDirList.length - 1; i >=0; i--)
+			{
+				temp[i] = sdDirList[i].getName().toString();
+			}
+			
+			return temp;
+		}
+		
+		return null;
+	}
+	
 	public static <T> boolean writeSerialFile(T writeable, String fileName)
 	{
 		if (hasStorage(true))

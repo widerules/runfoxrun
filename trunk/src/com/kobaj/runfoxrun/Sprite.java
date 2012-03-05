@@ -14,6 +14,8 @@ import android.graphics.Rect;
 
 public class Sprite
 {
+	private boolean meSelected = false;
+	
 	private Bitmap img;
 	
 	private int width = -1;
@@ -43,8 +45,20 @@ public class Sprite
 	
 	private Paint myPaint = new Paint();
 	
+	public String name;
+	
 	// wish I had extended my sprite classes correctly...too late now
 	private SoundManager sm;
+	
+	public void setSelected(boolean value)
+	{
+		meSelected = value;
+	}
+	
+	public boolean getSelected()
+	{
+		return meSelected;
+	}
 	
 	public void setMMandSM(SoundManager SM)
 	{
@@ -142,19 +156,19 @@ public class Sprite
 	
 	public void reInitialize(Bitmap img, int xPos, int yPos)
 	{
-		if(!initialized)
+		if (!initialized)
 		{
 			onInitialize(img, xPos, yPos, -1, -1);
 			return;
 		}
 		
 		this.img = img;
-        this.width = img.getWidth();
-        this.height = img.getHeight();
-        
-        this.xPos = xPos;
-        this.yPos = yPos;
-        
+		this.width = img.getWidth();
+		this.height = img.getHeight();
+		
+		this.xPos = xPos;
+		this.yPos = yPos;
+		
 		int deltaY = dest.top - (int) yPos;
 		int deltaX = dest.left - (int) xPos;
 		
@@ -166,58 +180,59 @@ public class Sprite
 		for (int i = 0; i < physRectList.size(); i++)
 		{
 			physRectList.get(i).shiftRect((int) deltaX, (int) deltaY);
-			physRectList.get(i).setRect(physRectList.get(i).getCollRect().top, physRectList.get(i).getCollRect().left + width, physRectList.get(i).getCollRect().top + height, physRectList.get(i).getCollRect().left);
+			physRectList.get(i).setRect(physRectList.get(i).getCollRect().top, physRectList.get(i).getCollRect().left + width, physRectList.get(i).getCollRect().top + height,
+					physRectList.get(i).getCollRect().left);
 		}
-        
-        updateoRect();
+		
+		updateoRect();
 	}
 	
-	 public void onInitialize(Bitmap img, int xPos, int yPos, int width, int height)
-     {
-             this.xPos = xPos;
-             this.yPos = yPos;
-             this.width = width;
-             this.height = height;
-             
-             currentFrame = 1;
-             frameTimer = 0;
-             
-             // load das image
-             this.img = img;
-             
-             if (width == -1)
-             {
-                     this.width = img.getWidth();
-                     this.height = img.getHeight();
-             }
-             
-             if (animationList == null || animationList.isEmpty())
-             {
-                     animationList = new ArrayList<Animation>();
-                     animationList.add(new Animation(0, "stopped"));
-             }
-             
-             setAnimation(CharStates.Sitting);
-             
-             dest = new Rect(xPos, yPos, xPos + this.width, yPos + this.height);
-             sRectangle = new Rect(((currentFrame - 1) * this.width) + currentSetAnimation.getxStartPos(), currentSetAnimation.getyStartPos(), ((currentFrame - 1) * this.width)
-                             + currentSetAnimation.getxStartPos() + this.width, currentSetAnimation.getyStartPos() + this.height);
-             
-             if (physRectList == null || physRectList.isEmpty())
-             {
-                     physRectList = new ArrayList<physRect>();
-                     physRectList.add(new physRect(new Rect(dest.left, dest.top, dest.right, dest.bottom), false));
-             }
-             else
-                     for (Iterator<physRect> it = physRectList.iterator(); it.hasNext();)
-                     {
-                             physRect rect = it.next();
-                             
-                             rect.shiftRect(-xPos, -yPos);
-                     }
-             
-             initialized = true;
-     }
+	public void onInitialize(Bitmap img, int xPos, int yPos, int width, int height)
+	{
+		this.xPos = xPos;
+		this.yPos = yPos;
+		this.width = width;
+		this.height = height;
+		
+		currentFrame = 1;
+		frameTimer = 0;
+		
+		// load das image
+		this.img = img;
+		
+		if (width == -1)
+		{
+			this.width = img.getWidth();
+			this.height = img.getHeight();
+		}
+		
+		if (animationList == null || animationList.isEmpty())
+		{
+			animationList = new ArrayList<Animation>();
+			animationList.add(new Animation(0, "stopped"));
+		}
+		
+		setAnimation(CharStates.Sitting);
+		
+		dest = new Rect(xPos, yPos, xPos + this.width, yPos + this.height);
+		sRectangle = new Rect(((currentFrame - 1) * this.width) + currentSetAnimation.getxStartPos(), currentSetAnimation.getyStartPos(), ((currentFrame - 1) * this.width)
+				+ currentSetAnimation.getxStartPos() + this.width, currentSetAnimation.getyStartPos() + this.height);
+		
+		if (physRectList == null || physRectList.isEmpty())
+		{
+			physRectList = new ArrayList<physRect>();
+			physRectList.add(new physRect(new Rect(dest.left, dest.top, dest.right, dest.bottom), false));
+		}
+		else
+			for (Iterator<physRect> it = physRectList.iterator(); it.hasNext();)
+			{
+				physRect rect = it.next();
+				
+				rect.shiftRect(-xPos, -yPos);
+			}
+		
+		initialized = true;
+	}
 	
 	public void onInitialize(Bitmap img, int xPos, int yPos)
 	{
@@ -314,7 +329,7 @@ public class Sprite
 	public void onDraw(Canvas canvas)
 	{
 		if (initialized)
-			if(img != null)
+			if (img != null)
 				canvas.drawBitmap(img, sRectangle, dest, myPaint);
 	}
 	
@@ -363,7 +378,7 @@ public class Sprite
 	// teeeeechnically not needed.
 	public void onCleanup()
 	{
-		if(img != null)
+		if (img != null)
 			img.recycle();
 		
 		img = null;

@@ -44,7 +44,7 @@ public class TitleScreen extends ListScreens
 		continousGame.setRotation(27, imgBackdrop.getWidth() / 2, imgBackdrop.getHeight() / 2);
 		
 		highScores = new custString(resources, "Map Maker", (int) (100 * scale), (int) (207 * scale));
-		highScores.setColor(Color.GRAY, Color.BLACK);
+		highScores.setColor(Color.WHITE, Color.BLACK);
 		highScores.setSize((int) (27 * scale));
 		highScores.setRotation(27, imgBackdrop.getWidth() / 2, imgBackdrop.getHeight() / 2);
 		
@@ -95,7 +95,7 @@ public class TitleScreen extends ListScreens
 		else if (continousGame.fingertap(x, y))
 			return GameStates.Continous;
 		else if (highScores.fingertap(x, y))
-			return GameStates.HighScore;
+			return GameStates.MapMaker;
 		else if (quit.fingertap(x, y))
 			return GameStates.Quit;
 		
