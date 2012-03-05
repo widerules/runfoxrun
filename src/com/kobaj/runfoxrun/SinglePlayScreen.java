@@ -51,7 +51,7 @@ public class SinglePlayScreen implements Runnable
 	
 	private Creditables myCredits;
 	
-	int pad;
+	private int pad;
 	
 	public boolean resetBad = false;
 	

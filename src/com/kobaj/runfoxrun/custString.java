@@ -29,6 +29,11 @@ public class custString
 	
 	private Matrix rotationMatrix;
 	
+	public String getString()
+	{
+		return string.toString();
+	}
+	
 	public float measureit()
 	{
 		return strokePaint.measureText(string.toString());
@@ -98,12 +103,6 @@ public class custString
 		generateMembers();
 	}
 	
-	/*public void concat(String string)
-	{
-		this.string.append(string);
-		generateMembers();
-	}*/
-	
 	public void setSize(int size)
 	{
 		this.size = size;
@@ -122,18 +121,6 @@ public class custString
 		
 		generateMembers();
 	}
-	
-	/*public void setString(String string)
-	{
-		this.string.delete(0, this.string.length());
-		this.string.append(string);
-		generateMembers();
-	}
-	
-	public String getString()
-	{
-		return string.toString();
-	}*/
 	
 	public boolean fingertap(int x, int y)
 	{

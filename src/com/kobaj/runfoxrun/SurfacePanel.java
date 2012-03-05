@@ -31,6 +31,7 @@ public class SurfacePanel extends DrawablePanel
 	private ContinousScreen cous;
 	private PauseScreen ps;
 	private SinglePlayScreen sp;
+	private MapMakerScreen MapS;
 	
 	public static float scrollRate = -17.0f / 100.0f;
 	
@@ -155,7 +156,7 @@ public class SurfacePanel extends DrawablePanel
 			onTitleScreen(delta);
 		else if (currentState == GameStates.SinglePlay)
 		{
-			mainFox.onUpdate(fps.getDelta());
+			mainFox.onUpdate(delta);
 			pm.onUpdate(delta);
 			if (!sp.onUpdate(delta))
 			{
@@ -175,6 +176,16 @@ public class SurfacePanel extends DrawablePanel
 			onPauseScreen();
 		else if (currentState == GameStates.Loading)
 			onLoadingScreen(delta);
+		else if (currentState == GameStates.MapMaker)
+		{
+			if (!MapS.onUpdate(delta))
+			{
+				currentState = GameStates.TitleScreen;
+				oldState = GameStates.MapMaker;
+				mm.ChangeSongs(R.raw.pulse, new SoundFade(0, 1, 0, 3000), new SoundFade(0, 0, 1, 3000));
+				mm.play();
+			}
+		}
 	}
 	
 	public void onDraw(Canvas canvas)
@@ -207,6 +218,10 @@ public class SurfacePanel extends DrawablePanel
 		}
 		else if (currentState == GameStates.Loading)
 			onDrawLoadingScreen(canvas);
+		else if (currentState == GameStates.MapMaker)
+			MapS.onDraw(canvas);
+		
+		//canvas.drawText(String.valueOf(fps.getFPS()), 300, 100, textPaint);
 	}
 	
 	private void onLoadingScreen(float delta)
@@ -342,12 +357,16 @@ public class SurfacePanel extends DrawablePanel
 			
 			mm.ChangeSongs(R.raw.catchinglightning, new SoundFade(0, 1, 0, 3000), new SoundFade(0, 0, 1, 3000));
 		}
-		
-		// ran out of time!
-		/*
-		 * else if (newState == GameStates.HighScore) { oldState =
-		 * GameStates.TitleScreen; currentState = GameStates.HighScore; }
-		 */
+		else if (newState == GameStates.MapMaker)
+		{
+			purgeManagers();
+			MapS = new MapMakerScreen(width, height);
+			MapS.onInitialize(getResources(), im, pm, sm);
+			oldState = GameStates.TitleScreen;
+			currentState = GameStates.MapMaker;
+			
+			mm.addFade(new SoundFade(0, 1, 0, 3000));
+		}
 	}
 	
 	private void purgeManagers()
