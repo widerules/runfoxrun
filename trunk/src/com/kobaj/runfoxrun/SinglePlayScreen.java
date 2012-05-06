@@ -138,8 +138,7 @@ public class SinglePlayScreen implements Runnable
 	public boolean onUpdate(float delta)
 	{
 		if (initialized)
-		{
-			
+		{	
 			// badguy movement
 			if (resetBad)
 				if (badGuy.getxPos() + badGuy.getWidth() > 0 - 20)
@@ -179,22 +178,24 @@ public class SinglePlayScreen implements Runnable
 				
 				HighScores.setLevel(levelNumber);
 				
-				pm.setBackDiv(((((float)levelList.get(levelNumber - 1).getLevelLength()) / (1600.0f))));
-				//back.setxPos(-1600 * (levelNumber - 1));
-				
-				if (levelNumber == 2)
+				if (levelNumber != 4 + 1)
+					pm.setBackDiv(((((float)levelList.get(levelNumber - 1).getLevelLength() + 16000) / (1600.0f))));
+				else
+					pm.setBackDiv(((((float)levelList.get(levelNumber - 1).getLevelLength()) / (1600.0f))));
+
+				if (levelNumber == 2 + 1)
 				{
 					back.onCleanup();
 					back.onInitialize(LoadedResources.getBackgroundTHREE(resources), (int)((back2.getxPos() + back2.getWidth())), (int) (height - (480.0f / 1.5f * scale)), (int)(1600.0f / 1.5f * scale), (int)(480.0f / 1.5f * scale));
 					mm.ChangeSongs(R.raw.quicken, new SoundFade(0, 1, 0, 3000), new SoundFade(0, 0, 1, 3000));
 				}
-				else if (levelNumber == 3)
+				else if (levelNumber == 3 + 1)
 				{
 					back2.onCleanup();
 					back2.onInitialize(LoadedResources.getBackgroundFOUR(resources), (int)((back.getxPos() + back.getWidth())), (int) (height - (480.0f / 1.5f * scale)), (int)(1600.0f / 1.5f * scale), (int)(480.0f / 1.5f * scale));
 					mm.ChangeSongs(R.raw.aegissprint, new SoundFade(0, 1, 0, 3000), new SoundFade(0, 0, 1, 3000));
 				}
-				else if (levelNumber == 4)
+				else if (levelNumber == 4 + 1)
 				{
 					back.onCleanup();
 					back.onInitialize(LoadedResources.getBackgroundFIVE(resources), (int)((back2.getxPos() + back2.getWidth())), (int) (height - (480.0f / 1.5f * scale)), (int)(1600.0f / 1.5f * scale), (int)(480.0f / 1.5f * scale));
@@ -208,9 +209,9 @@ public class SinglePlayScreen implements Runnable
 				
 				grabHitList(levelNumber);
 			}
-			else if (levelNumber == 3 && pm.getScrollProgress() >= 16000.0f / 1.5f * scale - width - 200.0f / 1.5f * scale && pm.getScrollProgress() < 16000.0f / 1.5f * scale - width - 200.0f / 1.5f * scale + pm.getScrollDelta() * delta)
+			else if (levelNumber == 3 + 1 && pm.getScrollProgress() >= 16000.0f / 1.5f * scale - width - 200.0f / 1.5f * scale && pm.getScrollProgress() < 16000.0f / 1.5f * scale - width - 200.0f / 1.5f * scale + pm.getScrollDelta() * delta)
 				sceneDead = true;
-			else if (levelNumber == 3 && pm.getScrollProgress() >= 16000.0f / 1.5f * scale - width + 100.0f / 1.5f * scale && pm.getScrollProgress() < 16000.0f / 1.5f * scale - width + 100.0f / 1.5f * scale + pm.getScrollDelta() * delta)
+			else if (levelNumber == 3 + 1 && pm.getScrollProgress() >= 16000.0f / 1.5f * scale - width + 100.0f / 1.5f * scale && pm.getScrollProgress() < 16000.0f / 1.5f * scale - width + 100.0f / 1.5f * scale + pm.getScrollDelta() * delta)
 			{
 				if (player.getCurAnimation() == (CharStates.Running.ordinal()))
 				{
@@ -219,7 +220,7 @@ public class SinglePlayScreen implements Runnable
 					player.setAnimation(CharStates.Collapse);
 				}
 			}
-			else if (levelNumber == 4 && sceneDead && pm.getScrollProgress() >= 200.0f / 1.5f * scale)
+			else if (levelNumber == 4 + 1 && sceneDead && pm.getScrollProgress() >= 200.0f / 1.5f * scale)
 			{
 				sceneDead = false;
 				pm.setPlayer(player);
@@ -227,11 +228,11 @@ public class SinglePlayScreen implements Runnable
 				this.setPlayerPos();
 				badGuy.setyPos(-height - badGuy.getHeight() - 10);
 			}
-			else if (levelNumber == 4 && pm.getScrollProgress() >= 16000.0f / 1.5f * scale - width - 250.0f / 1.5f * scale && pm.getScrollProgress() < 16000.0f / 1.5f * scale - width - 200.0f / 1.5f * scale + pm.getScrollDelta() * delta && credits == 0)
+			else if (levelNumber == 4 + 1 && pm.getScrollProgress() >= 16000.0f / 1.5f * scale - width - 250.0f / 1.5f * scale && pm.getScrollProgress() < 16000.0f / 1.5f * scale - width - 200.0f / 1.5f * scale + pm.getScrollDelta() * delta && credits == 0)
 			{
 				credits += delta;
 			}
-			else if (levelNumber == 4 && pm.getScrollProgress() >= 16000.0f / 1.5f * scale - width - 25.0f / 1.5f * scale)
+			else if (levelNumber == 4 + 1 && pm.getScrollProgress() >= 16000.0f / 1.5f * scale - width - 25.0f / 1.5f * scale)
 			{
 				if (player.getCurAnimation() == (CharStates.Running.ordinal()))
 				{
@@ -307,7 +308,7 @@ public class SinglePlayScreen implements Runnable
 			{
 				pm.levelReset();
 				resetBad = true;
-				if (levelNumber != 4)
+				if (levelNumber != 4 + 1)
 					sm.playSound(3, .25f);
 				else
 					sm.playSound(3, .10f);
@@ -439,17 +440,17 @@ public class SinglePlayScreen implements Runnable
 			back.onInitialize(LoadedResources.getBackgroundONE(resources), 0, height - LoadedResources.getBackgroundONE(resources).getHeight(), LoadedResources.getBackgroundONE(resources).getWidth(), LoadedResources.getBackgroundONE(resources).getHeight());
 			back2.onInitialize(LoadedResources.getBackgroundTWO(resources), back.getWidth(), height - LoadedResources.getBackgroundTWO(resources).getHeight(), LoadedResources.getBackgroundTWO(resources).getWidth(), LoadedResources.getBackgroundTWO(resources).getHeight());
 		}
-		if(levelNumber == 2)
+		if(levelNumber == 2 + 1)
 		{
 			back2.onInitialize(LoadedResources.getBackgroundTWO(resources), 0, height - LoadedResources.getBackgroundTWO(resources).getHeight(), LoadedResources.getBackgroundTWO(resources).getWidth(), LoadedResources.getBackgroundTWO(resources).getHeight());
 			back.onInitialize(LoadedResources.getBackgroundTHREE(resources), back2.getWidth(), height - LoadedResources.getBackgroundTHREE(resources).getHeight(), LoadedResources.getBackgroundTHREE(resources).getWidth(), LoadedResources.getBackgroundTHREE(resources).getHeight());
 		}
-		if(levelNumber == 3)
+		if(levelNumber == 3 + 1)
 		{
 			back.onInitialize(LoadedResources.getBackgroundTHREE(resources), 0, height - LoadedResources.getBackgroundTHREE(resources).getHeight(), LoadedResources.getBackgroundTHREE(resources).getWidth(), LoadedResources.getBackgroundTHREE(resources).getHeight());
 			back2.onInitialize(LoadedResources.getBackgroundFOUR(resources), back.getWidth(), height - LoadedResources.getBackgroundFOUR(resources).getHeight(), LoadedResources.getBackgroundFOUR(resources).getWidth(), LoadedResources.getBackgroundFOUR(resources).getHeight());
 		}
-		if(levelNumber == 4)
+		if(levelNumber == 4 + 1)
 		{
 			back2.onInitialize(LoadedResources.getBackgroundFOUR(resources), 0, height - LoadedResources.getBackgroundFOUR(resources).getHeight(), LoadedResources.getBackgroundFOUR(resources).getWidth(), LoadedResources.getBackgroundFOUR(resources).getHeight());
 			back.onInitialize(LoadedResources.getBackgroundFIVE(resources), back2.getWidth(), height - LoadedResources.getBackgroundFIVE(resources).getHeight(), LoadedResources.getBackgroundFIVE(resources).getWidth(), LoadedResources.getBackgroundFIVE(resources).getHeight());
@@ -476,6 +477,7 @@ public class SinglePlayScreen implements Runnable
 		
 		// load in the level
 		levelList.add(XMLHandler.readSerialFile(resources, R.raw.level, Level.class));
+		levelList.add(XMLHandler.readSerialFile(resources, R.raw.level_new_2_map_, Level.class));
 		levelList.add(XMLHandler.readSerialFile(resources, R.raw.level2, Level.class));
 		levelList.add(XMLHandler.readSerialFile(resources, R.raw.level3, Level.class));
 		levelList.add(XMLHandler.readSerialFile(resources, R.raw.level4, Level.class));
@@ -505,16 +507,16 @@ public class SinglePlayScreen implements Runnable
 		//should not be doing this
 		if(levelNumber == 1)
 			mm.ChangeSongs(R.raw.pulse);
-		if(levelNumber == 2)
+		if(levelNumber == 2 + 1)
 			mm.ChangeSongs(R.raw.quicken);
-		if(levelNumber == 3)
+		if(levelNumber == 3 + 1)
 			mm.ChangeSongs(R.raw.aegissprint);
-		if(levelNumber == 4)
+		if(levelNumber == 4 + 1)
 			mm.ChangeSongs(R.raw.blackdiamond);
 		mm.addFade(new SoundFade(0, 0, 1, 3000));
 		mm.play(0);
 		
-		pm.setBackDiv(((float)levelList.get(levelNumber - 1).getLevelLength()) / (1600.0f));
+		pm.setBackDiv(((((float)levelList.get(levelNumber - 1).getLevelLength() + 16000) / (1600.0f))));
 		
 		//and a very specialized
 		if(levelNumber == 4)

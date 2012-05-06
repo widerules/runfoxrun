@@ -19,6 +19,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.PowerManager;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -34,6 +35,8 @@ public class RunfoxrunActivity extends Activity
 	//saving state
 	public static SharedPreferences mPrefs;
 	public static SharedPreferences.Editor ed;
+	
+	public static Handler itself;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState)
@@ -53,6 +56,8 @@ public class RunfoxrunActivity extends Activity
 		
 		// last
 		setContentView(game);
+		
+		RunfoxrunActivity.itself = new Handler();
 	}
 	
 	@Override

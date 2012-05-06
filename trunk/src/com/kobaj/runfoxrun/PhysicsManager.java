@@ -133,6 +133,7 @@ public class PhysicsManager
 		touching = false;
 		
 		if (set)
+		{
 			if (!reverse)
 			{
 				// make our user go doooown.
@@ -143,6 +144,7 @@ public class PhysicsManager
 			{
 				physObj.setyPos(SurfacePanel.startHeight);
 			}
+		}
 		
 		float amount = scrollValue * delta; // arbitrary
 		

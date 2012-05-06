@@ -33,17 +33,20 @@ public abstract class DrawablePanel extends SurfaceView implements SurfaceHolder
 	
 	public void surfaceDestroyed(SurfaceHolder holder)
 	{
-		thread.stop();
+		if(thread != null)
+			thread.stop();
 	}
 	
 	public void stopThread()
 	{
-		thread.stop();
+		if(thread != null)
+			thread.stop();
 	}
 	
 	public void startThread()
 	{
-		thread.start();
+		if(thread != null)
+			thread.start();
 	}
 	
 	public void restartThread()

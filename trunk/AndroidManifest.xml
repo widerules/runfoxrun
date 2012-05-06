@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 
     package="com.kobaj.runfoxrun"
-    android:versionCode="9"
-    android:versionName="1.6" >
+    android:versionCode="10"
+    android:versionName="1.65" >
 
     <uses-sdk android:minSdkVersion="8" />
 
@@ -20,7 +20,7 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
+        </activity>        
     </application>
 
     <uses-permission android:name="android.permission.WAKE_LOCK" />
