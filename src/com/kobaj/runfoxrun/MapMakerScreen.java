@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.ListIterator;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -11,6 +13,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.Rect;
+import android.widget.EditText;
 
 public class MapMakerScreen implements Runnable
 {
@@ -23,8 +26,8 @@ public class MapMakerScreen implements Runnable
 	private custString objectSelectedDisplay;
 	private String objectSelected = "BigBuilding";
 	private int objectSelectedInt = 0;
-	private final String[] objectOptions = { "BigBuilding", "BigVine", "Black", "Blue", "DeadTree", "Grass", "Green", "LittleVine", "Red", "SandFlat", "SandHole", "SandHoleLeft", "SandHoleRight",
-			"SmallBuilding", "SmallTree", "Star", "Tree", "Weed" };
+	private final String[] objectOptions = { "BigBuilding", "SmallBuilding", "BuildingTopper", "DeadTree", "SandFlat", "SandHole", "SandHoleLeft", "SandHoleRight",
+			   "Weed",  "SandTopper", "LittleVine", "BigVine", "SmallTree", "Tree", "TreeTopper", "Star", "Black", "Blue", "Green", "Red", "Grass"};
 	
 	private Resources resources;
 	
@@ -48,6 +51,7 @@ public class MapMakerScreen implements Runnable
 	private Bitmap progressBarIcon;
 	
 	private ArrayList<Sprite> hitList;
+	private ArrayList<Sprite> collectionList;
 	
 	private Paint linePaint;
 	private Paint bitmapPaint;
@@ -80,6 +84,8 @@ public class MapMakerScreen implements Runnable
 	private Sprite TREe;
 	private Sprite WEEd;
 	private Sprite DEAdTree;
+	private Sprite TREEtopper;
+	private Sprite SANDtopper;
 	
 	public MapMakerScreen(int width, int height)
 	{
@@ -91,9 +97,13 @@ public class MapMakerScreen implements Runnable
 		currentMode = MapMakerModes.camera;
 	};
 	
-	public void onInitialize(Resources resources, InputManager im, PhysicsManager pm, SoundManager sm)
+	Sprite mainFox;
+	
+	public void onInitialize(Resources resources, InputManager im, PhysicsManager pm, SoundManager sm, Sprite mainFox)
 	{
 		this.scale = SurfacePanel.scale;
+		
+		this.mainFox = mainFox;
 		
 		this.im = im;
 		this.pm = pm;
@@ -122,28 +132,13 @@ public class MapMakerScreen implements Runnable
 			if (temparray.length != 0)
 				for (int i = temparray.length - 1; i >= 0; i--)
 				{
-					String[] splitFile = temparray[i].split("_");
-					if (splitFile.length == 2)
-						if (splitFile[0].equalsIgnoreCase("FoxDash"))
+					{
+						String[] newsplitFile = temparray[i].split("_map_");
+						if (newsplitFile.length == 2)
 						{
-							int myNum = 0;
-							String[] splitAgain = splitFile[1].split("\\.");
-							if (splitAgain.length != 0)
-							{
-								allFiles.add(new custString(resources, splitFile[0] + "_" + splitAgain[0], 0, 0));
-								
-								try
-								{
-									myNum = Integer.parseInt(splitAgain[0]);
-								}
-								catch (NumberFormatException nfe)
-								{
-									
-								}
-							}
-							
-							total = myNum;
+							allFiles.add(new custString(resources, newsplitFile[0], 0, 0));
 						}
+					}
 				}
 		total += 1;
 		
@@ -212,6 +207,7 @@ public class MapMakerScreen implements Runnable
 		bitmapPaint = new Paint();
 		
 		hitList = new ArrayList<Sprite>();
+		collectionList = new ArrayList<Sprite>();
 		
 		preLoadSprites();
 		
@@ -230,29 +226,6 @@ public class MapMakerScreen implements Runnable
 		manageObjectChoice();
 	};
 	
-	private void setAllFilePositions()
-	{
-		float amount = 40;
-		
-		int x = (int) amount;
-		int y = (int) amount;
-		
-		for (Iterator<custString> it = allFiles.iterator(); it.hasNext();)
-		{
-			custString temp = it.next();
-			
-			temp.setPosition(x, y);
-			
-			y += (int) (amount * scale);
-			
-			if (y > 300 * scale)
-			{
-				x += (int) (130.0f * scale);
-				y = (int) (amount * scale);
-			}
-		}
-	}
-	
 	private String loadingfileName;
 	
 	private void loadmap(String filen)
@@ -260,6 +233,7 @@ public class MapMakerScreen implements Runnable
 		this.loadingfileName = filen;
 		pm.purge();
 		hitList.clear();
+		collectionList.clear();
 		
 		System.gc();
 		
@@ -278,29 +252,132 @@ public class MapMakerScreen implements Runnable
 			for (Iterator<Sprite> it = cutemp.getlevelSpriteList().iterator(); it.hasNext();)
 			{
 				temp = it.next();
+				if(temp.getCollectable() == CollectableStates.collectable)
+					collectionList.add(temp);
+				
 				hitList.add(temp);
 				pm.addPhys(temp);
 			}
 			
-			setFileName(loadingfileName);
+			setFileName(loadingfileName.split("_map")[0]);
 		}
 		currentMode = MapMakerModes.camera;
+	}
+	
+	private void setAllFilePositions()
+	{
+		float amount = 40;
+		
+		int x = (int) (amount * scale);
+		int y = (int) (amount * scale);
+		
+		for (Iterator<custString> it = allFiles.iterator(); it.hasNext();)
+		{
+			custString temp = it.next();
+			
+			temp.setPosition(x, y);
+			
+			y += (int) (amount * scale);
+			
+			if (y > 300 * scale)
+			{
+				x += (int) (130.0f * scale);
+				y = (int) (amount * scale);
+			}
+		}
+	}
+	
+	private void alert()
+	{
+		AlertDialog.Builder alert = new AlertDialog.Builder(SurfacePanel.context);
+		
+		alert.setTitle("Save");
+		alert.setMessage("Enter a filename");
+		
+		// Set an EditText view to get user input
+		final EditText input = new EditText(SurfacePanel.context);
+		input.setText(filename.getString());
+		alert.setView(input);
+		
+		alert.setPositiveButton("Ok", new DialogInterface.OnClickListener()
+		{
+			public void onClick(DialogInterface dialog, int whichButton)
+			{
+				String value = input.getText().toString();
+				afterPopUp(value);
+			}
+		});
+		
+		alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener()
+		{
+			public void onClick(DialogInterface dialog, int whichButton)
+			{
+				// Canceled.
+			}
+		});
+		
+		alert.show();
+	}
+	
+	private void showSimplePopUp()
+	{
+		
+		RunfoxrunActivity.itself.post(new Runnable()
+		{
+			public void run()
+			{
+				alert();
+			}
+		});
+	}
+	
+	private void afterPopUp(String value)
+	{
+		if (value.equals("") || value.equals(" "))
+			value = "Dont_Use_Blank_File_Names";
+		
+		if (!filename.getString().equals(value))
+			setFileName(value);
+		
+		float prevscroll = pm.getScrollProgress();
+		pm.setScrollProgress(0, false);
+		
+		custLevel tobeSaved = new custLevel(filename.getString());
+		tobeSaved.setObjectList(hitList, this.height);
+		XMLHandler.writeSerialFile(tobeSaved, filename.getString() + "_map_");
+		invisInt = 1;
+		
+		pm.setScrollProgress(prevscroll, false);
+		
+		boolean found = false;
+		for (Iterator<custString> cuit = allFiles.iterator(); cuit.hasNext();)
+		{
+			custString cutemp = cuit.next();
+			if (cutemp.getString().equals(filename.getString()))
+			{
+				found = true;
+				break;
+			}
+		}
+		
+		if (!found)
+			allFiles.add(new custString(resources, filename.getString(), 0, 0));
+		
+		setAllFilePositions();
 	}
 	
 	private void savemap()
 	{
 		if (!hitList.isEmpty())
 		{
-			custLevel tobeSaved = new custLevel(filename.getString());
-			tobeSaved.setObjectList(hitList);
-			XMLHandler.writeSerialFile(tobeSaved, filename.getString());
+			showSimplePopUp();
 		}
 	}
 	
 	private void setFileName(String file)
 	{
-		filename = new custString(resources, file, (int) (50 * scale), (int) (310 * scale));
-		filename.setColor(Color.GRAY, Color.BLACK);
+		filename = new custString(resources, file, (int) (10 * scale), (int) (310 * scale));
+		filename.setColor(Color.GREEN, Color.BLACK);
 		filename.setSize((int) (20.0f * scale));
 	}
 	
@@ -320,6 +397,9 @@ public class MapMakerScreen implements Runnable
 		TREe = LoadedResources.getTREe();
 		WEEd = LoadedResources.getWEEd();
 		DEAdTree = LoadedResources.getDEAdTree();
+		
+		TREEtopper = LoadedResources.getTREEtopper();
+		SANDtopper = LoadedResources.getSANDtopper();
 	}
 	
 	public boolean onUpdate(float delta)
@@ -346,7 +426,7 @@ public class MapMakerScreen implements Runnable
 				if (quit.fingertap((int) im.getX(i), (int) im.getY(i)))
 					return false;
 				
-				if (currentMode != MapMakerModes.load)
+				if (currentMode != MapMakerModes.load && currentMode != MapMakerModes.play)
 				{
 					if (place.fingertap((int) im.getX(i), (int) im.getY(i)))
 					{
@@ -425,16 +505,29 @@ public class MapMakerScreen implements Runnable
 					}
 					else if (save.fingertap((int) im.getX(i), (int) im.getY(i)))
 					{
-						invisInt = 1;
 						savemap();
 						taps = true;
 					}
+					else if (filename.fingertap((int) im.getX(i), (int) im.getY(i)))
+					{
+						mainFox.setyPos(SurfacePanel.startHeight);
+						currentMode = MapMakerModes.play;
+					}
+					else if (load.fingertap((int) im.getX(i), (int) im.getY(i)))
+					{
+						currentMode = MapMakerModes.load;
+						taps = true;
+					}
 				}
-				else
+				else if (currentMode == MapMakerModes.load)
 				{
 					if (cancel.fingertap((int) im.getX(i), (int) im.getY(i)))
 					{
 						currentMode = MapMakerModes.camera;
+						outlinePaint.setColor(Color.YELLOW);
+						
+						resetModeColors();
+						camera.setColor(Color.YELLOW, Color.BLACK);
 						taps = true;
 					}
 					
@@ -445,18 +538,11 @@ public class MapMakerScreen implements Runnable
 						if (cutemp.fingertap((int) im.getX(i), (int) im.getY(i)))
 						{
 							currentMode = MapMakerModes.loading;
-							loadmap(cutemp.getString());
+							loadmap(cutemp.getString() + "_map_");
 							taps = true;
 						}
 					}
 				}
-				
-				if (load.fingertap((int) im.getX(i), (int) im.getY(i)))
-				{
-					currentMode = MapMakerModes.load;
-					taps = true;
-				}
-				
 			}
 			
 			if (!taps)
@@ -474,19 +560,12 @@ public class MapMakerScreen implements Runnable
 				{
 					if (imPressed)
 						if (selected != null)
-						// for (Iterator<physRect> phit =
-						// selected.getPhysRect().iterator(); phit.hasNext();)
 						{
-							// physRect tempPhys = phit.next();
-							
-							// if (tempPhys.getCollRect().contains((int)
-							// im.getX(i), (int) im.getY(i)))
 							{
 								selected.setxPos((selected.getxPos() + im.getDeltax(i) * scale));
 								selected.setyPos((selected.getyPos() + im.getDeltay(i) * scale));
 							}
 						}
-					
 				}
 				
 				if (currentMode == MapMakerModes.select)
@@ -520,6 +599,14 @@ public class MapMakerScreen implements Runnable
 					}
 				}
 				
+				if (currentMode == MapMakerModes.play)
+				{
+					if (im.getPressed(i))
+					{
+						pm.jump();
+					}
+				}
+				
 				if (currentMode == MapMakerModes.camera)
 				{
 					int deltax = (int) im.getDeltax(i);
@@ -530,7 +617,45 @@ public class MapMakerScreen implements Runnable
 					else if (pm.getScrollProgress() > mapLimit)
 						pm.setScrollProgress(mapLimit, false);
 				}
+			}
+		}
+		
+		if (currentMode == MapMakerModes.play)
+		{
+			mainFox.onUpdate(delta);
+			pm.onUpdate(delta);
+			
+			// handle death;
+			if (pm.getDeath())
+			{
+				currentMode = MapMakerModes.camera;
+				pm.reset();
 				
+				for (Iterator<Sprite> it = collectionList.iterator(); it.hasNext();)
+				{
+					temp = it.next();
+					if(temp.getCollectable() == CollectableStates.idle || temp.getyPos() > 2 * height)
+					{
+						temp.setCollectable(CollectableStates.collectable);
+						temp.setyPos(temp.getyPos() - 3 * height);
+					}
+				}
+			}
+			
+			// gotta loop through and find the collected elements
+			if(collectionList != null)
+			for (Iterator<Sprite> it = collectionList.iterator(); it.hasNext();)
+			{
+				temp = it.next();
+				temp.onUpdate(delta);
+				if (temp.getCollectable() == CollectableStates.collected)
+				{
+					temp.setCollectable(CollectableStates.idle);
+					//it.remove();
+					//hitList.remove(temp);
+					//pm.removePhys(temp);
+					temp.setyPos(temp.getyPos() + 3 * height);
+				}
 			}
 		}
 		
@@ -542,7 +667,7 @@ public class MapMakerScreen implements Runnable
 		// delete me
 		canvas.drawColor(Color.BLUE);
 		
-		if (currentMode != MapMakerModes.load && currentMode != MapMakerModes.loading)
+		if (currentMode != MapMakerModes.load && currentMode != MapMakerModes.loading && currentMode != MapMakerModes.play)
 		{
 			
 			// interaction layer
@@ -611,12 +736,43 @@ public class MapMakerScreen implements Runnable
 		{
 			loading.onDraw(canvas);
 		}
+		else if (currentMode == MapMakerModes.play)
+		{
+			// interaction layer
+			for (Iterator<Sprite> it = hitList.iterator(); it.hasNext();)
+			{
+				temp = it.next();
+				
+				int spritePosx = (int) temp.getxPos();
+				int spriteWidth = (int) temp.getWidth();
+				if (spritePosx < width && spritePosx + spriteWidth > 0)
+				{
+					temp.onDraw(canvas);
+				}
+			}
+			// player
+			mainFox.onDraw(canvas);
+			
+			// black box
+			if (height - LoadedResources.getBackground1(resources).getHeight() > 0)
+				canvas.drawRect(0, 0, width, height - LoadedResources.getBackground1(resources).getHeight(), bitmapPaint);
+			
+			// overlay (I should really not be doing math/logic here >.<
+			canvas.drawLine(pad, 20.0f / 1.5f * scale, width - pad, 20.0f / 1.5f * scale, linePaint);
+			canvas.drawLine(pad, 15.0f / 1.5f * scale, pad, 27.0f / 1.5f * scale, linePaint);
+			canvas.drawLine(width - pad, 15.0f / 1.5f * scale, width - pad, 27.0f / 1.5f * scale, linePaint);
+			canvas.drawBitmap(progressBarIcon, linInterp(0, mapLimit / 1.5f * scale, pm.getScrollProgress(), pad, width - pad - progressBarIcon.getWidth()), 0, bitmapPaint);
+			
+		}
 		
 		// buttons
 		quit.onDraw(canvas);
 		
 		// outline color
 		// canvas.drawRect(outlineRect, outlinePaint);
+		
+		/*Paint TextPaint = new Paint();
+		canvas.drawText(String.valueOf(pm.getScrollProgress()), 100, 100, TextPaint);*/
 	};
 	
 	// really should make my own Math class...
@@ -858,6 +1014,47 @@ public class MapMakerScreen implements Runnable
 			biggerTemp = temp;
 		}
 		
+		else if (objectSelected.equalsIgnoreCase("treetopper"))
+		{
+			Sprite temp = new Sprite();
+			temp.onInitialize(LoadedResources.getTreeTopper(), (int) im.getX(i), (int) im.getY(i));
+			temp.getPhysRect().clear();
+			for (Iterator<physRect> iter = TREEtopper.getPhysRect().iterator(); iter.hasNext();)
+			{
+				physRect physRectTemp = iter.next();
+				Rect collRect = physRectTemp.getCollRect();
+				temp.getPhysRect().add(
+						new physRect(
+								new Rect(collRect.left + (int) temp.getxPos(), collRect.top + (int) temp.getyPos(), collRect.right + (int) temp.getxPos(), collRect.bottom + (int) temp.getyPos()),
+								physRectTemp.getHurts()));
+			}
+			biggerTemp = temp;
+		}
+		
+		else if (objectSelected.equalsIgnoreCase("sandtopper"))
+		{
+			Sprite temp = new Sprite();
+			temp.onInitialize(LoadedResources.getsandtopper(), (int) im.getX(i), (int) im.getY(i));
+			temp.getPhysRect().clear();
+			for (Iterator<physRect> iter = SANDtopper.getPhysRect().iterator(); iter.hasNext();)
+			{
+				physRect physRectTemp = iter.next();
+				Rect collRect = physRectTemp.getCollRect();
+				temp.getPhysRect().add(
+						new physRect(
+								new Rect(collRect.left + (int) temp.getxPos(), collRect.top + (int) temp.getyPos(), collRect.right + (int) temp.getxPos(), collRect.bottom + (int) temp.getyPos()),
+								physRectTemp.getHurts()));
+			}
+			biggerTemp = temp;
+		}
+		
+		else if (objectSelected.equalsIgnoreCase("buildingtopper"))
+		{
+			Sprite temp = new Sprite();
+			temp.onInitialize(LoadedResources.getbuildingtopper(), (int) im.getX(i), (int) im.getY(i));
+			biggerTemp = temp;
+		}
+		
 		else
 		// if(objectSelected.equalsIgnoreCase("black"))
 		{
@@ -869,6 +1066,12 @@ public class MapMakerScreen implements Runnable
 		biggerTemp.setSelected(true);
 		selected = biggerTemp;
 		biggerTemp.name = objectSelected;
+		if(biggerTemp.getCollectable() == CollectableStates.collectable)
+		{
+			collectionList.add(biggerTemp);
+		}
+		
+		
 		hitList.add(biggerTemp);
 		pm.addPhys(biggerTemp);
 	}

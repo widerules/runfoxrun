@@ -47,17 +47,17 @@ public class SurfacePanel extends DrawablePanel
 	
 	private HighScores highScores;
 	
-	@SuppressWarnings("unused")
-	private Context context;
+	public static Context context;
 
 	// construct our objects
+	@SuppressWarnings("deprecation")
 	public SurfacePanel(Context context)
 	{
 		super(context);
 		
 		LoadedResources.preLoad();
 		
-		this.context = context;
+		SurfacePanel.context = context;
 		SurfacePanel.scale = getResources().getDisplayMetrics().density;
 		
 		//fix dat scale
@@ -178,7 +178,9 @@ public class SurfacePanel extends DrawablePanel
 			onLoadingScreen(delta);
 		else if (currentState == GameStates.MapMaker)
 		{
-			if (!MapS.onUpdate(delta))
+			if(MapS == null)
+				currentState = GameStates.TitleScreen;
+			else if (!MapS.onUpdate(delta))
 			{
 				currentState = GameStates.TitleScreen;
 				oldState = GameStates.MapMaker;
@@ -361,7 +363,7 @@ public class SurfacePanel extends DrawablePanel
 		{
 			purgeManagers();
 			MapS = new MapMakerScreen(width, height);
-			MapS.onInitialize(getResources(), im, pm, sm);
+			MapS.onInitialize(getResources(), im, pm, sm, mainFox);
 			oldState = GameStates.TitleScreen;
 			currentState = GameStates.MapMaker;
 			
@@ -377,7 +379,7 @@ public class SurfacePanel extends DrawablePanel
 	
 	public void onUserPause()
 	{
-		if(this.currentState != GameStates.TitleScreen && this.currentState != GameStates.Loading && this.currentState != GameStates.Pause)
+		if(this.currentState != GameStates.TitleScreen && this.currentState != GameStates.Loading && this.currentState != GameStates.Pause && this.currentState != GameStates.MapMaker)
 		{
 			this.oldState = this.currentState;
 			this.currentState = GameStates.Pause;
@@ -450,6 +452,10 @@ public class SurfacePanel extends DrawablePanel
 			mm.ChangeSongs(R.raw.catchinglightning, null, new SoundFade(0, 0, 1, 3000));
 			mm.play(0);
 		}
+		else if( lastscreen == GameStates.MapMaker.ordinal())
+		{
+			currentState = GameStates.MapMaker;
+		}
 		else 
 		{
 			currentState = GameStates.TitleScreen;
@@ -459,7 +465,7 @@ public class SurfacePanel extends DrawablePanel
 		
 		try
 		{
-		this.restartThread();
+			this.restartThread();
 		}
 		catch (Exception e)
 		{

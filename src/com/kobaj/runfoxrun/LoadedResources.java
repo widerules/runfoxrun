@@ -6,6 +6,10 @@ import android.graphics.BitmapFactory;
 
 public class LoadedResources
 {
+	private static Bitmap treetopper;
+	private static Bitmap sandtopper;
+	private static Bitmap buildingtopper;
+	
 	private static Bitmap green;
 	private static Bitmap blue;
 	private static Bitmap red;
@@ -105,6 +109,13 @@ public class LoadedResources
 		WEEd = XMLHandler.readSerialFile(resources, R.raw.weed, Sprite.class);
 		DEAdTree = XMLHandler.readSerialFile(resources, R.raw.deadtree, Sprite.class);
 		
+		treetopper = BitmapFactory.decodeResource(resources, R.drawable.treetopper , bfOpts);
+		TREEtopper = XMLHandler.readSerialFile(resources, R.raw.treetopper, Sprite.class);
+		sandtopper = BitmapFactory.decodeResource(resources, R.drawable.sandtopper , bfOpts);
+		SANDtopper = XMLHandler.readSerialFile(resources, R.raw.sandtopper, Sprite.class);
+		buildingtopper = BitmapFactory.decodeResource(resources, R.drawable.buildingtopper , bfOpts);
+		
+		
 		System.gc();
 		
 		loaded = true;
@@ -117,6 +128,31 @@ public class LoadedResources
 	private static Sprite TREe;
 	private static Sprite WEEd;
 	private static Sprite DEAdTree;
+	private static Sprite TREEtopper;
+	private static Sprite SANDtopper;
+	
+	public static Bitmap getbuildingtopper()
+	{
+		return buildingtopper;
+	}
+	
+	public static Bitmap getsandtopper()
+	{
+		return sandtopper;
+	}
+	public static Sprite getSANDtopper()
+	{
+		return SANDtopper;
+	}
+	
+	public static Sprite getTREEtopper()
+	{
+		return TREEtopper;
+	}
+	public static Bitmap getTreeTopper()
+	{
+		return treetopper;
+	}
 	
 	public static Bitmap getTitle(Resources resources)
 	{

@@ -104,6 +104,8 @@ public class Level
 		Sprite TREe = LoadedResources.getTREe();
 		Sprite WEEd = LoadedResources.getWEEd();
 		Sprite DEAdTree = LoadedResources.getDEAdTree();
+		Sprite TREEtopper = LoadedResources.getTREEtopper();
+		Sprite SANDtopper = LoadedResources.getSANDtopper();
 		
 		for (Iterator<LevelObject> it = levelObjectList.iterator(); it.hasNext();)
 		{
@@ -349,6 +351,55 @@ public class Level
 				temp.onInitialize(LoadedResources.getFoxTwo(), tempLevelObject.getxLoc(), (int) (tempLevelObject.getyLoc() - 54.0f / 1.5f * SurfacePanel.scale), (int)(82.0f / 1.5f * SurfacePanel.scale), (int)(54.0f / 1.5f * SurfacePanel.scale));
 				temp.setAnimation(CharStates.Sitting);
 				temp.setCollectable(CollectableStates.collectable);
+				levelSpriteList.add(temp);
+			}
+			
+			else if (tempLevelObject.getName().equalsIgnoreCase("treetopper"))
+			{
+				Sprite temp = new Sprite();
+				temp.onInitialize(LoadedResources.getTreeTopper(), tempLevelObject.getxLoc(), tempLevelObject.getyLoc());
+				temp.getPhysRect().clear();
+				for (Iterator<physRect> iter = TREEtopper.getPhysRect().iterator(); iter.hasNext();)
+				{
+					physRect physRectTemp = iter.next();
+					Rect collRect = physRectTemp.getCollRect();
+					temp.getPhysRect().add(
+							new physRect(
+									new Rect(collRect.left + (int) temp.getxPos(), collRect.top + (int) temp.getyPos(), collRect.right + (int) temp.getxPos(), collRect.bottom + (int) temp.getyPos()),
+									physRectTemp.getHurts()));
+				}
+				levelSpriteList.add(temp);
+			}
+			
+			else if (tempLevelObject.getName().equalsIgnoreCase("sandtopper"))
+			{
+				Sprite temp = new Sprite();
+				temp.onInitialize(LoadedResources.getsandtopper(), tempLevelObject.getxLoc(), tempLevelObject.getyLoc());
+				temp.getPhysRect().clear();
+				for (Iterator<physRect> iter = SANDtopper.getPhysRect().iterator(); iter.hasNext();)
+				{
+					physRect physRectTemp = iter.next();
+					Rect collRect = physRectTemp.getCollRect();
+					temp.getPhysRect().add(
+							new physRect(
+									new Rect(collRect.left + (int) temp.getxPos(), collRect.top + (int) temp.getyPos(), collRect.right + (int) temp.getxPos(), collRect.bottom + (int) temp.getyPos()),
+									physRectTemp.getHurts()));
+				}
+				levelSpriteList.add(temp);
+			}
+			
+			else if (tempLevelObject.getName().equalsIgnoreCase("buildingtopper"))
+			{
+				Sprite temp = new Sprite();
+				temp.onInitialize(LoadedResources.getbuildingtopper(), tempLevelObject.getxLoc(), tempLevelObject.getyLoc());
+				levelSpriteList.add(temp);
+			}
+			
+			else
+			// if(objectSelected.equalsIgnoreCase("black"))
+			{
+				Sprite temp = new Sprite();
+				temp.onInitialize(LoadedResources.getBlack(), tempLevelObject.getxLoc(), tempLevelObject.getyLoc());
 				levelSpriteList.add(temp);
 			}
 		}
