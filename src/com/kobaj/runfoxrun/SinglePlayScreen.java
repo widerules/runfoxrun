@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Paint.Style;
 
 public class SinglePlayScreen implements Runnable
 {
@@ -16,6 +17,9 @@ public class SinglePlayScreen implements Runnable
 	
 	private int width;
 	private int height;
+	
+	private int accessNumber = 0;
+	private boolean drawloading = false;
 	
 	private ArrayList<Sprite> hitList;
 	private ArrayList<Sprite> collectionList;
@@ -46,6 +50,7 @@ public class SinglePlayScreen implements Runnable
 	private Paint linePaint;
 	private Paint bitmapPaint;
 	private Paint blackPaint;
+	private Paint textPaint;
 	
 	private boolean sceneDead = false;
 	
@@ -77,6 +82,14 @@ public class SinglePlayScreen implements Runnable
 		{
 			this.levelNumber = level;
 		}
+	}
+	
+	private int getAccess(int levelnum)
+	{
+		if(levelnum % 2 == 0)
+			return 1;
+		
+		return 0;
 	}
 	
 	public void setMMandSM(SoundManager SM, MusicManager MM)
@@ -132,13 +145,39 @@ public class SinglePlayScreen implements Runnable
 		gameOverString = new custString(resources, "Game Over", 0, 0);
 		gameOverString.setPosition((int)(width / 2.0f - gameOverString.measureit() / 2.0f), (int)(height / 2.0f));
 		
+		levelNumber = 2;
+		
+		// semi arbitrary
+		textPaint.setColor(Color.WHITE);
+		textPaint.setStrokeWidth(8);
+		textPaint.setStyle(Style.FILL);
+		textPaint.setAntiAlias(true);
+		textPaint.setTextSize(16 * scale);
+		
 		start();
 	}
 	
 	public boolean onUpdate(float delta)
 	{
-		if (initialized)
+		/*
+		 * Todo
+		 * -fade to black
+		 * -tap to continue
+		 * -story/text position implementation
+		 * -map maker/vines work correct
+		 * -fix level 3
+		 * -make level 4
+		 * -put in next levels
+		 * -allow user to select level
+		 * -don't forget to give the users a new res
+		 */
+		
+		if (initialized && !drawloading)
 		{	
+			//always at the top!
+			player.onUpdate(delta);
+			pm.onUpdate(delta);
+			
 			// badguy movement
 			if (resetBad)
 				if (badGuy.getxPos() + badGuy.getWidth() > 0 - 20)
@@ -169,38 +208,44 @@ public class SinglePlayScreen implements Runnable
 			
 			// handle next level;
 			// probably could have done this a bit better.
-			if (pm.getScrollProgress() >= (levelList.get(levelNumber - 1).getLevelLength()) / 1.5f * SurfacePanel.scale)
+			if (pm.getScrollProgress() >= (levelList.get(accessNumber).getLevelLength()) / 1.5f * SurfacePanel.scale)
 			{
 				hitList.clear();
 				pm.nextLevel();
 				
 				levelNumber++;
 				
-				HighScores.setLevel(levelNumber);
+				accessNumber = getAccess(levelNumber);
 				
-				if (levelNumber != 4 + 1)
-					pm.setBackDiv(((((float)levelList.get(levelNumber - 1).getLevelLength() + 16000) / (1600.0f))));
-				else
-					pm.setBackDiv(((((float)levelList.get(levelNumber - 1).getLevelLength()) / (1600.0f))));
+				HighScores.setLevel(levelNumber);
 
-				if (levelNumber == 2 + 1)
+				if (levelNumber == 3)
 				{
-					back.onCleanup();
-					back.onInitialize(LoadedResources.getBackgroundTHREE(resources), (int)((back2.getxPos() + back2.getWidth())), (int) (height - (480.0f / 1.5f * scale)), (int)(1600.0f / 1.5f * scale), (int)(480.0f / 1.5f * scale));
-					mm.ChangeSongs(R.raw.quicken, new SoundFade(0, 1, 0, 3000), new SoundFade(0, 0, 1, 3000));
+					drawloading = true;
+					//back.onCleanup();
+					//back.onInitialize(LoadedResources.getBackgroundTHREE(resources), (int)((back2.getxPos() + back2.getWidth())), (int) (height - (480.0f / 1.5f * scale)), (int)(1600.0f / 1.5f * scale), (int)(480.0f / 1.5f * scale));
+					//mm.ChangeSongs(R.raw.quicken, new SoundFade(0, 1, 0, 3000), new SoundFade(0, 0, 1, 3000));
+					start();
+					return true;
 				}
-				else if (levelNumber == 3 + 1)
+				else if (levelNumber == 5)
 				{
-					back2.onCleanup();
-					back2.onInitialize(LoadedResources.getBackgroundFOUR(resources), (int)((back.getxPos() + back.getWidth())), (int) (height - (480.0f / 1.5f * scale)), (int)(1600.0f / 1.5f * scale), (int)(480.0f / 1.5f * scale));
-					mm.ChangeSongs(R.raw.aegissprint, new SoundFade(0, 1, 0, 3000), new SoundFade(0, 0, 1, 3000));
+					//back2.onCleanup();
+					//back2.onInitialize(LoadedResources.getBackgroundFOUR(resources), (int)((back.getxPos() + back.getWidth())), (int) (height - (480.0f / 1.5f * scale)), (int)(1600.0f / 1.5f * scale), (int)(480.0f / 1.5f * scale));
+					//mm.ChangeSongs(R.raw.aegissprint, new SoundFade(0, 1, 0, 3000), new SoundFade(0, 0, 1, 3000));
+					drawloading = true;
+					start();
+					return true;
 				}
-				else if (levelNumber == 4 + 1)
+				else if (levelNumber == 7)
 				{
-					back.onCleanup();
-					back.onInitialize(LoadedResources.getBackgroundFIVE(resources), (int)((back2.getxPos() + back2.getWidth())), (int) (height - (480.0f / 1.5f * scale)), (int)(1600.0f / 1.5f * scale), (int)(480.0f / 1.5f * scale));
-					mm.ChangeSongs(R.raw.blackdiamond, new SoundFade(0, 1, 0, 3000), new SoundFade(0, 0, 1, 3000));
+					//back.onCleanup();
+					//back.onInitialize(LoadedResources.getBackgroundFIVE(resources), (int)((back2.getxPos() + back2.getWidth())), (int) (height - (480.0f / 1.5f * scale)), (int)(1600.0f / 1.5f * scale), (int)(480.0f / 1.5f * scale));
+					//mm.ChangeSongs(R.raw.blackdiamond, new SoundFade(0, 1, 0, 3000), new SoundFade(0, 0, 1, 3000));
 					pm.setScrollRate((float) (pm.getScrollRate() - (.025f / 1.5f * scale)));
+					drawloading = true;
+					start();
+					return true;
 					
 					//pm.setBackDiv(((float)levelList.get(levelNumber - 1).getLevelLength()) / (1600.0f - (float)(width)));
 				}
@@ -209,9 +254,9 @@ public class SinglePlayScreen implements Runnable
 				
 				grabHitList(levelNumber);
 			}
-			else if (levelNumber == 3 + 1 && pm.getScrollProgress() >= 16000.0f / 1.5f * scale - width - 200.0f / 1.5f * scale && pm.getScrollProgress() < 16000.0f / 1.5f * scale - width - 200.0f / 1.5f * scale + pm.getScrollDelta() * delta)
+			else if (levelNumber == 6 && pm.getScrollProgress() >= 16000.0f / 1.5f * scale - width - 200.0f / 1.5f * scale && pm.getScrollProgress() < 16000.0f / 1.5f * scale - width - 200.0f / 1.5f * scale + pm.getScrollDelta() * delta)
 				sceneDead = true;
-			else if (levelNumber == 3 + 1 && pm.getScrollProgress() >= 16000.0f / 1.5f * scale - width + 100.0f / 1.5f * scale && pm.getScrollProgress() < 16000.0f / 1.5f * scale - width + 100.0f / 1.5f * scale + pm.getScrollDelta() * delta)
+			else if (levelNumber == 6 && pm.getScrollProgress() >= 16000.0f / 1.5f * scale - width + 100.0f / 1.5f * scale && pm.getScrollProgress() < 16000.0f / 1.5f * scale - width + 100.0f / 1.5f * scale + pm.getScrollDelta() * delta)
 			{
 				if (player.getCurAnimation() == (CharStates.Running.ordinal()))
 				{
@@ -220,7 +265,7 @@ public class SinglePlayScreen implements Runnable
 					player.setAnimation(CharStates.Collapse);
 				}
 			}
-			else if (levelNumber == 4 + 1 && sceneDead && pm.getScrollProgress() >= 200.0f / 1.5f * scale)
+			else if (levelNumber == 7 && sceneDead && pm.getScrollProgress() >= 200.0f / 1.5f * scale)
 			{
 				sceneDead = false;
 				pm.setPlayer(player);
@@ -228,11 +273,11 @@ public class SinglePlayScreen implements Runnable
 				this.setPlayerPos();
 				badGuy.setyPos(-height - badGuy.getHeight() - 10);
 			}
-			else if (levelNumber == 4 + 1 && pm.getScrollProgress() >= 16000.0f / 1.5f * scale - width - 250.0f / 1.5f * scale && pm.getScrollProgress() < 16000.0f / 1.5f * scale - width - 200.0f / 1.5f * scale + pm.getScrollDelta() * delta && credits == 0)
+			else if (levelNumber == 7 && pm.getScrollProgress() >= 16000.0f / 1.5f * scale - width - 250.0f / 1.5f * scale && pm.getScrollProgress() < 16000.0f / 1.5f * scale - width - 200.0f / 1.5f * scale + pm.getScrollDelta() * delta && credits == 0)
 			{
 				credits += delta;
 			}
-			else if (levelNumber == 4 + 1 && pm.getScrollProgress() >= 16000.0f / 1.5f * scale - width - 25.0f / 1.5f * scale)
+			else if (levelNumber == 7 && pm.getScrollProgress() >= 16000.0f / 1.5f * scale - width - 25.0f / 1.5f * scale)
 			{
 				if (player.getCurAnimation() == (CharStates.Running.ordinal()))
 				{
@@ -347,6 +392,8 @@ public class SinglePlayScreen implements Runnable
 	{
 		if (initialized)
 		{
+			if(!drawloading)
+			{
 			// background
 			if(back != null)
 				back.onDraw(canvas);
@@ -385,7 +432,7 @@ public class SinglePlayScreen implements Runnable
 			canvas.drawLine(pad, 15.0f / 1.5f * scale, pad, 27.0f / 1.5f * scale, linePaint);
 			canvas.drawLine(width - pad, 15.0f / 1.5f * scale, width - pad, 27.0f / 1.5f * scale, linePaint);
 			canvas.drawBitmap(progressBarIcon, linInterp(width / 1.5f * scale, 
-					levelList.get(levelNumber - 1).getLevelLength() / 1.5f * scale, 
+					levelList.get(accessNumber).getLevelLength() / 1.5f * scale, 
 					pm.getScrollProgress(), 
 					pad, 
 					width - pad - progressBarIcon.getWidth()), 0, bitmapPaint);
@@ -399,7 +446,39 @@ public class SinglePlayScreen implements Runnable
 			
 			if(gameOver > 0)
 				gameOverString.onDraw(canvas);
-			
+			}
+			else
+			{
+				/*
+				 * 
+				 * [loading city/intro loading]
+
+Man forgot this city long ago. The only soul keeping the decrepid buildings and lonely streets 
+
+company is a creature surrounded by thick black smoke. And once awakened, the creature will 
+
+not stop in chasing its prey.
+
+[loading forrest]
+
+The city is no place for a fox, but a dense forest filled with deadly vines is no better. No turning 
+
+back, the creature chases the fox into the thicket of branches.
+
+[loading dessert]
+
+The forest stands behind the fox, but an aired desert looms ahead. The sand its difficult to run 
+
+on, but there is no choice for the fox. The black creature seeks its prey.
+
+[loading blackness]
+
+Whats ahead now? Remnents of buildings forest and desert can be seen, but where will they 
+
+lead?
+*/
+				canvas.drawText("new loading", width / 2.0f, height / 2.0f, textPaint);
+			}
 		}
 	}
 	
@@ -433,24 +512,31 @@ public class SinglePlayScreen implements Runnable
 	@Override
 	public void run()
 	{
+		//assuming we are rebootins
+		levelList.clear();
+		pm.reset();
+		pm.purge();
+		
+		accessNumber = getAccess(levelNumber);
+		
 		back = new Sprite();
 		back2 = new Sprite();
-		if(levelNumber == 1)
+		if(levelNumber == 1 || levelNumber == 2)
 		{
 			back.onInitialize(LoadedResources.getBackgroundONE(resources), 0, height - LoadedResources.getBackgroundONE(resources).getHeight(), LoadedResources.getBackgroundONE(resources).getWidth(), LoadedResources.getBackgroundONE(resources).getHeight());
 			back2.onInitialize(LoadedResources.getBackgroundTWO(resources), back.getWidth(), height - LoadedResources.getBackgroundTWO(resources).getHeight(), LoadedResources.getBackgroundTWO(resources).getWidth(), LoadedResources.getBackgroundTWO(resources).getHeight());
 		}
-		if(levelNumber == 2 + 1)
+		if(levelNumber == 3 || levelNumber == 4)
 		{
 			back2.onInitialize(LoadedResources.getBackgroundTWO(resources), 0, height - LoadedResources.getBackgroundTWO(resources).getHeight(), LoadedResources.getBackgroundTWO(resources).getWidth(), LoadedResources.getBackgroundTWO(resources).getHeight());
 			back.onInitialize(LoadedResources.getBackgroundTHREE(resources), back2.getWidth(), height - LoadedResources.getBackgroundTHREE(resources).getHeight(), LoadedResources.getBackgroundTHREE(resources).getWidth(), LoadedResources.getBackgroundTHREE(resources).getHeight());
 		}
-		if(levelNumber == 3 + 1)
+		if(levelNumber == 5 || levelNumber == 6)
 		{
 			back.onInitialize(LoadedResources.getBackgroundTHREE(resources), 0, height - LoadedResources.getBackgroundTHREE(resources).getHeight(), LoadedResources.getBackgroundTHREE(resources).getWidth(), LoadedResources.getBackgroundTHREE(resources).getHeight());
 			back2.onInitialize(LoadedResources.getBackgroundFOUR(resources), back.getWidth(), height - LoadedResources.getBackgroundFOUR(resources).getHeight(), LoadedResources.getBackgroundFOUR(resources).getWidth(), LoadedResources.getBackgroundFOUR(resources).getHeight());
 		}
-		if(levelNumber == 4 + 1)
+		if(levelNumber == 7)
 		{
 			back2.onInitialize(LoadedResources.getBackgroundFOUR(resources), 0, height - LoadedResources.getBackgroundFOUR(resources).getHeight(), LoadedResources.getBackgroundFOUR(resources).getWidth(), LoadedResources.getBackgroundFOUR(resources).getHeight());
 			back.onInitialize(LoadedResources.getBackgroundFIVE(resources), back2.getWidth(), height - LoadedResources.getBackgroundFIVE(resources).getHeight(), LoadedResources.getBackgroundFIVE(resources).getWidth(), LoadedResources.getBackgroundFIVE(resources).getHeight());
@@ -476,11 +562,26 @@ public class SinglePlayScreen implements Runnable
 		collectionScoreIcon.onInitialize(LoadedResources.getStar(resources), width - (int) (57 * scale), (int) (3 * scale), (int)(25.0f / 1.5f * scale), (int)(24.0f / 1.5f * scale));
 		
 		// load in the level
-		levelList.add(XMLHandler.readSerialFile(resources, R.raw.level, Level.class));
-		levelList.add(XMLHandler.readSerialFile(resources, R.raw.level_new_2_map_, Level.class));
-		levelList.add(XMLHandler.readSerialFile(resources, R.raw.level2, Level.class));
-		levelList.add(XMLHandler.readSerialFile(resources, R.raw.level3, Level.class));
-		levelList.add(XMLHandler.readSerialFile(resources, R.raw.level4, Level.class));
+		if(levelNumber == 1 || levelNumber == 2)
+		{
+			levelList.add(XMLHandler.readSerialFile(resources, R.raw.level, Level.class));
+			levelList.add(XMLHandler.readSerialFile(resources, R.raw.level_new_2_map_, Level.class));
+		}
+		if(levelNumber == 3 || levelNumber == 4)
+		{
+			levelList.add(XMLHandler.readSerialFile(resources, R.raw.level2, Level.class));
+			levelList.add(XMLHandler.readSerialFile(resources, R.raw.level_new_3_star_map_, Level.class));
+		}
+		if(levelNumber == 5 || levelNumber == 6)
+		{
+			levelList.add(XMLHandler.readSerialFile(resources, R.raw.level3, Level.class));
+			levelList.add(XMLHandler.readSerialFile(resources, R.raw.level3, Level.class));
+		}
+		if(levelNumber == 7)
+		{
+			levelList.add(XMLHandler.readSerialFile(resources, R.raw.level4, Level.class));
+			levelList.add(XMLHandler.readSerialFile(resources, R.raw.level4, Level.class));
+		}
 		
 		for (Iterator<Level> it = levelList.iterator(); it.hasNext();)
 			it.next().onInitialize(resources, width, height, sm);
@@ -505,32 +606,38 @@ public class SinglePlayScreen implements Runnable
 		pm.addBackgroundPhys(back2);
 		
 		//should not be doing this
-		if(levelNumber == 1)
+		if(levelNumber == 1 || levelNumber == 2)
 			mm.ChangeSongs(R.raw.pulse);
-		if(levelNumber == 2 + 1)
+		if(levelNumber == 3 || levelNumber == 4)
 			mm.ChangeSongs(R.raw.quicken);
-		if(levelNumber == 3 + 1)
+		if(levelNumber == 5 || levelNumber == 6)
 			mm.ChangeSongs(R.raw.aegissprint);
-		if(levelNumber == 4 + 1)
+		if(levelNumber == 7)
 			mm.ChangeSongs(R.raw.blackdiamond);
 		mm.addFade(new SoundFade(0, 0, 1, 3000));
 		mm.play(0);
 		
-		pm.setBackDiv(((((float)levelList.get(levelNumber - 1).getLevelLength() + 16000) / (1600.0f))));
+		if (levelNumber != 7)
+			pm.setBackDiv(((((float)levelList.get(accessNumber).getLevelLength() * 2) / (1600.0f))));
+		else
+			pm.setBackDiv(((((float)levelList.get(accessNumber).getLevelLength()) / (1600.0f))));
 		
 		//and a very specialized
-		if(levelNumber == 4)
+		if(levelNumber == 7)
 			badGuy.setyPos(-height - badGuy.getHeight() - 10);
 		
 		//pm.setScrollProgress(14500 / 1.5f * SurfacePanel.scale, true);
 		
+		System.gc();
+		
 		initialized = true;
+		drawloading = false;
 	}
 	
 	private void grabHitList(int levelNumber)
 	{
 		hitList.clear();
-		for (Iterator<Sprite> it = levelList.get(levelNumber - 1).getlevelSpriteList().iterator(); it.hasNext();)
+		for (Iterator<Sprite> it = levelList.get(accessNumber).getlevelSpriteList().iterator(); it.hasNext();)
 		{
 			Sprite temp = it.next();
 			hitList.add(temp);
