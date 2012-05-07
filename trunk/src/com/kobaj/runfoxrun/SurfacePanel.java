@@ -156,8 +156,6 @@ public class SurfacePanel extends DrawablePanel
 			onTitleScreen(delta);
 		else if (currentState == GameStates.SinglePlay)
 		{
-			mainFox.onUpdate(delta);
-			pm.onUpdate(delta);
 			if (!sp.onUpdate(delta))
 			{
 				currentState = GameStates.TitleScreen;
