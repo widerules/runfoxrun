@@ -69,19 +69,20 @@ public final class R {
         public static final int level4=0x7f04000f;
         public static final int level_new_2_map_=0x7f040010;
         public static final int level_new_3_star_map_=0x7f040011;
-        public static final int littlevine=0x7f040012;
-        public static final int pkup1=0x7f040013;
-        public static final int pulse=0x7f040014;
-        public static final int quicken=0x7f040015;
-        public static final int rumbling1=0x7f040016;
-        public static final int sandhole=0x7f040017;
-        public static final int sandtopper=0x7f040018;
-        public static final int smalltree=0x7f040019;
-        public static final int smoke=0x7f04001a;
-        public static final int star=0x7f04001b;
-        public static final int tree=0x7f04001c;
-        public static final int treetopper=0x7f04001d;
-        public static final int weed=0x7f04001e;
+        public static final int level_new_4_66_star_map_=0x7f040012;
+        public static final int littlevine=0x7f040013;
+        public static final int pkup1=0x7f040014;
+        public static final int pulse=0x7f040015;
+        public static final int quicken=0x7f040016;
+        public static final int rumbling1=0x7f040017;
+        public static final int sandhole=0x7f040018;
+        public static final int sandtopper=0x7f040019;
+        public static final int smalltree=0x7f04001a;
+        public static final int smoke=0x7f04001b;
+        public static final int star=0x7f04001c;
+        public static final int tree=0x7f04001d;
+        public static final int treetopper=0x7f04001e;
+        public static final int weed=0x7f04001f;
     }
     public static final class string {
         public static final int app_name=0x7f050001;

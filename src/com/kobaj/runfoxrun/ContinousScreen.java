@@ -47,6 +47,8 @@ public class ContinousScreen
 	
 	private Paint bitmapPaint;
 	
+	private HighScores highscores;
+	
 	float scale;
 	
 	public ContinousScreen(int width, int height)
@@ -61,9 +63,11 @@ public class ContinousScreen
 		player.setyPos(SurfacePanel.startHeight);
 	}
 	
-	public void onInitialize(Resources resources, InputManager im, PhysicsManager pm, SoundManager sm, Sprite player)
+	public void onInitialize(Resources resources, InputManager im, PhysicsManager pm, SoundManager sm, Sprite player, HighScores highScores)
 	{
 		scale = SurfacePanel.scale;
+		
+		this.highscores = highScores;
 		
 		this.im = im;
 		this.pm = pm;
@@ -99,7 +103,7 @@ public class ContinousScreen
 		scoreWord = new custString(resources, "Score: ", width - (int) (167 * scale), (int) (16 * scale));
 		
 		highScoreWords = new custString(resources, "High:", width - (int) (167 * scale), (int) (33 * scale));
-		highScore = new custInt(resources, HighScores.getHighScore(), width - (int) (120 * scale), (int) (33 * scale));
+		highScore = new custInt(resources, highscores.getHighScore(), width - (int) (120 * scale), (int) (33 * scale));
 		
 		initialized = true;
 	}
@@ -161,9 +165,9 @@ public class ContinousScreen
 				
 				sm.playSound(3);
 				
-				HighScores.addScore(score);
+				highscores.addScore(score);
 				
-				highScore.setInt(HighScores.getHighScore());
+				highScore.setInt(highscores.getHighScore());
 				
 				score = 0;
 			}

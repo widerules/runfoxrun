@@ -5,29 +5,29 @@ import org.simpleframework.xml.Element;
 public class HighScores
 {
 	@Element
-	private static int scores = 0;
+	private  int scores = 0;
 	
 	@Element
-	private static int obtLevel;
+	private  int obtLevel = 1;
 
-	public static void setLevel(int level)
+	public  void setLevel(int level)
 	{
 		if(level > obtLevel)
 			obtLevel = level;
 	}
 	
-	public static int getLevel()
+	public  int getLevel()
 	{
 		return obtLevel;
 	}
 	
-	public static void addScore(int score)
+	public  void addScore(int score)
 	{	
 		if(score > scores)
 			scores = score;
 	}
 	
-	public static int getHighScore()
+	public  int getHighScore()
 	{
 		return scores;
 	}

@@ -98,6 +98,7 @@ public class InputManager
 		}
 	}
 	
+	@SuppressWarnings("deprecation")
 	public void eventUpdate(MotionEvent event)
 	{
 		int action = event.getAction();

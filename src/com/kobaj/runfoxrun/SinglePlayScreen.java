@@ -8,7 +8,6 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Paint.Style;
 
 public class SinglePlayScreen implements Runnable
 {
@@ -19,7 +18,7 @@ public class SinglePlayScreen implements Runnable
 	private int height;
 	
 	private int accessNumber = 0;
-	private boolean drawloading = false;
+	private boolean drawloading = true;
 	
 	private ArrayList<Sprite> hitList;
 	private ArrayList<Sprite> collectionList;
@@ -40,6 +39,8 @@ public class SinglePlayScreen implements Runnable
 	private Sprite back;
 	private Sprite back2;
 	
+	private Sprite loadingStar;
+	
 	private boolean initialized = false;
 	
 	private int levelNumber = 1;
@@ -50,8 +51,7 @@ public class SinglePlayScreen implements Runnable
 	private Paint linePaint;
 	private Paint bitmapPaint;
 	private Paint blackPaint;
-	private Paint textPaint;
-	
+
 	private boolean sceneDead = false;
 	
 	private Creditables myCredits;
@@ -60,9 +60,22 @@ public class SinglePlayScreen implements Runnable
 	
 	public boolean resetBad = false;
 	
+	private int black_to_level = 0;
+	private int level_to_black = 0;
+	
 	private float credits = 0;
 	private float gameOver = 0;
 	private custString gameOverString;
+	
+	private custnewlineString stringfirst;
+	private custnewlineString stringsecond;
+	private custnewlineString stringthird;
+	private custnewlineString stringfourth;
+	private custString loading;
+	private custString done;
+	private custString clicktocontinue;
+	
+	private HighScores highscores;
 	
 	private float scale;
 	
@@ -75,13 +88,14 @@ public class SinglePlayScreen implements Runnable
 	
 	public void setLevel(int level)
 	{
-		if(level < levelNumber)
-			return;
-		
-		if(level != 1)
-		{
-			this.levelNumber = level;
-		}
+		if(level <= highscores.getLevel())
+			levelNumber = level;
+	}
+	
+	public void force_load()
+	{
+		drawloading = true;
+		start();	
 	}
 	
 	private int getAccess(int levelnum)
@@ -124,14 +138,22 @@ public class SinglePlayScreen implements Runnable
 		return initialized;
 	}
 	
-	public void onInitialize(Resources resources, InputManager im, PhysicsManager pm, SoundManager sm, MusicManager mm, int level, Sprite player)
+	public void onInitialize(Resources resources, InputManager im, PhysicsManager pm, SoundManager sm, MusicManager mm, int level, Sprite player, HighScores highScores)
 	{
 		this.scale = SurfacePanel.scale;
+		
+		this.highscores = highScores;
 		
 		this.im = im;
 		this.pm = pm;
 		this.sm = sm;
 		this.mm = mm;
+		
+		black_to_level = 0;
+		level_to_black = 0;
+		
+		credits = 0;
+		gameOver = 0;
 		
 		this.player = player;
 		pm.setPlayer(player);
@@ -145,14 +167,58 @@ public class SinglePlayScreen implements Runnable
 		gameOverString = new custString(resources, "Game Over", 0, 0);
 		gameOverString.setPosition((int)(width / 2.0f - gameOverString.measureit() / 2.0f), (int)(height / 2.0f));
 		
-		levelNumber = 2;
+		loadingStar = XMLHandler.readSerialFile(resources, R.raw.star, Sprite.class);
+		loadingStar.onInitialize(LoadedResources.getStar(resources), (int)(450 / 1.5f * scale), (int)(400 / 1.5f * scale), (int)(25.0f / 1.5f * scale), (int)(24.0f  / 1.5f * scale));
 		
-		// semi arbitrary
-		textPaint.setColor(Color.WHITE);
-		textPaint.setStrokeWidth(8);
-		textPaint.setStyle(Style.FILL);
-		textPaint.setAntiAlias(true);
-		textPaint.setTextSize(16 * scale);
+		
+		/*
+		 * 
+		 * [loading city/intro loading]
+
+Man forgot this city long ago. The only soul keeping the decrepit buildings and lonely streets 
+
+company is a creature surrounded by thick black smoke. And once awakened, the creature will 
+
+not stop in chasing its prey.
+
+[loading forrest]
+
+The city is no place for a fox, but a dense forest filled with deadly vines is no better. Can't turning 
+
+back now, the creature chases the fox into the thicket of branches.
+
+[loading dessert]
+
+The forest stands behind the fox, but an aired desert looms ahead. The sand is difficult to run 
+
+on, but there is no choice for the fox. The creature seeks its prey.
+
+[loading blackness]
+
+What's ahead now? Remnants of buildings, forest, and desert can be seen, but where will they 
+
+lead?
+*/
+		
+		stringfirst = new custnewlineString(resources, "Man forgot this city long ago. The only soul keeping \nthe decrepit buildings and lonely streets company is \na creature surrounded by thick black smoke. And once \nawakened, the creature will not stop in chasing its prey.", (int)(100.0f * 1.5f / scale), (int)(100.0f * 1.5f / scale));
+		stringfirst.setSize((int)(20.0f * 1.5f / scale));
+		
+		stringsecond = new custnewlineString(resources, "The city is no place for a fox, but a dense forest \nfilled with deadly vines is no better. Can't turn \nback now, the creature chases the fox into the \nthicket of branches.", (int)(100.0f * 1.5f / scale), (int)(100.0f * 1.5f / scale));
+		stringsecond.setSize((int)(20.0f * 1.5f / scale));
+		
+		stringthird = new custnewlineString(resources, "The forest stands behind the fox, but an aired desert \nlooms ahead. The fox has no choice but to continue \nforward, the creature seeks its prey. The fox runs on.", (int)(100.0f * 1.5f / scale), (int)(100.0f * 1.5f / scale));
+		stringthird.setSize((int)(20.0f * 1.5f / scale));
+		
+		stringfourth = new custnewlineString(resources, "Black. \nConsumed in an instant by the creature. \nWhat's ahead now? Remnants of buildings, forest, and \ndesert can be seen, but where will they lead? \nIs there hope?", (int)(100.0f * 1.5f / scale), (int)(100.0f * 1.5f / scale));
+		stringfourth.setSize((int)(20.0f * 1.5f / scale));
+		
+		loading = new custString(resources, "Loading...", (int)(300.0f * 1.5f / scale), (int)(400.0f * 1.5f / scale));
+		loading.setSize((int)(20.0f * 1.5f / scale));
+		done = new custString(resources, "Done.", (int)(385.0f * 1.5f / scale), (int)(400.0f * 1.5f / scale));
+		done.setSize((int)(20.0f * 1.5f / scale));
+		clicktocontinue = new custString(resources, "Ready to dash?" , (int)(300.0f * 1.5f / scale), (int)(430.0f * 1.5f / scale));
+		clicktocontinue.setColor(Color.RED, Color.BLACK);
+		clicktocontinue.setSize((int)(20.0f * 1.5f / scale));
 		
 		start();
 	}
@@ -161,16 +227,27 @@ public class SinglePlayScreen implements Runnable
 	{
 		/*
 		 * Todo
-		 * -fade to black
-		 * -tap to continue
-		 * -story/text position implementation
-		 * -map maker/vines work correct
-		 * -fix level 3
-		 * -make level 4
-		 * -put in next levels
 		 * -allow user to select level
 		 * -don't forget to give the users a new res
 		 */
+		
+		if(drawloading)
+			loadingStar.onUpdate(delta);
+		
+		if(waiting_to_click && drawloading)
+		{	
+			for (int i = 0; i < im.fingerCount; i++)
+			{
+				if (im.getPressed(i))
+				{
+					waiting_to_click = false;
+					drawloading = false;
+					black_to_level = 1;
+					System.gc();
+					break;
+				}
+			}
+		}
 		
 		if (initialized && !drawloading)
 		{	
@@ -206,6 +283,14 @@ public class SinglePlayScreen implements Runnable
 				}
 			}
 			
+			//mmm dat fade to black
+			if (pm.getScrollProgress() >= (levelList.get(accessNumber).getLevelLength() - 300 / 1.5f * SurfacePanel.scale) / 1.5f * SurfacePanel.scale)
+			if(levelNumber == 2 || levelNumber== 4 || levelNumber == 6)
+			if(level_to_black == 0)
+			{
+				level_to_black = 1;
+			}
+			
 			// handle next level;
 			// probably could have done this a bit better.
 			if (pm.getScrollProgress() >= (levelList.get(accessNumber).getLevelLength()) / 1.5f * SurfacePanel.scale)
@@ -217,7 +302,7 @@ public class SinglePlayScreen implements Runnable
 				
 				accessNumber = getAccess(levelNumber);
 				
-				HighScores.setLevel(levelNumber);
+				highscores.setLevel(levelNumber);
 
 				if (levelNumber == 3)
 				{
@@ -303,6 +388,24 @@ public class SinglePlayScreen implements Runnable
 					pm.levelReset();
 				}
 			}
+			
+			if(level_to_black > 0)
+			{
+				int multiplier = (int) this.linInterp(0, 1000, level_to_black, 0, 255);
+				blackPaint.setAlpha(multiplier);
+				level_to_black += delta;
+			}
+			else if(black_to_level > 0)
+			{
+				int multiplier = (int) this.linInterp(0, 1000, black_to_level, 255, 0);
+				blackPaint.setAlpha(multiplier);
+				black_to_level += delta;
+			}
+			
+			if(level_to_black > 5150)
+				level_to_black = -1;
+			if(black_to_level > 1150)
+				black_to_level = -1;
 			
 			if(gameOver > 10000)
 			{
@@ -390,10 +493,11 @@ public class SinglePlayScreen implements Runnable
 	
 	public void onDraw(Canvas canvas)
 	{
-		if (initialized)
-		{
+		
 			if(!drawloading)
 			{
+				if (initialized)
+				{
 			// background
 			if(back != null)
 				back.onDraw(canvas);
@@ -401,15 +505,14 @@ public class SinglePlayScreen implements Runnable
 				back2.onDraw(canvas);
 			
 			// interaction layer
-			for (Iterator<Sprite> it = hitList.iterator(); it.hasNext();)
+			//integer iterators are faster?
+			for (Sprite it: hitList)
 			{
-				temp = it.next();
-				
-				int spritePosx = (int) temp.getxPos();
-				int spriteWidth = (int) temp.getWidth();
+				int spritePosx = (int) it.getxPos();
+				int spriteWidth = (int)it.getWidth();
 				if (spritePosx < width && spritePosx + spriteWidth > 0)
 				{
-					temp.onDraw(canvas);
+					it.onDraw(canvas);
 				}
 			}
 			
@@ -446,40 +549,35 @@ public class SinglePlayScreen implements Runnable
 			
 			if(gameOver > 0)
 				gameOverString.onDraw(canvas);
+			
+			if(level_to_black > 0 || black_to_level > 0)
+				canvas.drawRect(0, 0, width, height, blackPaint);
+			
+				}
 			}
 			else
 			{
-				/*
-				 * 
-				 * [loading city/intro loading]
-
-Man forgot this city long ago. The only soul keeping the decrepid buildings and lonely streets 
-
-company is a creature surrounded by thick black smoke. And once awakened, the creature will 
-
-not stop in chasing its prey.
-
-[loading forrest]
-
-The city is no place for a fox, but a dense forest filled with deadly vines is no better. No turning 
-
-back, the creature chases the fox into the thicket of branches.
-
-[loading dessert]
-
-The forest stands behind the fox, but an aired desert looms ahead. The sand its difficult to run 
-
-on, but there is no choice for the fox. The black creature seeks its prey.
-
-[loading blackness]
-
-Whats ahead now? Remnents of buildings forest and desert can be seen, but where will they 
-
-lead?
-*/
-				canvas.drawText("new loading", width / 2.0f, height / 2.0f, textPaint);
+				//fancy new loading screens
+				
+				loadingStar.onDraw(canvas);
+				
+				if(waiting_to_click)
+				{
+					done.onDraw(canvas);
+					clicktocontinue.onDraw(canvas);
+				}
+				
+				loading.onDraw(canvas);
+				
+				if(levelNumber < 3)
+					stringfirst.onDraw(canvas);
+				else if(levelNumber < 5)
+					stringsecond.onDraw(canvas);
+				else if(levelNumber < 7)
+					stringthird.onDraw(canvas);
+				else if(levelNumber == 7)
+					stringfourth.onDraw(canvas);
 			}
-		}
 	}
 	
 	// really should make my own Math class...
@@ -507,6 +605,7 @@ lead?
 	{
 		back.Release();
 		back2.Release();
+		loadingStar.Release();
 	}
 	
 	@Override
@@ -574,12 +673,11 @@ lead?
 		}
 		if(levelNumber == 5 || levelNumber == 6)
 		{
-			levelList.add(XMLHandler.readSerialFile(resources, R.raw.level3, Level.class));
+			levelList.add(XMLHandler.readSerialFile(resources, R.raw.level_new_4_66_star_map_, Level.class));
 			levelList.add(XMLHandler.readSerialFile(resources, R.raw.level3, Level.class));
 		}
 		if(levelNumber == 7)
 		{
-			levelList.add(XMLHandler.readSerialFile(resources, R.raw.level4, Level.class));
 			levelList.add(XMLHandler.readSerialFile(resources, R.raw.level4, Level.class));
 		}
 		
@@ -622,17 +720,32 @@ lead?
 		else
 			pm.setBackDiv(((((float)levelList.get(accessNumber).getLevelLength()) / (1600.0f))));
 		
+		pm.setScrollRate(SurfacePanel.scrollRate);
+		
 		//and a very specialized
 		if(levelNumber == 7)
+		{
+			pm.setScrollRate((float) (pm.getScrollRate() - (.025f / 1.5f * scale)));
 			badGuy.setyPos(-height - badGuy.getHeight() - 10);
+		}
+		
+		XMLHandler.writeSerialFile(highscores, "highscores");
 		
 		//pm.setScrollProgress(14500 / 1.5f * SurfacePanel.scale, true);
 		
 		System.gc();
 		
+		black_to_level = 0;
+		level_to_black = 0;
+		
+		credits = 0;
+		gameOver = 0;
+		
 		initialized = true;
-		drawloading = false;
+		waiting_to_click = true;
 	}
+	
+	boolean waiting_to_click = false;
 	
 	private void grabHitList(int levelNumber)
 	{

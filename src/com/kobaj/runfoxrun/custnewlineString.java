@@ -48,8 +48,49 @@ public class custnewlineString
 		return max;
 	}
 	
+	public custnewlineString(Resources resources, String string, int x, int y, boolean reverse)
+	{
+		stringy = new ArrayList<custSingleString>();
+		
+		float scale = SurfacePanel.scale;
+		
+		size = (int) (16 * scale);
+		
+		// semi arbitrary
+		textPaint.setColor(mainColor);
+		// textPaint.setStrokeWidth(8);
+		textPaint.setStyle(Style.FILL);
+		textPaint.setAntiAlias(true);
+		textPaint.setTextSize(size);
+		
+		strokePaint.setColor(outlineColor);
+		strokePaint.setTextAlign(Paint.Align.CENTER);
+		strokePaint.setTextSize(size);
+		strokePaint.setTypeface(Typeface.DEFAULT_BOLD);
+		strokePaint.setStyle(Paint.Style.STROKE);
+		strokePaint.setStrokeWidth(2);
+		strokePaint.setAntiAlias(true);
+		
+		for (String line : string.split("\n"))
+		{
+			custSingleString temp = new custSingleString();
+			temp.string.append(line);
+			temp.y = y;
+			y -= textPaint.ascent() - textPaint.descent() - 4;
+			stringy.add(temp);
+		}
+		
+		this.x = x;
+		
+		generateMembers();
+		
+		rotationMatrix = new Matrix();
+	}
+	
 	public custnewlineString(Resources resources, String string, int x, int y)
 	{
+		this(resources, string, x, y, false);
+		
 		stringy = new ArrayList<custSingleString>();
 		
 		float scale = SurfacePanel.scale;
@@ -125,7 +166,7 @@ public class custnewlineString
 		}
 	}
 	
-	public void setPosition(int x, int y)
+	/*public void setPosition(int x, int y)
 	{
 		this.x = x;
 		
@@ -137,7 +178,7 @@ public class custnewlineString
 		}
 		
 		generateMembers();
-	}
+	}*/
 	
 	public void setSize(int size)
 	{
