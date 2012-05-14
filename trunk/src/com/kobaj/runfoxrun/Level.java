@@ -9,6 +9,7 @@ import org.simpleframework.xml.ElementList;
 
 import android.content.res.Resources;
 import android.graphics.Rect;
+import android.util.Log;
 
 public class Level
 {
@@ -116,6 +117,9 @@ public class Level
 				tempLevelObject.setyLoc(height - tempLevelObject.getyLoc());
 			}
 			
+			if(tempLevelObject.getName() == null)
+				Log.i("noname", "noname found while loading");
+			
 			// hard coded
 			// its a little dumb, but thats how it goes
 			if (tempLevelObject.getName().equalsIgnoreCase("green"))
@@ -198,7 +202,7 @@ public class Level
 			
 			else if (tempLevelObject.getName().equalsIgnoreCase("grass"))
 			{
-				Sprite temp = XMLHandler.readSerialFile(resources, R.raw.grass, Sprite.class);
+				Sprite temp = XMLHandler.readSerialFile(resources, R.raw.grass, Sprite.class); temp.name = tempLevelObject.getName();
 				temp.onInitialize(LoadedResources.getGrass(), tempLevelObject.getxLoc(), tempLevelObject.getyLoc());
 				levelSpriteList.add(temp);
 			}
@@ -356,7 +360,7 @@ public class Level
 			
 			else if (tempLevelObject.getName().equalsIgnoreCase("treetopper"))
 			{
-				Sprite temp = new Sprite();
+				Sprite temp = new Sprite(); temp.name = tempLevelObject.getName();
 				temp.onInitialize(LoadedResources.getTreeTopper(), tempLevelObject.getxLoc(), tempLevelObject.getyLoc());
 				temp.getPhysRect().clear();
 				for (Iterator<physRect> iter = TREEtopper.getPhysRect().iterator(); iter.hasNext();)
@@ -373,7 +377,7 @@ public class Level
 			
 			else if (tempLevelObject.getName().equalsIgnoreCase("sandtopper"))
 			{
-				Sprite temp = new Sprite();
+				Sprite temp = new Sprite(); temp.name = tempLevelObject.getName();
 				temp.onInitialize(LoadedResources.getsandtopper(), tempLevelObject.getxLoc(), tempLevelObject.getyLoc());
 				temp.getPhysRect().clear();
 				for (Iterator<physRect> iter = SANDtopper.getPhysRect().iterator(); iter.hasNext();)
@@ -390,16 +394,8 @@ public class Level
 			
 			else if (tempLevelObject.getName().equalsIgnoreCase("buildingtopper"))
 			{
-				Sprite temp = new Sprite();
+				Sprite temp = new Sprite(); temp.name = tempLevelObject.getName();
 				temp.onInitialize(LoadedResources.getbuildingtopper(), tempLevelObject.getxLoc(), tempLevelObject.getyLoc());
-				levelSpriteList.add(temp);
-			}
-			
-			else
-			// if(objectSelected.equalsIgnoreCase("black"))
-			{
-				Sprite temp = new Sprite();
-				temp.onInitialize(LoadedResources.getBlack(), tempLevelObject.getxLoc(), tempLevelObject.getyLoc());
 				levelSpriteList.add(temp);
 			}
 		}

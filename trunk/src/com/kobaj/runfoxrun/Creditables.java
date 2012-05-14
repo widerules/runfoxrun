@@ -35,6 +35,7 @@ public class Creditables
 		temp.add("Chief Programmer, Chief Design, Chief Art");
 		temp.add("Music");
 		temp.add("Sound engineer and QA");
+		temp.add("QA");
 		temp.add("Title Screen Art");
 		temp.add("in the making of this game!");
 		
@@ -44,6 +45,7 @@ public class Creditables
 		temp2.add("Jakob Griffith");
 		temp2.add("Andrew Riley");
 		temp2.add("Kevin Poisson");
+		temp2.add("Ryan Knight");
 		temp2.add("Raymond Griffith");
 		temp2.add("Thanks to anyone who helped");
 		

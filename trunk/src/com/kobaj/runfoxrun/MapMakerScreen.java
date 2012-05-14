@@ -13,6 +13,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.Rect;
+import android.util.Log;
 import android.widget.EditText;
 
 public class MapMakerScreen implements Runnable
@@ -42,7 +43,10 @@ public class MapMakerScreen implements Runnable
 	private custString cancel;
 	private custString filename;
 	private custString saved;
+	private custString saving;
 	private custString loading;
+	private custString failed_to_Save;
+	private int failedInt = 0;
 	
 	private ArrayList<custString> allFiles;
 	
@@ -69,7 +73,6 @@ public class MapMakerScreen implements Runnable
 	private int width;
 	private int height;
 	
-	private Sprite temp;
 	private Sprite selected;
 	
 	private int pad;
@@ -86,6 +89,8 @@ public class MapMakerScreen implements Runnable
 	private Sprite DEAdTree;
 	private Sprite TREEtopper;
 	private Sprite SANDtopper;
+	
+	private boolean is_saving = false;
 	
 	public MapMakerScreen(int width, int height)
 	{
@@ -171,7 +176,17 @@ public class MapMakerScreen implements Runnable
 		saved.setSize((int) (30.0f * scale));
 		saved.setColor(Color.TRANSPARENT, Color.TRANSPARENT);
 		
-		loading = new custString(resources, "Loading", 0, 0);
+		saving = new custString(resources, "Saving...", 0,0);
+		saving.setPosition((int) (width / 2.0f - saving.measureit() / 2.0f), (int) (height / 2.0f));
+		saving.setSize((int)(30.0f * scale));
+		saving.setColor(Color.TRANSPARENT, Color.TRANSPARENT);
+		
+		failed_to_Save = new custString(resources, "Failed To Save :(", 0,0);
+		failed_to_Save.setPosition((int) (width / 2.0f - saving.measureit() / 2.0f), (int) (height / 2.0f));
+		failed_to_Save.setSize((int)(30.0f * scale));
+		failed_to_Save.setColor(Color.TRANSPARENT, Color.TRANSPARENT);
+		
+		loading = new custString(resources, "Loading...", 0, 0);
 		loading.setPosition((int) (width / 2.0f - saved.measureit() / 2.0f), (int) (height / 2.0f));
 		loading.setSize((int) (30.0f * scale));
 		
@@ -251,13 +266,19 @@ public class MapMakerScreen implements Runnable
 			
 			for (Iterator<Sprite> it = cutemp.getlevelSpriteList().iterator(); it.hasNext();)
 			{
-				temp = it.next();
+				Sprite temp = it.next();
+				
+				if(temp.name == null)
+					Log.i("noname", "noname found while loading");
+				
 				if(temp.getCollectable() == CollectableStates.collectable)
 					collectionList.add(temp);
 				
 				hitList.add(temp);
 				pm.addPhys(temp);
 			}
+			
+			System.gc();
 			
 			setFileName(loadingfileName.split("_map")[0]);
 		}
@@ -344,26 +365,39 @@ public class MapMakerScreen implements Runnable
 		
 		custLevel tobeSaved = new custLevel(filename.getString());
 		tobeSaved.setObjectList(hitList, this.height);
-		XMLHandler.writeSerialFile(tobeSaved, filename.getString() + "_map_");
-		invisInt = 1;
 		
-		pm.setScrollProgress(prevscroll, false);
+		boolean diditsave = XMLHandler.writeSerialFile(tobeSaved, filename.getString() + "_map_");
 		
-		boolean found = false;
-		for (Iterator<custString> cuit = allFiles.iterator(); cuit.hasNext();)
+		if(diditsave)
 		{
-			custString cutemp = cuit.next();
-			if (cutemp.getString().equals(filename.getString()))
+			saving.setColor(Color.WHITE, Color.BLACK);
+			
+			boolean found = false;
+			for (Iterator<custString> cuit = allFiles.iterator(); cuit.hasNext();)
 			{
-				found = true;
-				break;
+				custString cutemp = cuit.next();
+				if (cutemp.getString().equals(filename.getString()))
+				{
+					found = true;
+					break;
+				}
 			}
+			
+			if (!found)
+				allFiles.add(new custString(resources, filename.getString(), 0, 0));
+			
+			setAllFilePositions();
+			
+			saving.setColor(Color.TRANSPARENT, Color.TRANSPARENT);
+			invisInt = 1;
+			pm.setScrollProgress(prevscroll, false);
+			System.gc();
 		}
+		else
+			failedInt = 1;
 		
-		if (!found)
-			allFiles.add(new custString(resources, filename.getString(), 0, 0));
-		
-		setAllFilePositions();
+		saving.setColor(Color.TRANSPARENT, Color.TRANSPARENT);
+		is_saving = false;
 	}
 	
 	private void savemap()
@@ -414,6 +448,20 @@ public class MapMakerScreen implements Runnable
 			
 			invisInt += delta;
 		}
+		
+		if (failedInt > 0 && failedInt < 5000)
+		{
+			int Multiplicity = (int) linInterp(0, 5000, failedInt, 256, 0);
+			int mainColor = Color.argb(Multiplicity, 255, 255, 255);
+			int outlineColor = Color.argb(Multiplicity, 0, 0, 0);
+			
+			failed_to_Save.setColor(mainColor, outlineColor);
+			
+			failedInt += delta;
+		}
+		
+		if(is_saving)
+			return true;
 		
 		for (int i = 0; i < im.fingerCount; i++)
 		{
@@ -507,6 +555,7 @@ public class MapMakerScreen implements Runnable
 					{
 						savemap();
 						taps = true;
+						is_saving = true;
 					}
 					else if (filename.fingertap((int) im.getX(i), (int) im.getY(i)))
 					{
@@ -577,7 +626,7 @@ public class MapMakerScreen implements Runnable
 						outerLoop:
 						for (ListIterator<Sprite> it = hitList.listIterator(hitList.size()); it.hasPrevious();)
 						{
-							temp = it.previous();
+							Sprite temp = it.previous();
 							
 							int spritePosx = (int) temp.getxPos();
 							int spriteWidth = (int) temp.getWidth();
@@ -596,6 +645,8 @@ public class MapMakerScreen implements Runnable
 								}
 							}
 						}
+						
+						System.gc();
 					}
 				}
 				
@@ -633,20 +684,22 @@ public class MapMakerScreen implements Runnable
 				
 				for (Iterator<Sprite> it = collectionList.iterator(); it.hasNext();)
 				{
-					temp = it.next();
+					Sprite temp = it.next();
 					if(temp.getCollectable() == CollectableStates.idle || temp.getyPos() > 2 * height)
 					{
 						temp.setCollectable(CollectableStates.collectable);
 						temp.setyPos(temp.getyPos() - 3 * height);
 					}
 				}
+				
+				System.gc();
 			}
 			
 			// gotta loop through and find the collected elements
 			if(collectionList != null)
 			for (Iterator<Sprite> it = collectionList.iterator(); it.hasNext();)
 			{
-				temp = it.next();
+				Sprite temp = it.next();
 				temp.onUpdate(delta);
 				if (temp.getCollectable() == CollectableStates.collected)
 				{
@@ -667,13 +720,23 @@ public class MapMakerScreen implements Runnable
 		// delete me
 		canvas.drawColor(Color.BLUE);
 		
+		if (invisInt > 0 && invisInt < 5000)
+			saved.onDraw(canvas);
+		saving.onDraw(canvas);
+		
+		if (failedInt > 0 && failedInt < 5000)
+			failed_to_Save.onDraw(canvas);
+		
+		if(is_saving)
+			return;
+		
 		if (currentMode != MapMakerModes.load && currentMode != MapMakerModes.loading && currentMode != MapMakerModes.play)
 		{
 			
 			// interaction layer
 			for (Iterator<Sprite> it = hitList.iterator(); it.hasNext();)
 			{
-				temp = it.next();
+				Sprite temp = it.next();
 				
 				int spritePosx = (int) temp.getxPos();
 				int spriteWidth = (int) temp.getWidth();
@@ -709,9 +772,7 @@ public class MapMakerScreen implements Runnable
 			move.onDraw(canvas);
 			place.onDraw(canvas);
 			delete.onDraw(canvas);
-			
-			saved.onDraw(canvas);
-			
+		
 			load.onDraw(canvas);
 			
 			save.onDraw(canvas);
@@ -741,7 +802,7 @@ public class MapMakerScreen implements Runnable
 			// interaction layer
 			for (Iterator<Sprite> it = hitList.iterator(); it.hasNext();)
 			{
-				temp = it.next();
+				Sprite temp = it.next();
 				
 				int spritePosx = (int) temp.getxPos();
 				int spriteWidth = (int) temp.getWidth();
