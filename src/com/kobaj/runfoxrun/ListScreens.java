@@ -31,9 +31,9 @@ public abstract class ListScreens
 			
 			for (int i = 0; i < count; i++)
 				if(stringList[i] != null)
-					if(current == GameStates.Continous && i == 2)
+					if(current == GameStates.Continous && (i == 2 || i > 3))
 					{
-						
+						//do nothing.
 					}
 					else
 						stringList[i].onDraw(canvas);
