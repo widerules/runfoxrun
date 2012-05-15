@@ -291,6 +291,7 @@ public class SurfacePanel extends DrawablePanel
 					break;
 				}
 				
+				if(oldState == GameStates.SinglePlay)
 				new_level = ps.onTouchLevels((int) im.getX(i), (int) im.getY(i));
 				if(new_level != -1)
 					break;
