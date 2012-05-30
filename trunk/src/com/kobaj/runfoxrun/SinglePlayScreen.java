@@ -88,6 +88,12 @@ public class SinglePlayScreen implements Runnable
 	
 	public void setLevel(int level)
 	{
+		if(highscores == null)
+		{
+			levelNumber = level;
+			return;
+		}
+		
 		if(level <= highscores.getLevel())
 			levelNumber = level;
 	}
